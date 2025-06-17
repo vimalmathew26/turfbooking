@@ -1,0 +1,35 @@
+﻿@page
+@model TurfBookingApp.Pages.AnswerSecurityQuestionModel
+@{
+    ViewData["Title"] = "Answer Security Question";
+}
+
+<h2>Security Verification</h2>
+
+@if (Model.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+@if (Model.SuccessMessage != null)
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-2">
+        <strong>@Model.Question</strong>
+        <input asp-for="Answer" class="form-control" />
+    </div>
+    <div class="mb-2">
+        <label>New Password</label>
+        <input asp-for="NewPassword" type="password" class="form-control" />
+    </div>
+    <div class="mb-2">
+        <label>Confirm Password</label>
+        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+    </div>
+
+    <input type="hidden" asp-for="Email" />
+    <button type="submit" class="btn btn-success mt-2">Reset Password</button>
+</form>
