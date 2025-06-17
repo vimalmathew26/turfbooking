@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
@@ -6,6 +7,7 @@ using TurfBookingApp.Models;
 
 namespace TurfBookingApp.Pages
 {
+    [Authorize(Roles = "User")]
     public class UserDashboardModel : PageModel
     {
         private readonly AppDbContext _context;
@@ -35,7 +37,6 @@ namespace TurfBookingApp.Pages
 
             if (!CurrentUser.IsActive)
             {
-                // Not allowed until security question is set
                 return RedirectToPage("/SetupSecurity");
             }
 

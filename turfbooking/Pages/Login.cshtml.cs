@@ -27,6 +27,17 @@ namespace TurfBookingApp.Pages
         [BindProperty]
         public string Password { get; set; }
 
+        public void OnGet()
+        {
+            var returnUrl = Request.Query["ReturnUrl"].ToString();
+
+            if (!string.IsNullOrEmpty(returnUrl) && returnUrl.Contains("AdminDashboard", StringComparison.OrdinalIgnoreCase) || returnUrl.Contains("UserDashboard", StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["Error"] = "You are not authorized to access that page.";
+            }
+        }
+
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -57,7 +68,11 @@ namespace TurfBookingApp.Pages
             var identity = new ClaimsIdentity(claims, "UserAuth");
             var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.SignInAsync("UserAuth", principal);
+            await HttpContext.SignInAsync("UserAuth", principal, new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+            });
 
             if (user.Role == "Admin")
                 return RedirectToPage("/AdminDashboard");
@@ -67,4 +82,3 @@ namespace TurfBookingApp.Pages
         }
     }
 }
-

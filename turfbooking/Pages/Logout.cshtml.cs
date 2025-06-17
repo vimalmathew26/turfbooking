@@ -10,6 +10,8 @@ namespace TurfBookingApp.Pages
         public async Task<IActionResult> OnGet()
         {
             await HttpContext.SignOutAsync("UserAuth");
+            Response.Cookies.Delete("UserAuth");
+            TempData["Message"] = "You have been logged out successfully.";
             return RedirectToPage("/Login");
         }
     }
