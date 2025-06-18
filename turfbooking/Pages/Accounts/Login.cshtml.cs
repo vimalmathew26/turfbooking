@@ -31,7 +31,7 @@ namespace turfbooking.Pages.Accounts
         {
             var returnUrl = Request.Query["ReturnUrl"].ToString();
 
-            if (!string.IsNullOrEmpty(returnUrl) && returnUrl.Contains("AdminDashboard", StringComparison.OrdinalIgnoreCase) || returnUrl.Contains("UserDashboard", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(returnUrl) && returnUrl.Contains("/Admin/AdminDashboard", StringComparison.OrdinalIgnoreCase) || returnUrl.Contains("UserDashboard", StringComparison.OrdinalIgnoreCase))
             {
                 TempData["Error"] = "You are not authorized to access that page.";
             }
