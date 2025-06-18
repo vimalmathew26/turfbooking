@@ -37,6 +37,7 @@ namespace turfbooking.Pages.Accounts
             }
         }
 
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -44,23 +45,20 @@ namespace turfbooking.Pages.Accounts
                 return Page();
             }
 
-            // First check if user exists
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == Email);
-            
+
             if (user == null)
             {
                 ModelState.AddModelError("Email", "No account found with this email address.");
                 return Page();
             }
 
-            // Then check if user is active
             if (!user.IsActive)
             {
                 ModelState.AddModelError("", "This account has been deactivated. Please contact support.");
                 return Page();
             }
 
-            // Finally verify password
             if (!PasswordHelper.VerifyPassword(Password, user.PasswordHash))
             {
                 ModelState.AddModelError("Password", "Invalid password.");
@@ -80,7 +78,7 @@ namespace turfbooking.Pages.Accounts
 
             await HttpContext.SignInAsync("UserAuth", principal, new AuthenticationProperties
             {
-                IsPersistent = true, 
+                IsPersistent = true,
                 ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
             });
 
@@ -88,6 +86,7 @@ namespace turfbooking.Pages.Accounts
                 return RedirectToPage("/Admin/AdminDashboard");
             else
                 return RedirectToPage("/Users/UserDashboard");
+
         }
     }
 }

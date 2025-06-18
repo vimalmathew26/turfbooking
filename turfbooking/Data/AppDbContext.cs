@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
-using TurfBookingApp.Models;
+using turfbooking.Models;
 
-namespace TurfBookingApp.Data
+namespace turfbooking.Data
 {
     public class AppDbContext : DbContext
     {
@@ -12,6 +12,9 @@ namespace TurfBookingApp.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Ground> Grounds { get; set; }
+        public DbSet<Slot> Slots { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
     }
 }

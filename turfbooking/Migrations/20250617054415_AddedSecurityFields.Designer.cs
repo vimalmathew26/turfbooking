@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TurfBookingApp.Data;
+using turfbooking.Data;
 
 #nullable disable
 
-namespace TurfBookingApp.Migrations
+namespace turfbooking.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20250617054415_AddedSecurityFields")]
@@ -24,7 +24,7 @@ namespace TurfBookingApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TurfBookingApp.Models.User", b =>
+            modelBuilder.Entity("turfbooking.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

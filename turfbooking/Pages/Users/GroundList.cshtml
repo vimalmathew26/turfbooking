@@ -1,0 +1,107 @@
+﻿@page 
+@model turfbooking.Pages.Users.GroundListModel
+@{
+    
+    ViewData["Title"] = "Explore Grounds";
+}
+
+@section Styles {
+    <style>
+        body {
+            background: url('/images/ground-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .filter-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .card {
+            border: none;
+            border-radius: 18px;
+        }
+
+        .card-body {
+            background-color: #fff;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+        }
+
+        .form-control, .btn {
+            border-radius: 12px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #6f42c1;
+        }
+    </style>
+}
+
+<div class="container py-5">
+    <h2 class="text-center section-title mb-5">🏟️ Explore Available Grounds</h2>
+
+    <form method="get" class="row g-3 mb-5 filter-box">
+        <div class="col-md-3">
+            <input type="text" name="Location" value="@Model.Location" class="form-control" placeholder="Location" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="SportType" value="@Model.SportType" class="form-control" placeholder="Sport Type" />
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="MinPrice" value="@Model.MinPrice" class="form-control" placeholder="Min Price" />
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="MaxPrice" value="@Model.MaxPrice" class="form-control" placeholder="Max Price" />
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-purple">Apply Filters</button>
+        </div>
+    </form>
+
+    @if (!Model.Grounds.Any())
+    {
+        <div class="alert alert-warning text-center p-4 rounded-3 shadow-sm">
+            No matching grounds found. Try adjusting your filters.
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var ground in Model.Grounds)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow">
+                        @if (!string.IsNullOrEmpty(ground.PhotoPath))
+                        {
+                            <img src="@ground.PhotoPath" class="card-img-top" alt="@ground.GroundName" style="height: 220px; object-fit: cover; border-top-left-radius: 18px; border-top-right-radius: 18px;" />
+                        }
+                        else
+                        {
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 220px; border-top-left-radius: 18px; border-top-right-radius: 18px;">
+                                <span>No Image</span>
+                            </div>
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@ground.GroundName</h5>
+                            <p class="card-text mb-2">
+                                <strong>📍 Location:</strong> @ground.Location<br />
+                                <strong>💰 Price/Hour:</strong> @ground.PricePerHour.ToString("C")<br />
+                                <strong>🏅 Sports:</strong> @ground.SupportedSports
+                            </p>
+                            <a class="btn btn-outline-primary w-100" href="/Users/GroundDetails/@ground.Id">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

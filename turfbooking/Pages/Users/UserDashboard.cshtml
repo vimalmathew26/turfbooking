@@ -1,5 +1,5 @@
 ﻿@page
-@model TurfBookingApp.Pages.UserDashboardModel
+@model turfbooking.Pages.Users.UserDashboardModel
 @{
     Layout = null;
     ViewData["Title"] = "User Dashboard";
@@ -23,7 +23,7 @@
             <p>Welcome, @User?.Identity?.Name</p>
 
             <div class="list-group mb-4">
-                <a href="/BrowseGrounds" class="list-group-item list-group-item-action">
+                <a asp-page="/Users/GroundList" class="list-group-item list-group-item-action">
                     📍 Browse Grounds
                 </a>
                 <a href="/MyBookings" class="list-group-item list-group-item-action">
@@ -32,13 +32,13 @@
                 <a asp-page="/Users/UserProfile" class="list-group-item list-group-item-action">
                     👤 Edit Profile
                 </a>
-                <a asp-page="/ResetPassword" class="list-group-item list-group-item-action">
+                <a asp-page="/Accounts/ResetPassword" class="list-group-item list-group-item-action">
                     🔑 Change Password
                 </a>
             </div>
 
             <div class="text-center">
-                <a asp-page="/Logout" class="btn btn-danger">
+                <a asp-page="/Accounts/Logout" class="btn btn-danger">
                     <i class="bi bi-box-arrow-right"></i> Logout
                 </a>
             </div>

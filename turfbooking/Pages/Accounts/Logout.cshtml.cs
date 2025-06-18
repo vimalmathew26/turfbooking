@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authentication;
 
 
-namespace TurfBookingApp.Pages
+namespace turfbooking.Pages.Accounts
 {
     public class LogoutModel : PageModel
     {
@@ -12,7 +12,7 @@ namespace TurfBookingApp.Pages
             await HttpContext.SignOutAsync("UserAuth");
             Response.Cookies.Delete("UserAuth");
             TempData["Message"] = "You have been logged out successfully.";
-            return RedirectToPage("/Login");
+            return RedirectToPage("/Accounts/Login");
         }
     }
 }

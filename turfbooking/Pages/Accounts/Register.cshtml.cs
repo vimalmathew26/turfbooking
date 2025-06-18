@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TurfBookingApp.Data;
-using TurfBookingApp.Models;
-using TurfBookingApp.Helper;
+using turfbooking.Data;
+using turfbooking.Models;
+using turfbooking.Helper;
 using System.Security.Claims;
 
 
-namespace TurfBookingApp.Pages
+namespace turfbooking.Pages.Accounts
 {
     public class RegisterModel : PageModel
     {
@@ -15,19 +15,17 @@ namespace TurfBookingApp.Pages
         public RegisterModel(AppDbContext context)
         {
             _context = context;
-            NewUser = new User();
+            NewUser = new Models.User(); // Fix: Specify the namespace explicitly to resolve ambiguity
             ConfirmPassword = string.Empty;
         }
 
         [BindProperty]
-        public User NewUser { get; set; }
+        public Models.User NewUser { get; set; } // Fix: Specify the namespace explicitly to resolve ambiguity
 
         [BindProperty]
         public string ConfirmPassword { get; set; }
 
         public void OnGet() { }
-
-        // Existing code...
 
         public IActionResult OnPost()
         {
@@ -49,11 +47,9 @@ namespace TurfBookingApp.Pages
             _context.Users.Add(NewUser);
             _context.SaveChanges();
 
-
             TempData["email"] = NewUser.Email;
-            
 
-            return RedirectToPage("/SetupSecurity");
+            return RedirectToPage("/Accounts/SetupSecurity");
         }
     }
 }

@@ -1,0 +1,140 @@
+﻿@page "{id:int}"
+@model turfbooking.Pages.Grounds.EditModel
+@{
+    ViewData["Title"] = "Edit Ground";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header text-white rounded-top-4" style="background-color: #4B0082;">
+                    <h3 class="mb-0">✏️ Edit Ground</h3>
+                </div>
+
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="Ground.Id" />
+
+                        @* Existing Photo Preview *@
+                        @if (!string.IsNullOrEmpty(Model.Ground.PhotoPath))
+                        {
+                            <div class="mb-4 text-center">
+                                <label class="form-label d-block fw-semibold">Current Photo</label>
+                                <div class="border rounded-4 p-2 bg-light shadow-sm" style="max-width: 300px; margin: auto;">
+                                    <img src="@Model.Ground.PhotoPath" class="img-fluid rounded" style="height: 200px; object-fit: cover;" />
+                                </div>
+                            </div>
+                        }
+
+                        @* Upload New Photo *@
+                        <div class="mb-4 text-center">
+                            @* <label class="form-label d-block fw-semibold">Upload New Photo (optional)</label> *@
+                            <div class="border rounded-4 p-3 bg-light shadow-sm" style="max-width: 300px; margin: auto;">
+                                <img id="photoPreview" src="/images/placeholder.png" class="img-fluid rounded mb-2" style="height: 200px; object-fit: cover;" />
+                                <input asp-for="Photo" type="file" class="form-control" accept="image/*" onchange="previewImage(event)" />
+                                <span asp-validation-for="Photo" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Ground.GroundName" class="form-label fw-semibold"></label>
+                                <input asp-for="Ground.GroundName" class="form-control rounded-3" />
+                                <span asp-validation-for="Ground.GroundName" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Ground.Location" class="form-label fw-semibold"></label>
+                                <input asp-for="Ground.Location" class="form-control rounded-3" />
+                                <span asp-validation-for="Ground.Location" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label asp-for="Ground.Description" class="form-label fw-semibold"></label>
+                            <textarea asp-for="Ground.Description" class="form-control rounded-3" rows="3"></textarea>
+                            <span asp-validation-for="Ground.Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-6">
+                                <label asp-for="Ground.PricePerHour" class="form-label fw-semibold"></label>
+                                <input asp-for="Ground.PricePerHour" class="form-control rounded-3" />
+                                <span asp-validation-for="Ground.PricePerHour" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Ground.SupportedSports" class="form-label fw-semibold"></label>
+                                <input asp-for="Ground.SupportedSports" class="form-control rounded-3" />
+                                <span asp-validation-for="Ground.SupportedSports" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-check form-switch mt-4">
+                            <input asp-for="Ground.IsActive" class="form-check-input" type="checkbox" />
+                            <label asp-for="Ground.IsActive" class="form-check-label fw-semibold">Active Ground</label>
+                        </div>
+
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn text-white rounded-pill px-4 shadow-sm" style="background-color: #4B0082;">
+                                <i class="bi bi-save me-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('/images/turfbg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .form-container {
+            padding: 30px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.85); /* semi-transparent white */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .btn-purple {
+            background-color: #6f42c1;
+            color: white;
+            border: none;
+        }
+
+            .btn-purple:hover {
+                background-color: #5936a2;
+            }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                const output = document.getElementById('photoPreview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+}

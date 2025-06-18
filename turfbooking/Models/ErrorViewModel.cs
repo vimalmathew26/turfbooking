@@ -1,4 +1,4 @@
-namespace TurfBookingApp.Models
+namespace turfbooking.Models
 {
     public class ErrorViewModel
     {

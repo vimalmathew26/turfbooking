@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
-using TurfBookingApp.Data;
-using TurfBookingApp.Helper;
-using TurfBookingApp.Models;
+using turfbooking.Data;
+using turfbooking.Helper;
+using turfbooking.Models;
 
 namespace turfbooking.Pages.Accounts
 {
@@ -38,7 +38,7 @@ namespace turfbooking.Pages.Accounts
             var user = _context.Users.FirstOrDefault(u => u.Email == Email);
             if (user == null)
             {
-                return RedirectToPage("/ForgotPassword");
+                return RedirectToPage("/Accounts/ForgotPassword");
             }
 
             Question = user.SecurityQuestion;
@@ -95,7 +95,7 @@ namespace turfbooking.Pages.Accounts
             _context.SaveChanges();
 
             TempData["Message"] = "Password reset successful. Please login.";
-            return RedirectToPage("/Login");
+            return RedirectToPage("/Accounts/Login");
         }
     }
 }

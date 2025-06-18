@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TurfBookingApp.Data;
-using TurfBookingApp.Models;
+using turfbooking.Data;
+using turfbooking.Models;
 
 //[Authorize(Roles = "User")]
 public class UserController : Controller
