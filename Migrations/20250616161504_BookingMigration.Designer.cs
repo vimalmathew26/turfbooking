@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace TurfBookingApp.Migrations
+namespace turfbooking.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20250616161504_BookingMigration")]

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace TurfBookingApp.Migrations
+namespace turfbooking.Migrations
 {
     /// <inheritdoc />
     public partial class newMigrationSlot : Migration

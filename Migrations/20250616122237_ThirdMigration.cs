@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace TurfBookingApp.Migrations
+namespace turfbooking.Migrations
 {
     /// <inheritdoc />
     public partial class ThirdMigration : Migration

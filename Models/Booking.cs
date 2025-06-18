@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace TurfBookingApp.Models
+namespace turfbooking.Models
 {
     public class Booking
     {

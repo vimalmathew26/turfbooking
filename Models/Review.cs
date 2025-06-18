@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TurfBookingApp.Models
+namespace turfbooking.Models
 {
     public class Review
     {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace TurfBookingApp.Pages
+namespace turfbooking.Pages
 {
     public class IndexModel : PageModel
     {

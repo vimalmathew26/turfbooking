@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using TurfBookingApp.Models;
+using turfbooking.Models;
 
 public class SlotBookingModel : PageModel
 {

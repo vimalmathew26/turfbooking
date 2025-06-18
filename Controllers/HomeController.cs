@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using TurfBookingApp.Models;
+using turfbooking.Models;
 
-namespace TurfBookingApp.Controllers
+namespace turfbooking.Controllers
 {
     public class HomeController : Controller
     {

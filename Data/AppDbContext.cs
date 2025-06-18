@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TurfBookingApp.Models;
+using turfbooking.Models;
 
 public class AppDbContext : DbContext
 {
