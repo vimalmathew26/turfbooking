@@ -1,4 +1,48 @@
 ﻿@page
-@model turfbooking.Pages.AddReviewModel
+@model AddReviewModel
 @{
+ 
+    ViewData["Title"] = "Add Review";
+}
+
+<h2>Add Review for @Model.Ground.GroundName</h2>
+
+@if (!string.IsNullOrEmpty(ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @ViewData.ModelState[string.Empty].Errors.FirstOrDefault().ErrorMessage
+    </div>
+}
+
+<div>
+    <strong>Location:</strong> @Model.Ground.Location <br />
+    <strong>Description:</strong> @Model.Ground.Description
+</div>
+
+<form method="post">
+    <input type="hidden" asp-for="GroundId" />
+
+    <div class="form-group">
+        <label asp-for="Review.Rating"></label>
+        <select asp-for="Review.Rating" class="form-control">
+            <option value="">Select rating</option>
+            @for (int i = 1; i <= 5; i++)
+            {
+                <option value="@i">@i</option>
+            }
+        </select>
+        <span asp-validation-for="Review.Rating" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Review.Comment"></label>
+        <textarea asp-for="Review.Comment" class="form-control"></textarea>
+        <span asp-validation-for="Review.Comment" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
