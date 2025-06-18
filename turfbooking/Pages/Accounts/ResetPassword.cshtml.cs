@@ -6,7 +6,7 @@ using TurfBookingApp.Data;
 using TurfBookingApp.Helper;
 using TurfBookingApp.Models;
 
-namespace TurfBookingApp.Pages
+namespace turfbooking.Pages.Accounts
 {
     public class ResetPasswordModel : PageModel
     {

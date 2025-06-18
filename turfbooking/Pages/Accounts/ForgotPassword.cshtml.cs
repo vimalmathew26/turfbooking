@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using TurfBookingApp.Data;
 using TurfBookingApp.Models;
 
-namespace TurfBookingApp.Pages
+namespace turfbooking.Pages.Accounts
 {
     public class ForgotPasswordModel : PageModel
     {
