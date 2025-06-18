@@ -44,26 +44,34 @@ namespace turfbooking.Pages.Accounts
             {
                 return Page();
             }
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == Email && u.IsActive);
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == Email);
+
             if (user == null)
             {
-                ModelState.AddModelError("", "Invalid credentials.");
+                ModelState.AddModelError("Email", "No account found with this email address.");
                 return Page();
             }
 
-            if (user == null || !PasswordHelper.VerifyPassword(Password, user.PasswordHash))
+            if (!user.IsActive)
             {
-                ModelState.AddModelError(string.Empty, "Invalid email or password.");
+                ModelState.AddModelError("", "This account has been deactivated. Please contact support.");
+                return Page();
+            }
+
+            if (!PasswordHelper.VerifyPassword(Password, user.PasswordHash))
+            {
+                ModelState.AddModelError("Password", "Invalid password.");
                 return Page();
             }
 
             var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role),
-            new Claim("UserId", user.Id.ToString())
-        };
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim("UserId", user.Id.ToString())
+            };
 
             var identity = new ClaimsIdentity(claims, "UserAuth");
             var principal = new ClaimsPrincipal(identity);
