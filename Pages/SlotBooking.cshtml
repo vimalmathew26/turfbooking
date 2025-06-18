@@ -1,0 +1,85 @@
+﻿@page
+@model SlotBookingModel
+@using turfbooking.Models
+@{
+    var currentTime = Model.CurrentTime;
+}
+@{
+    ViewData["Title"] = "Slot Booking";
+}
+
+<h2>Book a Slot for @Model.Date.ToString("dd-MM-yyyy")</h2>
+
+<style>
+    .slot-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .slot-card {
+        width: 140px;
+        height: 70px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 5px;
+    }
+
+    .booked {
+        background-color: #dc3545; 
+    }
+
+    .available {
+        background-color: #28a745; 
+        cursor: pointer;
+    }
+
+    .available:hover {
+        opacity: 0.9;
+    }
+</style>
+
+@if (!Model.AvailableSlots.Any())
+{
+    <p>No available slots for the selected date.</p>
+}
+else
+{
+    <div class="slot-grid">
+        @foreach (var slot in Model.AvailableSlots)
+        {
+            var date = slot.BookingDate.Date.ToString("dd-MM-yyyy");
+            var slotText = $"{slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}";
+            var isExpired = Model.Date.Date == DateTime.Now.Date && slot.StartTime <= currentTime;
+
+            if (slot.IsBooked)
+            {
+                <div class="slot-card booked">
+                    @date<br />
+                    @slotText<br />Booked
+                </div>
+            }
+            else if (isExpired)
+            {
+                <div class="slot-card" style="background-color: grey; cursor: not-allowed;">
+                    @date<br />
+                    @slotText<br />Expired  
+                </div>
+            }
+            else
+            {
+                <form method="post" asp-page-handler="Book">
+                    <input type="hidden" name="slotId" value="@slot.Id" />
+                    <button type="submit" class="slot-card available">
+                        @slotText<br />Book
+                    </button>
+                </form>
+            }
+        }
+    </div>
+}
