@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Slot> Slots { get; set; }
     public DbSet<Ground> Grounds { get; set; }
+    public DbSet<Review> Reviews { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,6 +23,8 @@ public class AppDbContext : DbContext
             .HasOne(s => s.Booking)
             .WithOne()
             .HasForeignKey<Slot>(s => s.BookingId);
+
+      
     }
 
 

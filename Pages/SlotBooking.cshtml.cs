@@ -27,7 +27,7 @@ public class SlotBookingModel : PageModel
 
         CurrentTime = DateTime.Now.TimeOfDay;
 
-        Date = new DateTime(2025, 6, 20);
+        Date = new DateTime(2025, 6, 19);
 
         GroundId = 1;
 
@@ -67,7 +67,7 @@ public class SlotBookingModel : PageModel
 
         var booking = new Booking
         {
-            UserId = 5, 
+            UserId = 2, 
             GroundId = slot.GroundId,
             BookingDate = slot.BookingDate,
             StartTime = slot.StartTime,

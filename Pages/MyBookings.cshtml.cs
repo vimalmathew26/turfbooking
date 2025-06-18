@@ -16,7 +16,7 @@ public class MyBookingsModel : PageModel
 
     public async Task OnGetAsync()
     {
-        int userId = 5; 
+        int userId = 1; 
 
         Bookings = await _context.Bookings
             .Where(b => b.UserId == userId)

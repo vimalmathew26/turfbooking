@@ -5,6 +5,8 @@ namespace turfbooking.Models
     public class Review
     {
         public int Id { get; set; }
+
+        public int GroundId { get; set; }
         [Required]
         public int BookingId { get; set; }
         [Range(1, 5)]
@@ -13,5 +15,7 @@ namespace turfbooking.Models
         public string Comment { get; set; }
         public bool IsVisible { get; set; } = true;
         public Booking Booking { get; set; }
+
+        public Ground Ground { get; set; }
     }
 }

@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace turfbooking.Migrations
 {
     /// <inheritdoc />
-    public partial class FirstMigration : Migration
+    public partial class newMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Ground",
+                name: "Grounds",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -23,11 +23,13 @@ namespace turfbooking.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PricePerHour = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     SupportedSports = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    OpenTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    CloseTime = table.Column<TimeSpan>(type: "time", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ground", x => x.Id);
+                    table.PrimaryKey("PK_Grounds", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -56,6 +58,8 @@ namespace turfbooking.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     GroundId = table.Column<int>(type: "int", nullable: false),
                     BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
@@ -63,11 +67,11 @@ namespace turfbooking.Migrations
                 {
                     table.PrimaryKey("PK_Bookings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bookings_Ground_GroundId",
+                        name: "FK_Bookings_Grounds_GroundId",
                         column: x => x.GroundId,
-                        principalTable: "Ground",
+                        principalTable: "Grounds",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Bookings_User_UserId",
                         column: x => x.UserId,
@@ -77,31 +81,32 @@ namespace turfbooking.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Review",
+                name: "Reviews",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    GroundId = table.Column<int>(type: "int", nullable: false),
                     BookingId = table.Column<int>(type: "int", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    IsVisible = table.Column<bool>(type: "bit", nullable: false),
-                    GroundId = table.Column<int>(type: "int", nullable: true)
+                    IsVisible = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Review", x => x.Id);
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Review_Bookings_BookingId",
+                        name: "FK_Reviews_Bookings_BookingId",
                         column: x => x.BookingId,
                         principalTable: "Bookings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Review_Ground_GroundId",
+                        name: "FK_Reviews_Grounds_GroundId",
                         column: x => x.GroundId,
-                        principalTable: "Ground",
-                        principalColumn: "Id");
+                        principalTable: "Grounds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -111,12 +116,12 @@ namespace turfbooking.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GroundId = table.Column<int>(type: "int", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    BookedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     IsBooked = table.Column<bool>(type: "bit", nullable: false),
-                    BookingId = table.Column<int>(type: "int", nullable: true)
+                    BookingId = table.Column<int>(type: "int", nullable: true),
+                    BookingId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -127,9 +132,14 @@ namespace turfbooking.Migrations
                         principalTable: "Bookings",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Slots_Ground_GroundId",
+                        name: "FK_Slots_Bookings_BookingId1",
+                        column: x => x.BookingId1,
+                        principalTable: "Bookings",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Slots_Grounds_GroundId",
                         column: x => x.GroundId,
-                        principalTable: "Ground",
+                        principalTable: "Grounds",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -145,20 +155,29 @@ namespace turfbooking.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Review_BookingId",
-                table: "Review",
+                name: "IX_Reviews_BookingId",
+                table: "Reviews",
                 column: "BookingId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Review_GroundId",
-                table: "Review",
+                name: "IX_Reviews_GroundId",
+                table: "Reviews",
                 column: "GroundId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Slots_BookingId",
                 table: "Slots",
-                column: "BookingId");
+                column: "BookingId",
+                unique: true,
+                filter: "[BookingId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Slots_BookingId1",
+                table: "Slots",
+                column: "BookingId1",
+                unique: true,
+                filter: "[BookingId1] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Slots_GroundId",
@@ -170,7 +189,7 @@ namespace turfbooking.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Review");
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "Slots");
@@ -179,7 +198,7 @@ namespace turfbooking.Migrations
                 name: "Bookings");
 
             migrationBuilder.DropTable(
-                name: "Ground");
+                name: "Grounds");
 
             migrationBuilder.DropTable(
                 name: "User");
