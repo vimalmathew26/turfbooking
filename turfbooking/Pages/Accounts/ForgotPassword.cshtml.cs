@@ -28,7 +28,7 @@ namespace turfbooking.Pages.Accounts
                 return Page();
             }
 
-            return RedirectToPage("/AnswerSecurityQuestion", new { email = Email });
+            return RedirectToPage("/Accounts/AnswerSecurityQuestion", new { email = Email });
         }
     }
 }

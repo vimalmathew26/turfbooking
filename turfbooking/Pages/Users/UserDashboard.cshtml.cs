@@ -25,19 +25,19 @@ namespace TurfBookingApp.Pages
 
             if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
             {
-                return RedirectToPage("/Login");
+                return RedirectToPage("/Accounts/Login");
             }
 
             CurrentUser = _context.Users.FirstOrDefault(u => u.Id == userId);
 
             if (CurrentUser == null)
             {
-                return RedirectToPage("/Login");
+                return RedirectToPage("/Accounts/   Login");
             }
 
             if (!CurrentUser.IsActive)
             {
-                return RedirectToPage("/SetupSecurity");
+                return RedirectToPage("/Accounts/SetupSecurity");
             }
 
             return Page();

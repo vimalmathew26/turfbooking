@@ -27,7 +27,6 @@ namespace TurfBookingApp.Pages
 
         public void OnGet() { }
 
-        // Existing code...
 
         public IActionResult OnPost()
         {
@@ -53,7 +52,7 @@ namespace TurfBookingApp.Pages
             TempData["email"] = NewUser.Email;
             
 
-            return RedirectToPage("/SetupSecurity");
+            return RedirectToPage("/Accounts/SetupSecurity");
         }
     }
 }

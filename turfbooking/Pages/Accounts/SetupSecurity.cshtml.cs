@@ -51,11 +51,11 @@ public class SetupSecurityModel : PageModel
         }
 
         var email = TempData["email"] as string;
-        if (email == null) return RedirectToPage("/Login");
+        if (email == null) return RedirectToPage("/Accounts/Login");
 
         var user = _context.Users.FirstOrDefault(u => u.Email == email);
         Console.WriteLine(user);
-        if (user == null) return RedirectToPage("/Login");
+        if (user == null) return RedirectToPage("/Accounts/Login");
 
         user.SecurityQuestion = SelectedQuestion;
         user.SecurityAnswer = Answer.Trim();
@@ -68,6 +68,6 @@ public class SetupSecurityModel : PageModel
 
 
         TempData["Message"] = "Security have been set up successfully.";
-        return RedirectToPage("/Login");
+        return RedirectToPage("/Accounts/Login");
     }
 }

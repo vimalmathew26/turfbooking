@@ -38,7 +38,7 @@ namespace turfbooking.Pages.Accounts
             var user = _context.Users.FirstOrDefault(u => u.Email == Email);
             if (user == null)
             {
-                return RedirectToPage("/ForgotPassword");
+                return RedirectToPage("/Accounts/ForgotPassword");
             }
 
             Question = user.SecurityQuestion;
@@ -95,7 +95,7 @@ namespace turfbooking.Pages.Accounts
             _context.SaveChanges();
 
             TempData["Message"] = "Password reset successful. Please login.";
-            return RedirectToPage("/Login");
+            return RedirectToPage("/Accounts/Login");
         }
     }
 }
