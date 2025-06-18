@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using TurfBookingApp.Data;
-using TurfBookingApp.Helper;
-using TurfBookingApp.Models;
+using turfbooking.Data;
+using turfbooking.Helper;
+using turfbooking.Models;
 
 namespace turfbooking.Pages.Accounts
 {
@@ -36,7 +36,7 @@ namespace turfbooking.Pages.Accounts
         public IActionResult OnGet()
         {
             if (User.FindFirst("UserId") == null)
-                return RedirectToPage("/Login");
+                return RedirectToPage("/Accounts/Login");
 
             return Page();
         }
@@ -50,11 +50,11 @@ namespace turfbooking.Pages.Accounts
 
             var userIdClaim = User.FindFirst("UserId");
             if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
-                return RedirectToPage("/Login");
+                return RedirectToPage("/Accounts/Login");
 
             var user = _context.Users.FirstOrDefault(u => u.Id == userId);
             if (user == null)
-                return RedirectToPage("/Login");
+                return RedirectToPage("/Accounts/Login");
 
             var parts = user.PasswordHash.Split(':');
             if (parts.Length != 2)
@@ -86,7 +86,7 @@ namespace turfbooking.Pages.Accounts
             _context.SaveChanges();
 
             TempData["Message"] = "Password reset successful. Please login.";
-            return RedirectToPage("/Login");
+            return RedirectToPage("/Accounts/Login");
         }
 
     }

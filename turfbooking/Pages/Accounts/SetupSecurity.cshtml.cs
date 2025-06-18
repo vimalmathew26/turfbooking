@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
-using TurfBookingApp.Data;
-using TurfBookingApp.Helper;
+using turfbooking.Data;
+using turfbooking.Helper;
 
 public class SetupSecurityModel : PageModel
 {
@@ -51,11 +51,11 @@ public class SetupSecurityModel : PageModel
         }
 
         var email = TempData["email"] as string;
-        if (email == null) return RedirectToPage("/Login");
+        if (email == null) return RedirectToPage("/Accounts/Login");
 
         var user = _context.Users.FirstOrDefault(u => u.Email == email);
         Console.WriteLine(user);
-        if (user == null) return RedirectToPage("/Login");
+        if (user == null) return RedirectToPage("/Accounts/Login");
 
         user.SecurityQuestion = SelectedQuestion;
         user.SecurityAnswer = Answer.Trim();
@@ -68,6 +68,6 @@ public class SetupSecurityModel : PageModel
 
 
         TempData["Message"] = "Security have been set up successfully.";
-        return RedirectToPage("/Login");
+        return RedirectToPage("/Accounts/Login");
     }
 }

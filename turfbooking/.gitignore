@@ -1,25 +1,28 @@
-# Ignore build outputs
-bin/
-obj/
-
 # Ignore Visual Studio cache folder
 .vs/
-
+ 
 # Ignore user-specific and IDE settings
 *.user
 *.suo
-
+ 
 # Ignore logs
 *.log
-
+ 
 # Ignore local development config
 appsettings.Development.json
-
+ 
 # Optional: Ignore all environment-specific config (if needed)
 # appsettings.*.json  # Uncomment if you're using staging, production, etc.
-
+ 
 # Ignore EF Core migrations snapshot if needed
 # Migrations/
-
+ 
 # Ignore test results
 TestResults/
+
+obj/
+bin/
+wwwroot/uploads/
+*.user
+*.suo
+

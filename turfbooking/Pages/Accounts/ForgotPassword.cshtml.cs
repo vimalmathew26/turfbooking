@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TurfBookingApp.Data;
-using TurfBookingApp.Models;
+using turfbooking.Data;
+using turfbooking.Models;
 
 namespace turfbooking.Pages.Accounts
 {
@@ -28,7 +28,7 @@ namespace turfbooking.Pages.Accounts
                 return Page();
             }
 
-            return RedirectToPage("/AnswerSecurityQuestion", new { email = Email });
+            return RedirectToPage("/Accounts/AnswerSecurityQuestion", new { email = Email });
         }
     }
 }

@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using TurfBookingApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using turfbooking.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +12,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication("UserAuth")
     .AddCookie("UserAuth", options =>
     {
-        options.LoginPath = "/Login";
-        options.AccessDeniedPath = "/AccessDenied";
+        options.LoginPath = "/Accounts/Login";
+        options.AccessDeniedPath = "/Accounts/Login";
     });
 
 builder.Services.AddAuthorization();
@@ -41,7 +41,7 @@ app.MapRazorPages();
 
 app.MapGet("/", context =>
 {
-    context.Response.Redirect("/Login");
+    context.Response.Redirect("/Accounts/Login");
     return Task.CompletedTask;
 });
 

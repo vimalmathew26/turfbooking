@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace TurfBookingApp.Helper
+namespace turfbooking.Helper
 {
     public static class PasswordHelper
     {

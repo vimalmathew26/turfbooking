@@ -1,0 +1,77 @@
+﻿@page "{id:int}"
+@model turfbooking.Pages.Grounds.DeleteModel
+@{
+    ViewData["Title"] = "Delete Ground";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header text-white" style="background-color: #dc3545;">
+                    <h4 class="mb-0">🗑️ Confirm Delete</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="text-danger">Are you sure you want to delete the following ground?</h5>
+
+                    <dl class="row mt-4">
+                        <dt class="col-sm-4">Name:</dt>
+                        <dd class="col-sm-8">@Model.Ground.GroundName</dd>
+
+                        <dt class="col-sm-4">Location:</dt>
+                        <dd class="col-sm-8">@Model.Ground.Location</dd>
+
+                        <dt class="col-sm-4">Price per Hour:</dt>
+                        <dd class="col-sm-8">@Model.Ground.PricePerHour.ToString("C")</dd>
+                    </dl>
+
+                    <form method="post">
+                        <input type="hidden" asp-for="Ground.Id" />
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-page="./Index" class="btn btn-secondary rounded-pill px-4">Cancel</a>
+                            <button type="submit" class="btn btn-danger rounded-pill px-4">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('/images/turfbg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .form-container {
+            padding: 30px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.85); /* semi-transparent white */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .btn-purple {
+            background-color: #6f42c1;
+            color: white;
+            border: none;
+        }
+
+            .btn-purple:hover {
+                background-color: #5936a2;
+            }
+    </style>
+}

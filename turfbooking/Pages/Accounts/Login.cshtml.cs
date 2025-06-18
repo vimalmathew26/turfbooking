@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using TurfBookingApp.Data;
-using TurfBookingApp.Helper;
-using TurfBookingApp.Models;
+using turfbooking.Data;
+using turfbooking.Helper;
+using turfbooking.Models;
 
-namespace TurfBookingApp.Pages
+namespace turfbooking.Pages.Accounts
 {
     public class LoginModel : PageModel
     {
@@ -75,9 +75,9 @@ namespace TurfBookingApp.Pages
             });
 
             if (user.Role == "Admin")
-                return RedirectToPage("/AdminDashboard");
+                return RedirectToPage("/Admin/AdminDashboard");
             else
-                return RedirectToPage("/UserDashboard");
+                return RedirectToPage("/Users/UserDashboard");
 
         }
     }
