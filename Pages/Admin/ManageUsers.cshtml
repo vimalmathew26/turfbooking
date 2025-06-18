@@ -1,0 +1,54 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model turfbooking.Pages.Admin.ManageUsersModel
+@attribute [Authorize(Roles = "Admin")]
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<h2>Manage Users</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">@TempData["Message"]</div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.Username</td>
+                <td>@user.Email</td>
+                <td>@user.PhoneNumber</td>
+                <td>@user.Role</td>
+                <td>@(user.IsActive ? "Active" : "Deactivated")</td>
+                <td>
+                    @if (user.IsActive)
+                    {
+                        <form method="post" asp-page-handler="Deactivate" asp-route-id="@user.Id" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Deactivate</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post" asp-page-handler="Activate" asp-route-id="@user.Id" style="display:inline;">
+                            <button type="submit" class="btn btn-success btn-sm">Activate</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

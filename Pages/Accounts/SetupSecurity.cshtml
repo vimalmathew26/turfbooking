@@ -1,0 +1,26 @@
+﻿@page
+@model SetupSecurityModel
+
+<h2>Set Your Security Question</h2>
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div>
+        <label>Select a question:</label>
+        <select asp-for="SelectedQuestion" class="form-control">
+            <option value="">-- Select a question --</option>
+            @foreach (var question in Model.SecurityQuestions)
+            {
+                <option value="@question">@question</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label>Your Answer:</label>
+        <input asp-for="Answer" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+</form>
