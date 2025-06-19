@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 using turfbooking.Data;
 using turfbooking.Models;
 
@@ -20,7 +18,6 @@ namespace turfbooking.Pages.Grounds
             _environment = environment;
         }
 
-        // ? Initialize Ground with required default values here
         [BindProperty]
         public Ground Ground { get; set; } = new Ground
         {
@@ -31,8 +28,6 @@ namespace turfbooking.Pages.Grounds
             SupportedSports = string.Empty,
             IsActive = true,
             PhotoPath = string.Empty,
-
-
         };
 
         [BindProperty]
@@ -47,30 +42,40 @@ namespace turfbooking.Pages.Grounds
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid || Photo == null || Photo.Length == 0)
+            Console.WriteLine("? OnPostAsync triggered"); // ? DEBUG
+
+            if (!ModelState.IsValid)
             {
-                if (Photo == null || Photo.Length == 0)
-                {
+               
+                
                     ModelState.AddModelError("Photo", "Photo is required.");
-                }
+                
                 return Page();
             }
 
             var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-            Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
+            Directory.CreateDirectory(uploadsFolder); // ? ENSURE folder exists
 
             var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(Photo.FileName);
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            try
             {
-                await Photo.CopyToAsync(fileStream);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await Photo.CopyToAsync(fileStream);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("?? Upload error: " + ex.Message); // ? DEBUG
+                ModelState.AddModelError("Photo", "An error occurred while uploading the photo. Please try again.");
+                return Page();
             }
 
             Ground.PhotoPath = "/uploads/" + uniqueFileName;
 
             _context.Grounds.Add(Ground);
-
             await _context.SaveChangesAsync();
 
             return RedirectToPage("/Grounds/Index");

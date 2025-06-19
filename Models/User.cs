@@ -31,6 +31,8 @@ namespace turfbooking.Models
 
         public string SecurityAnswer { get; set; }
 
+        public ICollection<Booking> Bookings { get; set; }
+
         public User()
         {
             Username = "";
@@ -40,8 +42,7 @@ namespace turfbooking.Models
             Role = "User";
             SecurityQuestion = "";
             SecurityAnswer = "";
+            Bookings = new List<Booking>();
         }
-
-        public ICollection<Booking> Bookings { get; set; }
     }
 }

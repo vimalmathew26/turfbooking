@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using turfbooking.Data;
 using turfbooking.Models;
 
 public class BookingConfirmationModel : PageModel

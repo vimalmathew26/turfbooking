@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace turfbooking.Migrations
 {
     /// <inheritdoc />
-    public partial class newMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,15 +17,13 @@ namespace turfbooking.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GroundName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GroundName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PhotoPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     PricePerHour = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SupportedSports = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    OpenTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    CloseTime = table.Column<TimeSpan>(type: "time", nullable: false)
+                    SupportedSports = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,20 +31,23 @@ namespace turfbooking.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    SecurityQuestion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SecurityAnswer = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,9 +74,9 @@ namespace turfbooking.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Bookings_User_UserId",
+                        name: "FK_Bookings_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -106,7 +107,7 @@ namespace turfbooking.Migrations
                         column: x => x.GroundId,
                         principalTable: "Grounds",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -117,11 +118,10 @@ namespace turfbooking.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GroundId = table.Column<int>(type: "int", nullable: false),
                     StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsBooked = table.Column<bool>(type: "bit", nullable: false),
-                    BookingId = table.Column<int>(type: "int", nullable: true),
-                    BookingId1 = table.Column<int>(type: "int", nullable: true)
+                    BookingId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -130,18 +130,14 @@ namespace turfbooking.Migrations
                         name: "FK_Slots_Bookings_BookingId",
                         column: x => x.BookingId,
                         principalTable: "Bookings",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Slots_Bookings_BookingId1",
-                        column: x => x.BookingId1,
-                        principalTable: "Bookings",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Slots_Grounds_GroundId",
                         column: x => x.GroundId,
                         principalTable: "Grounds",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -173,13 +169,6 @@ namespace turfbooking.Migrations
                 filter: "[BookingId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Slots_BookingId1",
-                table: "Slots",
-                column: "BookingId1",
-                unique: true,
-                filter: "[BookingId1] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Slots_GroundId",
                 table: "Slots",
                 column: "GroundId");
@@ -201,7 +190,7 @@ namespace turfbooking.Migrations
                 name: "Grounds");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
         }
     }
 }

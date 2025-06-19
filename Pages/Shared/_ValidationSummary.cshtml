@@ -1,0 +1,17 @@
+﻿@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger rounded-4 mb-4">
+        <h5 class="alert-heading mb-2">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>Please correct the following errors:
+        </h5>
+        <ul class="list-unstyled mb-0">
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    <li><i class="bi bi-dot me-2"></i>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
+}

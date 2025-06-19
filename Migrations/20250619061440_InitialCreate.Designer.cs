@@ -12,8 +12,8 @@ using turfbooking.Data;
 namespace turfbooking.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250618070446_databaseUpdate")]
-    partial class databaseUpdate
+    [Migration("20250619061440_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,44 @@ namespace turfbooking.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("turfbooking.Models.Booking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("GroundId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroundId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Bookings");
+                });
 
             modelBuilder.Entity("turfbooking.Models.Ground", b =>
                 {
@@ -52,6 +90,7 @@ namespace turfbooking.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhotoPath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PricePerHour")
@@ -83,7 +122,7 @@ namespace turfbooking.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int?>("GroundId")
+                    b.Property<int>("GroundId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsVisible")
@@ -93,6 +132,9 @@ namespace turfbooking.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique();
 
                     b.HasIndex("GroundId");
 
@@ -107,20 +149,29 @@ namespace turfbooking.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
 
                     b.Property<int>("GroundId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
+                    b.Property<bool>("IsBooked")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique()
+                        .HasFilter("[BookingId] IS NOT NULL");
 
                     b.HasIndex("GroundId");
 
@@ -172,29 +223,83 @@ namespace turfbooking.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("turfbooking.Models.Review", b =>
-                {
-                    b.HasOne("turfbooking.Models.Ground", null)
-                        .WithMany("Reviews")
-                        .HasForeignKey("GroundId");
-                });
-
-            modelBuilder.Entity("turfbooking.Models.Slot", b =>
+            modelBuilder.Entity("turfbooking.Models.Booking", b =>
                 {
                     b.HasOne("turfbooking.Models.Ground", "Ground")
-                        .WithMany("Slots")
+                        .WithMany("Bookings")
                         .HasForeignKey("GroundId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("turfbooking.Models.User", "User")
+                        .WithMany("Bookings")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ground");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("turfbooking.Models.Review", b =>
+                {
+                    b.HasOne("turfbooking.Models.Booking", "Booking")
+                        .WithOne("Review")
+                        .HasForeignKey("turfbooking.Models.Review", "BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("turfbooking.Models.Ground", "Ground")
+                        .WithMany("Reviews")
+                        .HasForeignKey("GroundId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Ground");
+                });
+
+            modelBuilder.Entity("turfbooking.Models.Slot", b =>
+                {
+                    b.HasOne("turfbooking.Models.Booking", "Booking")
+                        .WithOne("Slot")
+                        .HasForeignKey("turfbooking.Models.Slot", "BookingId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("turfbooking.Models.Ground", "Ground")
+                        .WithMany("Slots")
+                        .HasForeignKey("GroundId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Ground");
+                });
+
+            modelBuilder.Entity("turfbooking.Models.Booking", b =>
+                {
+                    b.Navigation("Review")
+                        .IsRequired();
+
+                    b.Navigation("Slot")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("turfbooking.Models.Ground", b =>
                 {
+                    b.Navigation("Bookings");
+
                     b.Navigation("Reviews");
 
                     b.Navigation("Slots");
+                });
+
+            modelBuilder.Entity("turfbooking.Models.User", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 #pragma warning restore 612, 618
         }

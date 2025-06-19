@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using turfbooking.Models;
+using turfbooking.Data;
+
 
 public class SlotBookingModel : PageModel
 {
@@ -84,6 +86,6 @@ public class SlotBookingModel : PageModel
 
         await _context.SaveChangesAsync();
 
-        return RedirectToPage("BookingConfirmation", new { bookingId = booking.Id });
+        return RedirectToPage("/Booking/BookingConfirmation", new { bookingId = booking.Id });
     }
 }

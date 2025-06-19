@@ -5,7 +5,7 @@
 namespace turfbooking.Migrations
 {
     /// <inheritdoc />
-    public partial class databaseUpdate : Migration
+    public partial class Uploaderror : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
