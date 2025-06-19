@@ -1,0 +1,80 @@
+﻿
+@page
+@model AddReviewModel
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+@{
+    
+    ViewData["Title"] = "Add Review";
+}
+
+<h2>Add Review for @Model.Ground.GroundName</h2>
+
+@if (!string.IsNullOrEmpty(ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @ViewData.ModelState[string.Empty].Errors.FirstOrDefault().ErrorMessage
+    </div>
+}
+
+<div>
+    <strong>Location:</strong> @Model.Ground.Location <br />
+    <strong>Description:</strong> @Model.Ground.Description
+</div>
+
+<form method="post">
+    <input type="hidden" asp-for="GroundId" />
+    <div class="form-group">
+        <label>Rating</label>
+        <div class="star-rating">
+            @for (int i = 5; i >= 1; i--)
+            {
+                <input type="radio" id="star-@i" name="Review.Rating" value="@i" />
+                <label for="star-@i" title="@i stars">&#9733;</label>
+            }
+        </div>
+        <span asp-validation-for="Review.Rating" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="Review.Comment"></label>
+        <textarea asp-for="Review.Comment" class="form-control"></textarea>
+        <span asp-validation-for="Review.Comment" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+@section Styles {
+    <style>
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+        }
+
+            .star-rating input {
+                display: none;
+            }
+
+            .star-rating label {
+                font-size: 2rem;
+                color: lightgray;
+                cursor: pointer;
+                transition: color 0.2s;
+            }
+
+                /* Show gold for selected and all to the right (visually left) */
+                .star-rating input:checked ~ label,
+                .star-rating label:hover,
+                .star-rating label:hover ~ label {
+                    color: gold;
+                }
+    </style>
+}

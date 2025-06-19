@@ -83,8 +83,12 @@ namespace turfbooking.Migrations
 
                     b.Property<string>("Location")
                         .IsRequired()
+<<<<<<< HEAD
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+=======
+                        .HasColumnType("nvarchar(max)");
+>>>>>>> amal-development
 
                     b.Property<string>("PhotoPath")
                         .HasColumnType("nvarchar(max)");
@@ -128,9 +132,6 @@ namespace turfbooking.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BookingId")
-                        .IsUnique();
 
                     b.HasIndex("GroundId");
 
@@ -240,19 +241,11 @@ namespace turfbooking.Migrations
 
             modelBuilder.Entity("turfbooking.Models.Review", b =>
                 {
-                    b.HasOne("turfbooking.Models.Booking", "Booking")
-                        .WithOne("Review")
-                        .HasForeignKey("turfbooking.Models.Review", "BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("turfbooking.Models.Ground", "Ground")
                         .WithMany("Reviews")
                         .HasForeignKey("GroundId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Booking");
 
                     b.Navigation("Ground");
                 });
@@ -261,8 +254,12 @@ namespace turfbooking.Migrations
                 {
                     b.HasOne("turfbooking.Models.Booking", "Booking")
                         .WithOne("Slot")
+<<<<<<< HEAD
                         .HasForeignKey("turfbooking.Models.Slot", "BookingId")
                         .OnDelete(DeleteBehavior.SetNull);
+=======
+                        .HasForeignKey("turfbooking.Models.Slot", "BookingId");
+>>>>>>> amal-development
 
                     b.HasOne("turfbooking.Models.Ground", "Ground")
                         .WithMany("Slots")
@@ -277,9 +274,6 @@ namespace turfbooking.Migrations
 
             modelBuilder.Entity("turfbooking.Models.Booking", b =>
                 {
-                    b.Navigation("Review")
-                        .IsRequired();
-
                     b.Navigation("Slot")
                         .IsRequired();
                 });

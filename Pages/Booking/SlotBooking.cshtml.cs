@@ -20,6 +20,7 @@ public class SlotBookingModel : PageModel
     [BindProperty(SupportsGet = true)]
     public DateTime Date { get; set; }
 
+    public List<DateTime> Next7Days { get; set; }
     public TimeSpan CurrentTime { get; set; }
 
     public List<Slot> AvailableSlots { get; set; }
@@ -29,28 +30,34 @@ public class SlotBookingModel : PageModel
 
         CurrentTime = DateTime.Now.TimeOfDay;
 
-        Date = new DateTime(2025, 6, 19);
+        if (Date == default)
+            Date = DateTime.Today;
+
+       
+        Next7Days = Enumerable.Range(0, 7)
+            .Select(i => DateTime.Today.AddDays(i))
+            .ToList();
 
         GroundId = 1;
 
-        var now = DateTime.Now;
+        //var now = DateTime.Now;
          
-        var expiredSlots = await _context.Slots
-            .Where(s => s.IsBooked && s.BookingDate.Date == now.Date)
-            .ToListAsync();
+        //var expiredSlots = await _context.Slots
+        //    .Where(s => s.IsBooked && s.BookingDate.Date == now.Date)
+        //    .ToListAsync();
         
-        var pastSlots = expiredSlots
-            .Where(s => s.BookingDate.Add(s.EndTime) < now)
-            .ToList();
+        //var pastSlots = expiredSlots
+        //    .Where(s => s.BookingDate.Add(s.EndTime) < now)
+        //    .ToList();
 
 
-        foreach (var slot in pastSlots)
-        {
-            slot.IsBooked = false;
-            slot.BookingId = null;
-        }
+        //foreach (var slot in pastSlots)
+        //{
+        //    slot.IsBooked = false;
+        //    slot.BookingId = null;
+        //}
 
-        await _context.SaveChangesAsync();
+        //await _context.SaveChangesAsync();
 
    
         AvailableSlots = await _context.Slots
@@ -64,6 +71,7 @@ public class SlotBookingModel : PageModel
     public async Task<IActionResult> OnPostBookAsync(int slotId)
     {
         var slot = await _context.Slots.Include(s=>s.Ground).FirstOrDefaultAsync(s => s.Id == slotId);
+
         if (slot == null || slot.IsBooked)
             return NotFound();
 

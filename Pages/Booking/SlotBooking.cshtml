@@ -44,6 +44,20 @@
     }
 </style>
 
+<div>
+    <strong>Select Date:</strong>
+    <div class="btn-group mb-3" role="group">
+        @foreach (var day in Model.Next7Days)
+        {
+            <a asp-page="./SlotBooking"
+               asp-route-GroundId="@Model.GroundId"
+               asp-route-Date="@day.ToString("yyyy-MM-dd")"
+               class="btn btn-sm @(Model.Date.Date == day.Date ? "btn-primary" : "btn-outline-primary")">
+                @day.ToString("ddd, MMM dd")
+            </a>
+        }
+    </div>
+</div>
 @if (!Model.AvailableSlots.Any())
 {
     <p>No available slots for the selected date.</p>
