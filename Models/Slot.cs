@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace turfbooking.Models
 {
@@ -22,6 +23,7 @@ namespace turfbooking.Models
         public Ground Ground { get; set; }
 
 
+        [ForeignKey("Booking")]
         public int? BookingId { get; set; }
         public Booking Booking { get; set; }
 

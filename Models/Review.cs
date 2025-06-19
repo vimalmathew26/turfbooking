@@ -14,8 +14,7 @@ namespace turfbooking.Models
         [MaxLength(500)]
         public string Comment { get; set; }
         public bool IsVisible { get; set; } = true;
-        public Booking Booking { get; set; }
-
+        
         public Ground Ground { get; set; }
     }
 }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace turfbooking.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250618093318_newMigration")]
-    partial class newMigration
+    [Migration("20250619072631_migration01")]
+    partial class migration01
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,9 +70,6 @@ namespace turfbooking.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<TimeSpan>("CloseTime")
-                        .HasColumnType("time");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -87,9 +84,6 @@ namespace turfbooking.Migrations
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeSpan>("OpenTime")
-                        .HasColumnType("time");
 
                     b.Property<string>("PhotoPath")
                         .IsRequired()
@@ -134,9 +128,6 @@ namespace turfbooking.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookingId")
-                        .IsUnique();
-
                     b.HasIndex("GroundId");
 
                     b.ToTable("Reviews");
@@ -156,9 +147,6 @@ namespace turfbooking.Migrations
                     b.Property<int?>("BookingId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("BookingId1")
-                        .HasColumnType("int");
-
                     b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
 
@@ -176,10 +164,6 @@ namespace turfbooking.Migrations
                     b.HasIndex("BookingId")
                         .IsUnique()
                         .HasFilter("[BookingId] IS NOT NULL");
-
-                    b.HasIndex("BookingId1")
-                        .IsUnique()
-                        .HasFilter("[BookingId1] IS NOT NULL");
 
                     b.HasIndex("GroundId");
 
@@ -239,19 +223,11 @@ namespace turfbooking.Migrations
 
             modelBuilder.Entity("turfbooking.Models.Review", b =>
                 {
-                    b.HasOne("turfbooking.Models.Booking", "Booking")
-                        .WithOne("Review")
-                        .HasForeignKey("turfbooking.Models.Review", "BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("turfbooking.Models.Ground", "Ground")
                         .WithMany("Reviews")
                         .HasForeignKey("GroundId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Booking");
 
                     b.Navigation("Ground");
                 });
@@ -259,12 +235,8 @@ namespace turfbooking.Migrations
             modelBuilder.Entity("turfbooking.Models.Slot", b =>
                 {
                     b.HasOne("turfbooking.Models.Booking", "Booking")
-                        .WithOne()
-                        .HasForeignKey("turfbooking.Models.Slot", "BookingId");
-
-                    b.HasOne("turfbooking.Models.Booking", null)
                         .WithOne("Slot")
-                        .HasForeignKey("turfbooking.Models.Slot", "BookingId1");
+                        .HasForeignKey("turfbooking.Models.Slot", "BookingId");
 
                     b.HasOne("turfbooking.Models.Ground", "Ground")
                         .WithMany()
@@ -279,9 +251,6 @@ namespace turfbooking.Migrations
 
             modelBuilder.Entity("turfbooking.Models.Booking", b =>
                 {
-                    b.Navigation("Review")
-                        .IsRequired();
-
                     b.Navigation("Slot")
                         .IsRequired();
                 });

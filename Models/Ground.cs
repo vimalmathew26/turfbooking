@@ -24,11 +24,7 @@ namespace turfbooking.Models
 
         public bool IsActive { get; set; } = true;
 
-        [Required]
-        public TimeSpan OpenTime { get; set; }  // e.g., 07:00
 
-        [Required]
-        public TimeSpan CloseTime { get; set; } // e.g., 21:00
 
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Booking> Bookings { get; set; }

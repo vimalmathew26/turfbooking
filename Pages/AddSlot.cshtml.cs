@@ -15,15 +15,12 @@ public class AddSlotModel : PageModel
 
     [BindProperty]
     public Slot Slot { get; set; }
-
-    [BindProperty]
-    public int GroundId { get; set; }
-    public Ground Ground { get; set; }
+    public Ground Ground;
 
 
     public async Task<IActionResult> OnGetAsync()
     {
-        GroundId = 1;
+        int GroundId = 1;
         
         Ground = await _context.Grounds.FindAsync(GroundId);
         if (Ground == null)
@@ -35,7 +32,7 @@ public class AddSlotModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {      
-        Slot.GroundId = GroundId;
+        
         Slot.IsBooked = false;
 
         _context.Slots.Add(Slot);

@@ -19,10 +19,7 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         
-        modelBuilder.Entity<Slot>()
-            .HasOne(s => s.Booking)
-            .WithOne()
-            .HasForeignKey<Slot>(s => s.BookingId);
+       
 
       
     }
