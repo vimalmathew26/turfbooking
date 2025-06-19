@@ -41,5 +41,7 @@ namespace turfbooking.Models
             SecurityQuestion = "";
             SecurityAnswer = "";
         }
+
+        public ICollection<Booking> Bookings { get; set; }
     }
 }

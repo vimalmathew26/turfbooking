@@ -50,7 +50,8 @@ namespace turfbooking.Models
         public bool IsActive { get; set; } = true;
 
         // Navigation properties for future use
-        public ICollection<Slot> Slots { get; set; } = new List<Slot>();
-        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        
+        public ICollection<Review> Reviews { get; set; }
+        public ICollection<Booking> Bookings { get; set; }
     }
 }
