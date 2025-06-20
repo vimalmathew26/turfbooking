@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using turfbooking.Models;
 using Microsoft.EntityFrameworkCore;
 using turfbooking.Data;
-using turfbooking.Models;
 
-namespace turfbooking.Pages.Reviews
+namespace turfbooking.Pages
 {
     public class AddReviewModel : PageModel
     {
@@ -64,7 +64,8 @@ namespace turfbooking.Pages.Reviews
             _context.Reviews.Add(Review);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/Reviews/AddReview", new { groundId = GroundId });
+            return RedirectToPage("./AddReview", new { groundId = GroundId });
         }
     }
 }
+

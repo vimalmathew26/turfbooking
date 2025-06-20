@@ -68,7 +68,7 @@ namespace turfbooking.Pages.Grounds
             }
             catch (Exception ex)
             {
-                Console.WriteLine("?? Upload error: " + ex.Message); // ? DEBUG
+                Console.WriteLine("?? Upload error: " + ex.Message); 
                 ModelState.AddModelError("Photo", "An error occurred while uploading the photo. Please try again.");
                 return Page();
             }

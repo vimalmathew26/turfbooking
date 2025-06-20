@@ -83,12 +83,8 @@ namespace turfbooking.Migrations
 
                     b.Property<string>("Location")
                         .IsRequired()
-<<<<<<< HEAD
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-=======
-                        .HasColumnType("nvarchar(max)");
->>>>>>> amal-development
 
                     b.Property<string>("PhotoPath")
                         .HasColumnType("nvarchar(max)");
@@ -254,17 +250,13 @@ namespace turfbooking.Migrations
                 {
                     b.HasOne("turfbooking.Models.Booking", "Booking")
                         .WithOne("Slot")
-<<<<<<< HEAD
                         .HasForeignKey("turfbooking.Models.Slot", "BookingId")
                         .OnDelete(DeleteBehavior.SetNull);
-=======
-                        .HasForeignKey("turfbooking.Models.Slot", "BookingId");
->>>>>>> amal-development
 
                     b.HasOne("turfbooking.Models.Ground", "Ground")
-                        .WithMany("Slots")
+                        .WithMany()
                         .HasForeignKey("GroundId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Booking");
@@ -283,8 +275,6 @@ namespace turfbooking.Migrations
                     b.Navigation("Bookings");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("Slots");
                 });
 
             modelBuilder.Entity("turfbooking.Models.User", b =>

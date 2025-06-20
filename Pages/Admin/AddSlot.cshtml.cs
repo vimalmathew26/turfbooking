@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using turfbooking.Models;
+using turfbooking.Data; 
 
 public class AddSlotModel : PageModel
 {

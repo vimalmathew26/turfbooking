@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace turfbooking.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:Migrations/20250619061440_InitialCreate.cs
-    public partial class InitialCreate : Migration
-========
-    public partial class migration01 : Migration
->>>>>>>> amal-development:Migrations/20250619072631_migration01.cs
+    public partial class initialmigration01 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,15 +18,11 @@ namespace turfbooking.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GroundName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PhotoPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhotoPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     PricePerHour = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-<<<<<<<< HEAD:Migrations/20250619061440_InitialCreate.cs
                     SupportedSports = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-========
-                    SupportedSports = table.Column<string>(type: "nvarchar(max)", nullable: false),
->>>>>>>> amal-development:Migrations/20250619072631_migration01.cs
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -78,7 +70,7 @@ namespace turfbooking.Migrations
                         column: x => x.GroundId,
                         principalTable: "Grounds",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,7 +95,7 @@ namespace turfbooking.Migrations
                         column: x => x.GroundId,
                         principalTable: "Grounds",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Bookings_Users_UserId",
                         column: x => x.UserId,
@@ -113,38 +105,6 @@ namespace turfbooking.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:Migrations/20250619061440_InitialCreate.cs
-                name: "Reviews",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GroundId = table.Column<int>(type: "int", nullable: false),
-                    BookingId = table.Column<int>(type: "int", nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    IsVisible = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Bookings_BookingId",
-                        column: x => x.BookingId,
-                        principalTable: "Bookings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Grounds_GroundId",
-                        column: x => x.GroundId,
-                        principalTable: "Grounds",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-========
->>>>>>>> amal-development:Migrations/20250619072631_migration01.cs
                 name: "Slots",
                 columns: table => new
                 {
@@ -152,8 +112,8 @@ namespace turfbooking.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GroundId = table.Column<int>(type: "int", nullable: false),
                     StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     IsBooked = table.Column<bool>(type: "bit", nullable: false),
                     BookingId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -164,18 +124,14 @@ namespace turfbooking.Migrations
                         name: "FK_Slots_Bookings_BookingId",
                         column: x => x.BookingId,
                         principalTable: "Bookings",
-<<<<<<<< HEAD:Migrations/20250619061440_InitialCreate.cs
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
-========
-                        principalColumn: "Id");
->>>>>>>> amal-development:Migrations/20250619072631_migration01.cs
                     table.ForeignKey(
                         name: "FK_Slots_Grounds_GroundId",
                         column: x => x.GroundId,
                         principalTable: "Grounds",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
