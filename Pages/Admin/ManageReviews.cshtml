@@ -1,0 +1,78 @@
+﻿@page
+@model turfbooking.Pages.Admin.ManageReviewsModel
+@using Microsoft.AspNetCore.Authorization;
+@attribute [Authorize(Roles = "Admin")]
+@{
+    ViewData["Title"] = "Manage Reviews";
+}
+
+<h2>Manage Reviews</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">@TempData["Message"]</div>
+}
+
+<div class="mb-3">
+    <input type="text" id="groundSearch" class="form-control" placeholder="Search by ground name..." onkeyup="filterTable()" />
+</div>
+
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Ground</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Status</th>
+            <th>Toggle</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model.Reviews)
+        {
+            <tr>
+                <td>@review.UserName</td>
+                <td>@review.GroundName</td>
+                <td>@review.Rating</td>
+                <td>@review.Comment</td>
+                <td>
+                    @if (review.IsVisible)
+                    {
+                        <span class="text-success">Visible</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Hidden</span>
+                    }
+                </td>
+                <td>
+                    <form method="post" asp-page-handler="ToggleVisibility" asp-route-id="@review.Id">
+                        <button type="submit" class="btn btn-sm btn-warning">
+                            @(review.IsVisible ? "Hide" : "Show")
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function filterTable() {
+        const input = document.getElementById("groundSearch");
+        const filter = input.value.toLowerCase();
+        const table = document.querySelector("table");
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const groundCell = row.cells[1]; 
+            if (groundCell) {
+                const groundText = groundCell.textContent.toLowerCase();
+                row.style.display = groundText.includes(filter) ? "" : "none";
+            }
+        });
+    }
+</script>
+

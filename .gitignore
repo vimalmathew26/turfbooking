@@ -23,6 +23,7 @@ TestResults/
 obj/
 bin/
 wwwroot/uploads/
+wwwroot/images/
 *.user
 *.suo
 
