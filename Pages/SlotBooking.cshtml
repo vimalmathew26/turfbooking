@@ -1,9 +1,7 @@
 ﻿@page
 @model SlotBookingModel
 @using turfbooking.Models
-@{
-    var currentTime = Model.CurrentTime;
-}
+
 @{
     ViewData["Title"] = "Slot Booking";
 }
@@ -31,17 +29,17 @@
     }
 
     .booked {
-        background-color: #dc3545; 
+        background-color: #dc3545;
     }
 
     .available {
-        background-color: #28a745; 
+        background-color: #28a745;
         cursor: pointer;
     }
 
-    .available:hover {
-        opacity: 0.9;
-    }
+        .available:hover {
+            opacity: 0.9;
+        }
 </style>
 
 @if (!Model.AvailableSlots.Any())
@@ -55,20 +53,20 @@ else
         {
             var date = slot.BookingDate.Date.ToString("dd-MM-yyyy");
             var slotText = $"{slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}";
-            var isExpired = Model.Date.Date == DateTime.Now.Date && slot.StartTime <= currentTime;
+            var isExpired = (Model.Date.Date == DateTime.Now.Date && slot.StartTime <= @Model.CurrentTime) || Model.Date.Date < DateTime.Now.Date;
 
-            if (slot.IsBooked)
+            if (isExpired)
+            {
+                <div class="slot-card" style="background-color: grey; cursor: not-allowed;">
+                    @date<br />
+                    @slotText<br />Expired
+                </div>
+            }
+            else if (slot.IsBooked)
             {
                 <div class="slot-card booked">
                     @date<br />
                     @slotText<br />Booked
-                </div>
-            }
-            else if (isExpired)
-            {
-                <div class="slot-card" style="background-color: grey; cursor: not-allowed;">
-                    @date<br />
-                    @slotText<br />Expired  
                 </div>
             }
             else

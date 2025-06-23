@@ -89,6 +89,9 @@ namespace turfbooking.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GroundId");

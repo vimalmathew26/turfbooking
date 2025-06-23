@@ -17,6 +17,8 @@ namespace turfbooking.Pages.Users
             _context = context;
         }
 
+        public List<Review> Reviews { get; set; } = new();
+
         [BindProperty(SupportsGet = true)]
         public required Ground Ground { get; set; }
 
@@ -47,6 +49,10 @@ namespace turfbooking.Pages.Users
 
             if (Ground == null)
                 return NotFound();
+
+            Reviews = await _context.Reviews
+             .Where(r => r.GroundId == id && r.IsVisible)
+             .ToListAsync();
 
             return Page();
 

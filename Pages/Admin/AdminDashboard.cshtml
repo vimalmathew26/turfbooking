@@ -12,39 +12,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Admin Dashboard - Turf Booking</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        body {
+            background: url('/images/turf8.png') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .dashboard-wrapper {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .dashboard-header h2 {
+            font-weight: 700;
+            color: #198754;
+        }
+
+        .card-option {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+            .card-option:hover {
+                transform: translateY(-6px);
+            }
+
+        .icon-circle {
+            font-size: 2rem;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .icon-green {
+            background-color: #e6f4ea;
+            color: #198754;
+        }
+
+        .btn-modern {
+            border-radius: 50px;
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            z-index: 10;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
     <div class="container py-5">
-        <div class="card shadow-sm p-4">
-            <h2 class="mb-4 text-danger text-center">Admin Dashboard</h2>
-
-            <p class="text-center">
-                Welcome, <strong>@User?.Identity?.Name</strong>
-            </p>
-
-            <div class="list-group mb-4">
-                <a asp-page="/Grounds/Index" class="list-group-item list-group-item-action">
-                    ⚽ Manage Grounds
-                </a>
-                <a href="/ManageSlots" class="list-group-item list-group-item-action">
-                    ⏰ Manage Slots
-                </a>
-                <a href="/ManageBookings" class="list-group-item list-group-item-action">
-                    📅 Manage Bookings
-                </a>
-                <a asp-page="/Admin/ManageUsers" class="list-group-item list-group-item-action">
-                    👥 Manage Users
-                </a>
-                <a asp-page="/Accounts/ResetPassword" class="list-group-item list-group-item-action">
-                    🔑 Change Password
-                </a>
+        <div class="dashboard-wrapper">
+            <a asp-page="/Accounts/Logout" class="btn btn-danger btn-modern logout-button">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+            <div class="dashboard-header text-center mb-5">
+                <h2>Admin Dashboard</h2>
+                <p class="text-muted">Welcome, <strong>@User?.Identity?.Name</strong></p>
             </div>
 
-            <div class="text-center">
-                <a asp-page="/Accounts/Logout" class="btn btn-danger">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
+            <div class="row g-4">
+                <!-- First row: 3 cards -->
+                <!-- Manage Grounds -->
+                <div class="col-md-4">
+                    <div class="card card-option text-center h-100 p-4">
+                        <div class="icon-circle icon-green mx-auto">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Manage Grounds</h5>
+                        <p class="card-text text-muted">Add, update, and deactivate sports grounds for booking.</p>
+                        <a asp-page="/Grounds/Index" class="btn btn-success btn-modern">Go</a>
+                    </div>
+                </div>
+
+                <!-- Manage Slots -->
+                <div class="col-md-4">
+                    <div class="card card-option text-center h-100 p-4">
+                        <div class="icon-circle icon-green mx-auto">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Manage Slots</h5>
+                        <p class="card-text text-muted">Customize available time slots for ground bookings.</p>
+                        <a asp-page="/Admin/GroundSlot" class="btn btn-success btn-modern">Go</a>
+                    </div>
+                </div>
+
+                <!-- Manage Bookings -->
+                <div class="col-md-4">
+                    <div class="card card-option text-center h-100 p-4">
+                        <div class="icon-circle icon-green mx-auto">
+                            <i class="bi bi-calendar-week"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Manage Bookings</h5>
+                        <p class="card-text text-muted">Review, confirm, or cancel user bookings with ease.</p>
+                        <a href="/ManageBookings" class="btn btn-success btn-modern">Go</a>
+                    </div>
+                </div>
+
+                <!-- Second row: 3 cards -->
+                <!-- Manage Users -->
+                <div class="col-md-4">
+                    <div class="card card-option text-center h-100 p-4">
+                        <div class="icon-circle icon-green mx-auto">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Manage Users</h5>
+                        <p class="card-text text-muted">View registered users and manage their access rights.</p>
+                        <a href="/Admin/ManageUsers" class="btn btn-success btn-modern">Go</a>
+                    </div>
+                </div>
+
+                <!-- Manage Reviews -->
+                <div class="col-md-4">
+                    <div class="card card-option text-center h-100 p-4">
+                        <div class="icon-circle icon-green mx-auto">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Manage Reviews</h5>
+                        <p class="card-text text-muted">Review user feedback and control visibility of reviews.</p>
+                        <a href="/Admin/ManageReviews" class="btn btn-success btn-modern">Go</a>
+                    </div>
+                </div>
+
+                <!-- Change Profile -->
+                <div class="col-md-4">
+                    <div class="card card-option text-center h-100 p-4">
+                        <div class="icon-circle icon-green mx-auto">
+                            <i class="bi bi-key-fill"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Manage Profile</h5>
+                        <p class="card-text text-muted">View your admin profile and make changes if needed.</p>
+                        <a asp-page="/Admin/AdminProfile" class="btn btn-warning btn-modern">Change</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
