@@ -39,7 +39,7 @@ namespace turfbooking.Pages.Reviews
             if (Ground == null)
             {
                 TempData["GroundNotFound"] = "Ground not found!";
-                return RedirectToPage("./AddReview");
+                return RedirectToPage("/Reviews/AddReview");
             }
 
 

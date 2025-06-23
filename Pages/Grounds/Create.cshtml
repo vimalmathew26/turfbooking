@@ -8,12 +8,18 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-header bg-gradient bg-primary text-white rounded-top-4 style=" background-color: #4B0082;"">
+                <!-- ✅ FIXED malformed style attribute -->
+                <div class="card-header bg-gradient bg-primary text-white rounded-top-4" style="background-color: #4B0082;">
                     <h3 class="mb-0">➕ Add New Ground</h3>
                 </div>
 
                 <div class="card-body p-4">
-                    <form method="post" enctype="multipart/form-data">
+                    <!-- ✅ CHANGED: added asp-page-handler="" to support Razor Pages -->
+                    <form method="post" enctype="multipart/form-data" asp-page-handler="">
+                        @Html.AntiForgeryToken() <!-- ✅ ADDED anti-forgery token -->
+                        <!-- ✅ ADDED validation summary for debug -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
                         <div class="mb-4 text-center">
                             <label class="form-label d-block fw-semibold">Upload Ground Photo</label>
                             <div class="border rounded-4 p-3 bg-light shadow-sm" style="max-width: 300px; margin: auto;">
@@ -87,7 +93,7 @@
         .form-container {
             padding: 10px;
             border-radius: 20px;
-            background-color: rgba(255, 255, 255, 0.85); /* semi-transparent white */
+            background-color: rgba(255, 255, 255, 0.85);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
@@ -110,7 +116,6 @@
             }
     </style>
 }
-
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

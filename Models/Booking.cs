@@ -29,7 +29,7 @@ namespace turfbooking.Models
 
         public User User { get; set; }
         public Ground Ground { get; set; }
-        public Review Review { get; set; }
+
 
         public Slot Slot { get; set; }
     }
@@ -41,6 +41,6 @@ namespace turfbooking.Models
         Completed
     }
 
-   
+
 }
 

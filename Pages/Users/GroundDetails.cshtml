@@ -8,7 +8,7 @@
 @section Styles {
     <style>
         body {
-            background: url('/images/ground-bg.jpg') no-repeat center center fixed;
+            background: url('/images/turf8.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Segoe UI', sans-serif;
         }
@@ -113,7 +113,7 @@
             <div class="col-md-6 content-section">
                 <h2 class="text-dark">@Model.Ground.GroundName</h2>
                 <p><strong>📍 Location:</strong> @Model.Ground.Location</p>
-                <p><strong>💸 Price/Hour:</strong> @Model.Ground.PricePerHour.ToString("C")</p>
+                <p><strong>💸 Price/Hour:</strong> ₹@Model.Ground.PricePerHour.ToString()</p>
                 <p><strong>🎯 Supported Sports:</strong> @Model.Ground.SupportedSports</p>
                 <p><strong>📝 Description:</strong> @Model.Ground.Description</p>
                 <p>
@@ -122,8 +122,8 @@
                 </p>
 
                 <div class="mt-4 d-flex flex-wrap gap-3">
-                    <a class="btn btn-book btn-action" href="#">Book Now</a>
-                    <a class="btn btn-rating btn-action" href="#">Leave Rating</a>
+                    <a class="btn btn-book btn-action" asp-route-GroundId="@Model.Ground.Id" asp-page="/Booking/SlotBooking">Book Now</a>
+                    <a class="btn btn-rating btn-action" asp-route-GroundId="@Model.Ground.Id" asp-page="/Reviews/AddReview">Leave Rating</a>
                 </div>
             </div>
         </div>

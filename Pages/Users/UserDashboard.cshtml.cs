@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 using turfbooking.Data;
 using turfbooking.Models;
 
@@ -12,14 +13,16 @@ namespace turfbooking.Pages.Users
     {
         private readonly AppDbContext _context;
 
+
         public UserDashboardModel(AppDbContext context)
         {
             _context = context;
         }
 
         public User? CurrentUser { get; set; }
+        public List<Ground> GroundsWithPhotos { get; set; } = new();
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             var userIdClaim = User.FindFirst("UserId");
 
@@ -28,7 +31,7 @@ namespace turfbooking.Pages.Users
                 return RedirectToPage("/Accounts/Login");
             }
 
-            CurrentUser = _context.Users.FirstOrDefault(u => u.Id == userId);
+            CurrentUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             if (CurrentUser == null)
             {
@@ -39,6 +42,10 @@ namespace turfbooking.Pages.Users
             {
                 return RedirectToPage("/Accounts/SetupSecurity");
             }
+
+            GroundsWithPhotos = await _context.Grounds
+               .Where(g => g.IsActive && !string.IsNullOrEmpty(g.PhotoPath))
+               .ToListAsync();
 
             return Page();
         }

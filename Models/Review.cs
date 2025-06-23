@@ -5,7 +5,7 @@ namespace turfbooking.Models
     public class Review
     {
         public int Id { get; set; }
-        
+
         [Required]
         public int UserId { get; set; }
         [Required]
@@ -15,9 +15,10 @@ namespace turfbooking.Models
         [Range(1, 5)]
         public int Rating { get; set; }
         [MaxLength(500)]
-        public string? Comment { get; set; }
+        public string Comment { get; set; }
         public bool IsVisible { get; set; } = true;
-        // public Booking Booking { get; set; }
+
+        public Ground Ground { get; set; }
     }
 
 }

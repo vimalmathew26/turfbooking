@@ -1,22 +1,32 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using turfbooking.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace turfbooking.Models
 {
     public class Slot
     {
-        public required int Id { get; set; }
-        [Required]
-        public required int GroundId { get; set; }
-        [Required]
-        public required DateTime StartTime { get; set; }
-        [Required]
-        public required DateTime EndTime { get; set; }
+        public int Id { get; set; }
 
-        [Required]
-        public required string Status { get; set; } // "Available", "Booked", "Blocked"
-        public required Ground Ground { get; set; }
-        // public Booking Booking { get; set; }
+
+        public int GroundId { get; set; }
+
+
+        public TimeSpan StartTime { get; set; }
+
+        public DateTime BookingDate { get; set; }
+
+
+        public TimeSpan EndTime { get; set; }
+
+        public bool IsBooked { get; set; } = false;
+
+        public Ground Ground { get; set; }
+
+
+        [ForeignKey("Booking")]
+        public int? BookingId { get; set; }
+        public Booking Booking { get; set; }
+
+
     }
 }
-
