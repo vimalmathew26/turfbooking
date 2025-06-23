@@ -29,17 +29,17 @@
     }
 
     .booked {
-        background-color: #dc3545; 
+        background-color: #dc3545;
     }
 
     .available {
-        background-color: #28a745; 
+        background-color: #28a745;
         cursor: pointer;
     }
 
-    .available:hover {
-        opacity: 0.9;
-    }
+        .available:hover {
+            opacity: 0.9;
+        }
 </style>
 
 <div>
@@ -72,9 +72,9 @@ else
             {
                 continue;
             }
-            else if (isExpired)
+            else if (slot.IsBooked)
             {
-                <div class="slot-card" style="background-color: grey; cursor: not-allowed;">
+                <div class="slot-card booked">
                     @date<br />
                     @slotText<br />Expired
                 </div>

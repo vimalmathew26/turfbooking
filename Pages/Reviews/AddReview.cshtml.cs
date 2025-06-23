@@ -17,7 +17,7 @@ namespace turfbooking.Pages.Reviews
             _context = context;
         }
 
-        public string book { get; set; }       
+        public string book { get; set; }
         public Ground Ground { get; set; }
         public List<Review> Reviews { get; set; }
 
@@ -61,7 +61,7 @@ namespace turfbooking.Pages.Reviews
             
             if (booking == null)
             {
-                ModelState.AddModelError("book","You First book the ground to add REVIEW");
+                ModelState.AddModelError("book", "You First book the ground to add REVIEW");
                 return Page();
             }
             Review.BookingId = booking.Id;

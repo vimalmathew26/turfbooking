@@ -67,7 +67,7 @@ public class SlotBookingModel : PageModel
 
         var booking = new Booking
         {
-            UserId = userId, 
+            UserId = userId,
             GroundId = slot.GroundId,
             BookingDate = slot.BookingDate,
             StartTime = slot.StartTime,

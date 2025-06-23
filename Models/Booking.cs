@@ -41,6 +41,6 @@ namespace turfbooking.Models
         Completed
     }
 
-   
+
 }
 

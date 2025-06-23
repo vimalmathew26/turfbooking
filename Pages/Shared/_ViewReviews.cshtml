@@ -1,0 +1,24 @@
+﻿@model List<turfbooking.Models.Review>
+@inject turfbooking.Data.AppDbContext Db
+
+@if (Model == null || !Model.Any())
+{
+    <div class="mt-4 alert alert-info">No reviews yet.</div>
+}
+else
+{
+    <div class="mt-5">
+        <h4>User Reviews</h4>
+        @foreach (var review in Model)
+        {
+            var username = Db.Users.FirstOrDefault(u => u.Id == review.UserId)?.Username ?? "Anonymous";
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">⭐ @review.Rating / 5</h5>
+                    <p class="card-text">@review.Comment</p>
+                    <p class="card-subtitle text-muted">— @username</p>
+                </div>
+            </div>
+        }
+    </div>
+}

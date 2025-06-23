@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Ground Listings";
 }
-
+<h2 class="mt-2">Manage Slots</h2>  
 <div class="container mt-5">
 
 
@@ -19,54 +19,61 @@
             @foreach (var ground in Model.Grounds)
             {
                 <div class="col">
-                    <div class="card h-100 shadow-sm rounded-4">
-                        @if (!string.IsNullOrEmpty(ground.PhotoPath))
-                        {
-                            <img src="@ground.PhotoPath" class="card-img-top" alt="@ground.GroundName" style="height: 200px; object-fit: cover;" />
-                        }
-                        else
-                        {
-                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                                <span>No Photo</span>
-                            </div>
-                        }
-
-                        <div class="card-body @(ground.IsActive ? "" : "bg-light text-muted border border-warning")">
-                            <h5 class="card-title d-flex justify-content-between align-items-center">
-                                @ground.GroundName
-                                @if (!ground.IsActive)
-                                {
-                                    <span class="badge bg-warning text-dark ms-2">Inactive</span>
-                                }
-                            </h5>
-
-                            <p class="card-text">
-                                <strong>Location:</strong> @ground.Location<br />
-                                <strong>Price/Hour:</strong> @ground.PricePerHour.ToString("C")<br />
-                                <strong>Sports:</strong> @ground.SupportedSports
-                            </p>
-
-                            @if (!ground.IsActive)
+                    <a asp-page="/Admin/AddSlot" asp-route-GroundId="@ground.Id" class="text-decoration-none text-dark">
+                        <div class="card ground-card h-100 shadow-sm rounded-4 position-relative" style="cursor: pointer;">
+                            @if (!string.IsNullOrEmpty(ground.PhotoPath))
                             {
-                                <div class="alert alert-warning p-2 mt-2 mb-0">
-                                    <small>This ground is currently inactive and not available for booking.</small>
+                                <img src="@ground.PhotoPath" class="card-img-top" alt="@ground.GroundName" style="height: 200px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                    <span>No Photo</span>
                                 </div>
                             }
 
+                            <div class="card-body @(ground.IsActive ? "" : "bg-light text-muted border border-warning")">
+                                <h5 class="card-title d-flex justify-content-between align-items-center">
+                                    @ground.GroundName
+                                    @if (!ground.IsActive)
+                                    {
+                                        <span class="badge bg-warning text-dark ms-2">Inactive</span>
+                                    }
+                                </h5>
 
-                            <div class="d-flex justify-content-between mt-4">
-                                <a asp-page="/Slots/AddSlot" asp-route-GroundId="@ground.Id" class="btn btn-outline-primary btn-sm px-3 rounded-pill d-flex align-items-center">
-                                    <i class="bi bi-pencil-square me-2"></i> ADD SLOT
-                                </a>
-                                <a asp-page="/Admin/SlotManagement" asp-route-GroundId="@ground.Id" class="btn btn-outline-primary btn-sm px-3 rounded-pill d-flex align-items-center">
-                                    <i class="bi bi-pencil-square me-2"></i> SLOT MANAGEMENT
-                                </a>
+                                <p class="card-text">
+                                    <strong>Location:</strong> @ground.Location<br />
+                                    <strong>Price/Hour:</strong> ₹@ground.PricePerHour.ToString()<br />
+                                    <strong>Sports:</strong> @ground.SupportedSports
+                                </p>
+
+                                @if (!ground.IsActive)
+                                {
+                                    <div class="alert alert-warning p-2 mt-2 mb-0">
+                                        <small>This ground is currently inactive and not available for booking.</small>
+                                    </div>
+                                }
+                                <span class="stretched-link"></span>
                             </div>
-
                         </div>
-                    </div>
+                    </a>
                 </div>
             }
         </div>
     }
 </div>
+
+<style>
+    .ground-card {
+        transition: transform 0.15s cubic-bezier(.4,2,.6,1), box-shadow 0.15s;
+    }
+    .ground-card:hover, .ground-card:focus-within {
+        transform: scale(1.03);
+        box-shadow: 0 0.5rem 1.5rem rgba(75,0,130,0.15), 0 0.125rem 0.5rem rgba(0,0,0,0.08);
+        z-index: 2;
+        border-color: #009900;
+    }
+    .ground-card .stretched-link::after {
+        z-index: 1;
+    }
+</style>

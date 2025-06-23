@@ -3,7 +3,7 @@
 @using turfbooking.Pages.Reviews
 @model AddReviewModel
 @{
-    Layout = "/Views/Shared/_Layout.cshtml";
+    Layout = "/Pages/Shared/_Layout.cshtml";
 }
 @{
     
@@ -28,7 +28,7 @@ else
 }
 <span asp-validation-for="book" class="text-danger"></span>
 
-@if (Model.Ground!=null)
+@if (Model.Ground != null)
 {
     <div>
         <strong>Location:</strong> @Model.Ground.Location <br />
@@ -55,7 +55,7 @@ else
 
         <div class="form-group">
             <label asp-for="Review.Comment"></label>
-            <textarea asp-for="Review.Comment" class="form-control"></textarea>
+    <textarea asp-for="Review.Comment" class="form-control"></textarea>
             <span asp-validation-for="Review.Comment" class="text-danger"></span>
         </div>
 
