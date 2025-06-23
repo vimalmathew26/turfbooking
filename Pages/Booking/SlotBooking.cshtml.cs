@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using turfbooking.Models;
 using turfbooking.Data;
-
-
 public class SlotBookingModel : PageModel
 {
     private readonly AppDbContext _context;
@@ -31,65 +29,57 @@ public class SlotBookingModel : PageModel
         CurrentTime = DateTime.Now.TimeOfDay;
 
         if (Date == default)
+        {
             Date = DateTime.Today;
-
-       
+        }
+            
         Next7Days = Enumerable.Range(0, 7)
             .Select(i => DateTime.Today.AddDays(i))
             .ToList();
 
-        GroundId = 1;
 
-        //var now = DateTime.Now;
-         
-        //var expiredSlots = await _context.Slots
-        //    .Where(s => s.IsBooked && s.BookingDate.Date == now.Date)
-        //    .ToListAsync();
-        
-        //var pastSlots = expiredSlots
-        //    .Where(s => s.BookingDate.Add(s.EndTime) < now)
-        //    .ToList();
-
-
-        //foreach (var slot in pastSlots)
-        //{
-        //    slot.IsBooked = false;
-        //    slot.BookingId = null;
-        //}
-
-        //await _context.SaveChangesAsync();
-
-   
-        AvailableSlots = await _context.Slots
+         AvailableSlots = await _context.Slots
         .Where(s => s.GroundId == GroundId
                  && s.BookingDate.Date == Date.Date)
         .OrderBy(s => s.StartTime)
         .ToListAsync();
+
+        
     }
 
 
     public async Task<IActionResult> OnPostBookAsync(int slotId)
     {
-        var slot = await _context.Slots.Include(s=>s.Ground).FirstOrDefaultAsync(s => s.Id == slotId);
+        var slot = await _context.Slots
+                   .Include(s=>s.Ground)
+                   .FirstOrDefaultAsync(s => s.Id == slotId);
 
-        if (slot == null || slot.IsBooked)
+        if (slot == null || slot.Status==Slot.SlotStatus.Booked)
+        {
             return NotFound();
+        }
+        var userIdClaim = User.FindFirst("UserId");
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+        {
+            ModelState.AddModelError(string.Empty, "User authentication required.");
+            return Page();
+        }
 
         var booking = new Booking
         {
-            UserId = 2, 
+            UserId = userId, 
             GroundId = slot.GroundId,
             BookingDate = slot.BookingDate,
             StartTime = slot.StartTime,
             EndTime = slot.EndTime,
             TotalPrice = (decimal)(slot.EndTime - slot.StartTime).TotalHours * slot.Ground.PricePerHour,
-            Status = BookingStatus.Confirmed
+            Status = BookingStatus.Confirmed 
         };
 
         _context.Bookings.Add(booking);
         await _context.SaveChangesAsync();
 
-        slot.IsBooked = true;
+        slot.Status = Slot.SlotStatus.Booked;
         slot.BookingId = booking.Id;
 
         await _context.SaveChangesAsync();

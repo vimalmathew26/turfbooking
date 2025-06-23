@@ -15,16 +15,24 @@ public class MyBookingsModel : PageModel
 
     public List<Booking> Bookings { get; set; }
 
-    public async Task OnGetAsync()
+    public async Task<IActionResult> OnGetAsync()
     {
-        int userId = 1; 
+        var userIdClaim = User.FindFirst("UserId");
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+        {
+            ModelState.AddModelError(string.Empty, "User authentication required.");
+            return Page();
+        }
 
         Bookings = await _context.Bookings
             .Where(b => b.UserId == userId)
             .Include(b => b.Ground)
             .OrderByDescending(b => b.BookingDate)
             .ToListAsync();
+
+        return Page();
     }
+
 
     public async Task<IActionResult> OnPostCancelAsync(int bookingId)
     {
@@ -32,9 +40,12 @@ public class MyBookingsModel : PageModel
             .Include(b => b.Ground)
             .FirstOrDefaultAsync(b => b.Id == bookingId);
 
-        if (booking == null || booking.Status == BookingStatus.Cancelled)
-            return NotFound();
+         
 
+        if (booking == null || booking.Status == BookingStatus.Cancelled)
+        {
+            return NotFound();
+        }
         var slotDateTime = booking.BookingDate.Add(booking.StartTime);
         if (DateTime.Now >=  slotDateTime.AddHours(-24))
         {
@@ -47,7 +58,7 @@ public class MyBookingsModel : PageModel
         var slot = await _context.Slots.FirstOrDefaultAsync(s => s.BookingId == booking.Id);
         if (slot != null)
         {
-            slot.IsBooked = false;
+            slot.Status = Slot.SlotStatus.Available;
             slot.BookingId = null;
         }
 

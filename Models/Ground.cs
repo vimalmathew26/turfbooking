@@ -42,7 +42,7 @@ namespace turfbooking.Models
             SupportedSports = string.Empty;
             Bookings = new List<Booking>();
             Reviews = new List<Review>();
-            Slots = new List<Slot>();
+            
         }
     }
 }

@@ -1,0 +1,72 @@
+﻿@page
+@model turfbooking.Pages.Admin.GroundSlotModel
+@{
+    ViewData["Title"] = "Ground Listings";
+}
+
+<div class="container mt-5">
+
+
+    @if (Model.Grounds.Count == 0)
+    {
+        <div class="alert alert-warning text-center p-4 rounded-3 shadow-sm">
+            <strong>No grounds available.</strong>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var ground in Model.Grounds)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm rounded-4">
+                        @if (!string.IsNullOrEmpty(ground.PhotoPath))
+                        {
+                            <img src="@ground.PhotoPath" class="card-img-top" alt="@ground.GroundName" style="height: 200px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <span>No Photo</span>
+                            </div>
+                        }
+
+                        <div class="card-body @(ground.IsActive ? "" : "bg-light text-muted border border-warning")">
+                            <h5 class="card-title d-flex justify-content-between align-items-center">
+                                @ground.GroundName
+                                @if (!ground.IsActive)
+                                {
+                                    <span class="badge bg-warning text-dark ms-2">Inactive</span>
+                                }
+                            </h5>
+
+                            <p class="card-text">
+                                <strong>Location:</strong> @ground.Location<br />
+                                <strong>Price/Hour:</strong> @ground.PricePerHour.ToString("C")<br />
+                                <strong>Sports:</strong> @ground.SupportedSports
+                            </p>
+
+                            @if (!ground.IsActive)
+                            {
+                                <div class="alert alert-warning p-2 mt-2 mb-0">
+                                    <small>This ground is currently inactive and not available for booking.</small>
+                                </div>
+                            }
+
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <a asp-page="/Slots/AddSlot" asp-route-GroundId="@ground.Id" class="btn btn-outline-primary btn-sm px-3 rounded-pill d-flex align-items-center">
+                                    <i class="bi bi-pencil-square me-2"></i> ADD SLOT
+                                </a>
+                                <a asp-page="/Admin/SlotManagement" asp-route-GroundId="@ground.Id" class="btn btn-outline-primary btn-sm px-3 rounded-pill d-flex align-items-center">
+                                    <i class="bi bi-pencil-square me-2"></i> SLOT MANAGEMENT
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

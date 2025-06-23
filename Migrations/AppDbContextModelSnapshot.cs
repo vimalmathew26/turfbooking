@@ -83,12 +83,8 @@ namespace turfbooking.Migrations
 
                     b.Property<string>("Location")
                         .IsRequired()
-<<<<<<< HEAD
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-=======
-                        .HasColumnType("nvarchar(max)");
->>>>>>> amal-development
 
                     b.Property<string>("PhotoPath")
                         .HasColumnType("nvarchar(max)");
@@ -131,6 +127,9 @@ namespace turfbooking.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GroundId");
@@ -158,11 +157,11 @@ namespace turfbooking.Migrations
                     b.Property<int>("GroundId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsBooked")
-                        .HasColumnType("bit");
-
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -254,17 +253,13 @@ namespace turfbooking.Migrations
                 {
                     b.HasOne("turfbooking.Models.Booking", "Booking")
                         .WithOne("Slot")
-<<<<<<< HEAD
                         .HasForeignKey("turfbooking.Models.Slot", "BookingId")
                         .OnDelete(DeleteBehavior.SetNull);
-=======
-                        .HasForeignKey("turfbooking.Models.Slot", "BookingId");
->>>>>>> amal-development
 
                     b.HasOne("turfbooking.Models.Ground", "Ground")
-                        .WithMany("Slots")
+                        .WithMany()
                         .HasForeignKey("GroundId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Booking");
@@ -283,8 +278,6 @@ namespace turfbooking.Migrations
                     b.Navigation("Bookings");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("Slots");
                 });
 
             modelBuilder.Entity("turfbooking.Models.User", b =>

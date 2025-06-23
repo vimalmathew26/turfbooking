@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -7,10 +8,10 @@ using turfbooking.Models;
 
 namespace turfbooking.Pages.Users
 {
+    [Authorize(Roles = "User")]
     public class GroundDetailsModel : PageModel
     {
         private readonly AppDbContext _context;
-
 
         public GroundDetailsModel(AppDbContext context)
         {

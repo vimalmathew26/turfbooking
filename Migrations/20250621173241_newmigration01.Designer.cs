@@ -12,8 +12,8 @@ using turfbooking.Data;
 namespace turfbooking.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250619094600_Uploaderror")]
-    partial class Uploaderror
+    [Migration("20250621173241_newmigration01")]
+    partial class newmigration01
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -90,7 +90,6 @@ namespace turfbooking.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhotoPath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PricePerHour")
@@ -132,9 +131,6 @@ namespace turfbooking.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BookingId")
-                        .IsUnique();
 
                     b.HasIndex("GroundId");
 
@@ -244,19 +240,11 @@ namespace turfbooking.Migrations
 
             modelBuilder.Entity("turfbooking.Models.Review", b =>
                 {
-                    b.HasOne("turfbooking.Models.Booking", "Booking")
-                        .WithOne("Review")
-                        .HasForeignKey("turfbooking.Models.Review", "BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("turfbooking.Models.Ground", "Ground")
                         .WithMany("Reviews")
                         .HasForeignKey("GroundId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Booking");
 
                     b.Navigation("Ground");
                 });
@@ -269,9 +257,9 @@ namespace turfbooking.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("turfbooking.Models.Ground", "Ground")
-                        .WithMany("Slots")
+                        .WithMany()
                         .HasForeignKey("GroundId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Booking");
@@ -281,9 +269,6 @@ namespace turfbooking.Migrations
 
             modelBuilder.Entity("turfbooking.Models.Booking", b =>
                 {
-                    b.Navigation("Review")
-                        .IsRequired();
-
                     b.Navigation("Slot")
                         .IsRequired();
                 });
@@ -293,8 +278,6 @@ namespace turfbooking.Migrations
                     b.Navigation("Bookings");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("Slots");
                 });
 
             modelBuilder.Entity("turfbooking.Models.User", b =>
