@@ -46,7 +46,7 @@ public class AddSlotModel : PageModel
         {
             return Page();
         }
-        Slot.IsBooked = false;
+        Slot.Status = Slot.SlotStatus.Available;
         Slot.GroundId = GroundId;
         _context.Slots.Add(Slot);
         await _context.SaveChangesAsync();

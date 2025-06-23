@@ -33,18 +33,7 @@ namespace turfbooking.Data
                 .HasForeignKey(b => b.GroundId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Ground>()
-                .HasMany(g => g.Slots)
-                .WithOne(s => s.Ground)
-                .HasForeignKey(s => s.GroundId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Booking relationships
-            modelBuilder.Entity<Booking>()
-                .HasOne(b => b.Review)
-                .WithOne(r => r.Booking)
-                .HasForeignKey<Review>(r => r.BookingId)
-                .OnDelete(DeleteBehavior.Cascade);
+           
 
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Slot)

@@ -6,57 +6,62 @@ using turfbooking.Models;
 using turfbooking.Data;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-public class AddSlotModel : PageModel
+
+namespace turfbooking.Pages.Admin
 {
-    private readonly AppDbContext _context;
 
-    public AddSlotModel(AppDbContext context)
+    public class AddSlotModel : PageModel
     {
-        _context = context;
-    }
+        private readonly AppDbContext _context;
 
-    [BindProperty(SupportsGet = true)]
-    public int GroundId { get; set; }
-
-  
-
-    [BindProperty]
-    public Slot Slot { get; set; }
-
-  
-    public Ground Ground { get; set; }
-
-    public async Task<IActionResult> OnGetAsync()
-    { 
-        
-        Ground = await _context.Grounds.FindAsync(GroundId);
-        
-        return Page();
-    }
-
-    public async Task<IActionResult> OnPostAsync()
-    {
-        Ground = await _context.Grounds.FindAsync(GroundId);
-
-        if (Slot.BookingDate<DateTime.Today)
+        public AddSlotModel(AppDbContext context)
         {
-            ModelState.AddModelError("Slot.BookingDate","Cant add slot on previous day");
+            _context = context;
         }
-        if (Slot.EndTime<=Slot.StartTime)
+
+        [BindProperty(SupportsGet = true)]
+        public int GroundId { get; set; }
+
+
+
+        [BindProperty]
+        public Slot Slot { get; set; }
+
+
+        public Ground Ground { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
-            ModelState.AddModelError("Slot.EndTime", "Cant add EndTIme before StartTime");
-        }
-        if (!ModelState.IsValid)
-        {
+
+            Ground = await _context.Grounds.FindAsync(GroundId);
+
             return Page();
         }
-        Slot.Status = Slot.SlotStatus.Available;
-        Slot.GroundId = GroundId;
-        _context.Slots.Add(Slot);
-        await _context.SaveChangesAsync();
 
-        return RedirectToPage("/Slots/AddSlot", new { GroundId = GroundId });
+        public async Task<IActionResult> OnPostAsync()
+        {
+            Ground = await _context.Grounds.FindAsync(GroundId);
+
+            if (Slot.BookingDate < DateTime.Today)
+            {
+                ModelState.AddModelError("Slot.BookingDate", "Cant add slot on previous day");
+            }
+            if (Slot.EndTime <= Slot.StartTime)
+            {
+                ModelState.AddModelError("Slot.EndTime", "Cant add EndTIme before StartTime");
+            }
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+            Slot.Status = Slot.SlotStatus.Available;
+            Slot.GroundId = GroundId;
+            _context.Slots.Add(Slot);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("/Slots/AddSlot", new { GroundId = GroundId });
+
+        }
 
     }
-
 }
