@@ -3,6 +3,7 @@
 @using turfbooking.Models;
 
 @{
+   
     ViewData["Title"] = "Admin Slot Management";
 }
 
@@ -24,7 +25,7 @@
     </div>
 
     <div class="col-md-9">
-        @if (Model.Slots != null)
+        @if (Model.Slots != null && Model.Slots.Any())
         {
             <h4>Slots for @Model.SelectedDate?.ToShortDateString()</h4>
             <table class="table table-bordered">
@@ -36,8 +37,8 @@
                         <th>Status</th>
                         <th>Customer Name</th>
                         <th>Customer PhoneNo</th>
-                        
-                        <th>Actions</th>
+                        <th>Disable</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,11 +84,11 @@
                                 }
                             </td>
                             <td>
-                                <a asp-page="/Admin/ViewSlot" asp-route-id="@slot.Id">Details</a> |
+                               
                                 @if (slot.Status == Slot.SlotStatus.Available)
                                 {
                                     <form method="post" asp-page-handler="Block" asp-route-id="@slot.Id" asp-route-groundId="@slot.GroundId" asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")" style="display:inline;">
-                                        <button type="submit" class="btn btn-warning btn-sm">Disable</button>
+                                        <button type="submit" class="btn btn-warning">Disable</button>
                                     </form>
                                 }
                                 else if (slot.Status == Slot.SlotStatus.Blocked)
@@ -95,17 +96,24 @@
                                     <form method="post" asp-page-handler="Enable" asp-route-id="@slot.Id" asp-route-groundId="@slot.GroundId" asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")"
                                           style="display:inline;">
                      
-                                        <button type="submit" class="btn btn-success btn-sm">Enable</button>
+                                        <button type="submit" class="btn btn-success">Enable</button>
                                     </form>
                                 }
-
-                                |
+                            </td>
+                            <td>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@slot.Id" asp-route-GroundId="@slot.GroundId" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
                                 
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
+        }
+        else
+        {
+            <div class="alert alert-warning text-center my-4"> No Slot For This Day</div>
         }
     </div>
 </div>

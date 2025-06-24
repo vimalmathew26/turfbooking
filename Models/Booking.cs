@@ -37,8 +37,7 @@ namespace turfbooking.Models
     public enum BookingStatus
     {
         Confirmed,
-        Cancelled,
-        Completed
+        Cancelled
     }
 
 

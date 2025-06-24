@@ -35,6 +35,10 @@ namespace turfbooking.Pages.Admin
                       .OrderBy(s => s)
                       .ToListAsync();
 
+            if (!SelectedDate.HasValue && SlotDates.Any())
+            {
+                SelectedDate = SlotDates.First();
+            }
             if (SelectedDate.HasValue)
             {
                  Slots = await _context.Slots
@@ -44,7 +48,10 @@ namespace turfbooking.Pages.Admin
                     .Where(s => s.BookingDate.Date == SelectedDate.Value.Date && s.GroundId==GroundId)
                     .ToListAsync();
             }
-
+            if (!Slots.Any())
+            {
+                Slots = new List<Slot>();
+            }
             return Page();
         }
 
@@ -59,12 +66,25 @@ namespace turfbooking.Pages.Admin
             return RedirectToPage("./SlotManagement",new { GroundId, SelectedDate });
         }
 
+
         public async Task<IActionResult> OnPostEnableAsync(int id, int GroundId,DateTime SelectedDate)
         {
             var slot = await _context.Slots.FindAsync(id);
             if (slot != null && slot.Status == Slot.SlotStatus.Blocked)
             {
                 slot.Status = Slot.SlotStatus.Available;
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToPage("./SlotManagement", new { GroundId, SelectedDate });
+        }
+
+
+        public async Task<IActionResult> OnPostDeleteAsync(int id,int GroundId)
+        {
+            var slot=await _context.Slots.FindAsync(id);
+            if (slot != null)
+            {
+                _context.Slots.Remove(slot);
                 await _context.SaveChangesAsync();
             }
             return RedirectToPage("./SlotManagement", new { GroundId, SelectedDate });
