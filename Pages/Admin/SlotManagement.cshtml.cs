@@ -21,12 +21,15 @@ namespace turfbooking.Pages.Admin
         [BindProperty(SupportsGet = true)]
         public int GroundId { get; set; }
 
+        public Ground Ground { get; set; }
+
         public List<Slot>? Slots { get; set; }
 
         public List<DateTime>? SlotDates { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
-
+            Ground = await _context.Grounds
+                .FindAsync(GroundId);
 
             SlotDates = await _context.Slots
                       .Where(s => s.GroundId == GroundId)
