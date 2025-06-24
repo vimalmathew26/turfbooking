@@ -28,8 +28,7 @@ namespace turfbooking.Pages.Admin
         public List<DateTime>? SlotDates { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
-            Ground = await _context.Grounds
-                .FindAsync(GroundId);
+            Ground = await _context.Grounds.FindAsync(GroundId);
 
             SlotDates = await _context.Slots
                       .Where(s => s.GroundId == GroundId)
@@ -53,7 +52,9 @@ namespace turfbooking.Pages.Admin
                    .Where(s => s.BookingDate.Date == SelectedDate.Value.Date && s.GroundId == GroundId)
                    .ToListAsync();
             }
-            Slots ??= new List<Slot>();
+
+            
+
             return Page();
         }
 
