@@ -27,3 +27,5 @@ wwwroot/images/
 *.user
 *.suo
 
+/Migrations
+

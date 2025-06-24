@@ -25,6 +25,7 @@ namespace turfbooking.Pages.Grounds
             {
                 return NotFound();
             }
+            Ground = ground;
             return Page();
         }
 

@@ -29,22 +29,6 @@ namespace turfbooking.Pages.Users
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            //var ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == id && g.IsActive);
-            ////.Include(g => g.Bookings)
-            ////.ThenInclude(b => b.Review)
-            ////.FirstOrDefaultAsync(g => g.Id == id && g.IsActive);
-
-            //if (ground == null)
-            //    return NotFound();
-
-            ////var ratings = Ground.Bookings
-            ////    .Where(b => b.Review != null)
-            ////    .Select(b => b.Review.Rating)
-            ////    .ToList();
-
-            ////AverageRating = ratings.Count > 0 ? ratings.Average() : 0;
-
-            //return Page();
 
             Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == id && g.IsActive);
 
@@ -54,6 +38,9 @@ namespace turfbooking.Pages.Users
             Reviews = await _context.Reviews
              .Where(r => r.GroundId == id && r.IsVisible)
              .ToListAsync();
+
+            AverageRating = Reviews.Any() ? Reviews.Average(r => r.Rating) : 0;
+
 
             return Page();
 

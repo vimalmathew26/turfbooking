@@ -24,14 +24,22 @@ namespace turfbooking.Pages.Grounds
         [BindProperty]
         public IFormFile? Photo { get; set; }
 
+        public string[] SelectedSports { get; set; } = Array.Empty<string>();
+
+
         public async Task<IActionResult> OnGetAsync(int id)
         {
+
             var ground = await _context.Grounds.FindAsync(id);
             if (ground == null)
-            {
                 return NotFound();
-            }
+
             Ground = ground;
+
+            if (!string.IsNullOrWhiteSpace(Ground.SupportedSports))
+                SelectedSports = Ground.SupportedSports.Split(",", StringSplitOptions.TrimEntries);
+
+      
             return Page();
         }
 
@@ -40,9 +48,16 @@ namespace turfbooking.Pages.Grounds
             var groundInDb = await _context.Grounds.FindAsync(Ground.Id);
             if (groundInDb == null)
                 return NotFound();
+            if (Photo == null)
+            {
+                Ground.PhotoPath = groundInDb.PhotoPath;
+            }
 
             if (!ModelState.IsValid)
+            {
+                Console.WriteLine("Error");
                 return Page();
+            }
 
             groundInDb.GroundName = Ground.GroundName;
             groundInDb.Location = Ground.Location;

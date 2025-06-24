@@ -6,7 +6,7 @@
     ViewData["Title"] = "Admin Slot Management";
 }
 
-<h2>Slot Management</h2>
+<h2>Slot Management for @Model.Ground.GroundName</h2>
 
 <!-- Add Slot Button: Always visible, before slot list -->
 <a asp-page="/Admin/AddSlot" asp-route-GroundId="@Model.GroundId" class="btn btn-primary mb-3 float-end">
@@ -37,7 +37,7 @@
                     <tr>
                         <th>Start</th>
                         <th>End</th>
-                        <th>Ground</th>
+                        
                         <th>Status</th>
                         <th>Customer Name</th>
                         <th>Customer PhoneNo</th>
@@ -51,7 +51,7 @@
                         <tr>
                             <td>@slot.StartTime</td>
                             <td>@slot.EndTime</td>
-                            <td>@slot.Ground.GroundName</td>
+                            
                             <td>
                                 @if (slot.Status == Slot.SlotStatus.Booked)
                                 {
