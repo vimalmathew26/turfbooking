@@ -15,18 +15,18 @@ namespace turfbooking.Pages.Admin
             _context = context;
         }
 
-        [BindProperty(SupportsGet =true)]
+        [BindProperty(SupportsGet = true)]
         public DateTime? SelectedDate { get; set; }
 
-        [BindProperty(SupportsGet =true)]
+        [BindProperty(SupportsGet = true)]
         public int GroundId { get; set; }
 
-        public List<Slot> Slots { get; set; }
+        public List<Slot>? Slots { get; set; }
 
-        public List<DateTime> SlotDates { get; set; }
+        public List<DateTime>? SlotDates { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
-           
+
 
             SlotDates = await _context.Slots
                       .Where(s => s.GroundId == GroundId)
@@ -35,27 +35,26 @@ namespace turfbooking.Pages.Admin
                       .OrderBy(s => s)
                       .ToListAsync();
 
+            SlotDates ??= new List<DateTime>();
+
             if (!SelectedDate.HasValue && SlotDates.Any())
             {
                 SelectedDate = SlotDates.First();
             }
             if (SelectedDate.HasValue)
             {
-                 Slots = await _context.Slots
-                    .Include(s => s.Ground)
-                    .Include(s => s.Booking)
-                    .ThenInclude(s=>s.User)
-                    .Where(s => s.BookingDate.Date == SelectedDate.Value.Date && s.GroundId==GroundId)
-                    .ToListAsync();
+                Slots = await _context.Slots
+                   .Include(s => s.Ground)
+                   .Include(s => s.Booking)
+                   .ThenInclude(s => s.User)
+                   .Where(s => s.BookingDate.Date == SelectedDate.Value.Date && s.GroundId == GroundId)
+                   .ToListAsync();
             }
-            if (!Slots.Any())
-            {
-                Slots = new List<Slot>();
-            }
+            Slots ??= new List<Slot>();
             return Page();
         }
 
-        public async Task<IActionResult> OnPostBlockAsync(int id,int GroundId, DateTime SelectedDate)
+        public async Task<IActionResult> OnPostBlockAsync(int id, int GroundId, DateTime SelectedDate)
         {
             var slot = await _context.Slots.FindAsync(id);
             if (slot != null && slot.Status == Slot.SlotStatus.Available)
@@ -63,11 +62,11 @@ namespace turfbooking.Pages.Admin
                 slot.Status = Slot.SlotStatus.Blocked;
                 await _context.SaveChangesAsync();
             }
-            return RedirectToPage("./SlotManagement",new { GroundId, SelectedDate });
+            return RedirectToPage("./SlotManagement", new { GroundId, SelectedDate });
         }
 
 
-        public async Task<IActionResult> OnPostEnableAsync(int id, int GroundId,DateTime SelectedDate)
+        public async Task<IActionResult> OnPostEnableAsync(int id, int GroundId, DateTime SelectedDate)
         {
             var slot = await _context.Slots.FindAsync(id);
             if (slot != null && slot.Status == Slot.SlotStatus.Blocked)
@@ -79,9 +78,9 @@ namespace turfbooking.Pages.Admin
         }
 
 
-        public async Task<IActionResult> OnPostDeleteAsync(int id,int GroundId)
+        public async Task<IActionResult> OnPostDeleteAsync(int id, int GroundId)
         {
-            var slot=await _context.Slots.FindAsync(id);
+            var slot = await _context.Slots.FindAsync(id);
             if (slot != null)
             {
                 _context.Slots.Remove(slot);
