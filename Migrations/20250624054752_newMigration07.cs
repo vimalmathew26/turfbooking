@@ -5,7 +5,7 @@
 namespace turfbooking.Migrations
 {
     /// <inheritdoc />
-    public partial class newmigration02 : Migration
+    public partial class newMigration07 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

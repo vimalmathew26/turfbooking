@@ -73,7 +73,8 @@ public class SlotBookingModel : PageModel
             StartTime = slot.StartTime,
             EndTime = slot.EndTime,
             TotalPrice = (decimal)(slot.EndTime - slot.StartTime).TotalHours * slot.Ground.PricePerHour,
-            Status = BookingStatus.Confirmed 
+            Status = BookingStatus.Confirmed,
+            SlotId = slotId
         };
 
         _context.Bookings.Add(booking);

@@ -39,6 +39,9 @@ namespace turfbooking.Migrations
                     b.Property<int>("GroundId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SlotId")
+                        .HasColumnType("int");
+
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 

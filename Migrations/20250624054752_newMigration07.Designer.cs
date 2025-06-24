@@ -12,8 +12,8 @@ using turfbooking.Data;
 namespace turfbooking.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250621180528_newmigration02")]
-    partial class newmigration02
+    [Migration("20250624054752_newMigration07")]
+    partial class newMigration07
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,6 +40,9 @@ namespace turfbooking.Migrations
                         .HasColumnType("time");
 
                     b.Property<int>("GroundId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SlotId")
                         .HasColumnType("int");
 
                     b.Property<TimeSpan>("StartTime")
@@ -130,6 +133,9 @@ namespace turfbooking.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GroundId");
@@ -157,11 +163,11 @@ namespace turfbooking.Migrations
                     b.Property<int>("GroundId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsBooked")
-                        .HasColumnType("bit");
-
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

@@ -3,30 +3,34 @@
 @using turfbooking.Models;
 
 @{
-   
     ViewData["Title"] = "Admin Slot Management";
 }
 
 <h2>Slot Management</h2>
 
-<div class="row">
-    <div class="col-md-3">
-        <h4>Select Date</h4>
-        <ul class="list-group">
-            @foreach (var date in Model.SlotDates)
-            {
-                <li class="list-group-item">
-                    <a asp-page="/Admin/SlotManagement" asp-route-SelectedDate="@date.ToString("yyyy-MM-dd")" asp-route-GroundID="@Model.GroundId">
-                        @date.ToShortDateString()
-                    </a>
-                </li>
-            }
-        </ul>
-    </div>
+<!-- Add Slot Button: Always visible, before slot list -->
+<a asp-page="/Admin/AddSlot" asp-route-GroundId="@Model.GroundId" class="btn btn-primary mb-3 float-end">
+    Add Slot
+</a>
 
-    <div class="col-md-9">
-        @if (Model.Slots != null && Model.Slots.Any())
-        {
+@if (Model.Slots != null && Model.Slots.Any())
+{
+    <div class="row">
+        <div class="col-md-3">
+            <h4>Select Date</h4>
+            <ul class="list-group">
+                @foreach (var date in Model.SlotDates)
+                {
+                    <li class="list-group-item">
+                        <a asp-page="/Admin/SlotManagement" asp-route-SelectedDate="@date.ToString("yyyy-MM-dd")" asp-route-GroundID="@Model.GroundId">
+                            @date.ToShortDateString()
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="col-md-9">
             <h4>Slots for @Model.SelectedDate?.ToShortDateString()</h4>
             <table class="table table-bordered">
                 <thead>
@@ -49,7 +53,7 @@
                             <td>@slot.EndTime</td>
                             <td>@slot.Ground.GroundName</td>
                             <td>
-                                @if (slot.Status==Slot.SlotStatus.Booked)
+                                @if (slot.Status == Slot.SlotStatus.Booked)
                                 {
                                     <span class="text-danger">Booked</span>
                                 }
@@ -62,9 +66,8 @@
                                     <span class="text-success">Blocked</span>
                                 }
                             </td>
-
                             <td>
-                                @if (slot.Status==Slot.SlotStatus.Booked && slot.Booking?.User != null)
+                                @if (slot.Status == Slot.SlotStatus.Booked && slot.Booking?.User != null)
                                 {
                                     @slot.Booking.User.Username
                                 }
@@ -84,7 +87,6 @@
                                 }
                             </td>
                             <td>
-                               
                                 @if (slot.Status == Slot.SlotStatus.Available)
                                 {
                                     <form method="post" asp-page-handler="Block" asp-route-id="@slot.Id" asp-route-groundId="@slot.GroundId" asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")" style="display:inline;">
@@ -95,7 +97,6 @@
                                 {
                                     <form method="post" asp-page-handler="Enable" asp-route-id="@slot.Id" asp-route-groundId="@slot.GroundId" asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")"
                                           style="display:inline;">
-                     
                                         <button type="submit" class="btn btn-success">Enable</button>
                                     </form>
                                 }
@@ -104,17 +105,15 @@
                                 <form method="post" asp-page-handler="Delete" asp-route-id="@slot.Id" asp-route-GroundId="@slot.GroundId" style="display:inline;">
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                 </form>
-                                
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
-        }
-        else
-        {
-            <div class="alert alert-warning text-center my-4"> No Slot For This Day</div>
-        }
+        </div>
     </div>
-</div>
-
+}
+else
+{
+    <div class="alert alert-warning text-center my-lg-5"> No Slots are available</div>
+}

@@ -1,0 +1,81 @@
+﻿@page
+@model turfbooking.Pages.Admin.GroundBookingManagementModel
+@{
+    ViewData["Title"] = "Ground Listings";
+}
+<h2 class="mt-2">Manage Slots</h2>
+<div class="container mt-5">
+
+
+    @if (Model.Grounds.Count == 0)
+    {
+        <div class="alert alert-warning text-center p-4 rounded-3 shadow-sm">
+            <strong>No grounds available.</strong>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var ground in Model.Grounds)
+            {
+                <div class="col">
+                    <a asp-page="/Admin/BookingManagement" asp-route-GroundId="@ground.Id" class="text-decoration-none text-dark">
+                        <div class="card ground-card h-100 shadow-sm rounded-4 position-relative" style="cursor: pointer;">
+                            @if (!string.IsNullOrEmpty(ground.PhotoPath))
+                            {
+                                <img src="@ground.PhotoPath" class="card-img-top" alt="@ground.GroundName" style="height: 200px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                    <span>No Photo</span>
+                                </div>
+                            }
+
+                            <div class="card-body @(ground.IsActive ? "" : "bg-light text-muted border border-warning")">
+                                <h5 class="card-title d-flex justify-content-between align-items-center">
+                                    @ground.GroundName
+                                    @if (!ground.IsActive)
+                                    {
+                                        <span class="badge bg-warning text-dark ms-2">Inactive</span>
+                                    }
+                                </h5>
+
+                                <p class="card-text">
+                                    <strong>Location:</strong> @ground.Location<br />
+                                    <strong>Price/Hour:</strong> ₹@ground.PricePerHour.ToString()<br />
+                                    <strong>Sports:</strong> @ground.SupportedSports
+                                </p>
+
+                                @if (!ground.IsActive)
+                                {
+                                    <div class="alert alert-warning p-2 mt-2 mb-0">
+                                        <small>This ground is currently inactive and not available for booking.</small>
+                                    </div>
+                                }
+                                <span class="stretched-link"></span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .ground-card {
+        transition: transform 0.15s cubic-bezier(.4,2,.6,1), box-shadow 0.15s;
+    }
+
+        .ground-card:hover, .ground-card:focus-within {
+            transform: scale(1.03);
+            box-shadow: 0 0.5rem 1.5rem rgba(75,0,130,0.15), 0 0.125rem 0.5rem rgba(0,0,0,0.08);
+            z-index: 2;
+            border-color: #009900;
+        }
+
+        .ground-card .stretched-link::after {
+            z-index: 1;
+        }
+</style>
