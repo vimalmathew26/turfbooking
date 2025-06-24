@@ -46,10 +46,7 @@ namespace turfbooking.Pages.Grounds
 
             if (!ModelState.IsValid)
             {
-               
-                
-                    ModelState.AddModelError("Photo", "Photo is required.");
-                
+                ModelState.AddModelError("Photo", "Photo is required.");
                 return Page();
             }
 

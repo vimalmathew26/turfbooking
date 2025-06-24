@@ -16,26 +16,18 @@
                     <form method="post" enctype="multipart/form-data">
                         <input type="hidden" asp-for="Ground.Id" />
 
-                        @* Existing Photo Preview *@
                         @if (!string.IsNullOrEmpty(Model.Ground.PhotoPath))
                         {
                             <div class="mb-4 text-center">
-                                <label class="form-label d-block fw-semibold">Current Photo</label>
-                                <div class="border rounded-4 p-2 bg-light shadow-sm" style="max-width: 300px; margin: auto;">
-                                    <img src="@Model.Ground.PhotoPath" class="img-fluid rounded" style="height: 200px; object-fit: cover;" />
+                                <div class="border rounded-4 p-3 bg-light shadow-sm" style="max-width: 300px; margin: auto;">
+                                    <img id="photoPreview" src="@(string.IsNullOrEmpty(Model.Ground.PhotoPath) ? "/images/placeholder.png" : Model.Ground.PhotoPath)" class="img-fluid rounded mb-2" style="height: 200px; object-fit: cover;" />
+                                    <input asp-for="Photo" type="file" class="form-control" accept="image/*" onchange="previewImage(event)" />
+                                    <span asp-validation-for="Photo" class="text-danger small d-block mt-1"></span>
                                 </div>
                             </div>
                         }
 
-                        @* Upload New Photo *@
-                        <div class="mb-4 text-center">
-                            @* <label class="form-label d-block fw-semibold">Upload New Photo (optional)</label> *@
-                            <div class="border rounded-4 p-3 bg-light shadow-sm" style="max-width: 300px; margin: auto;">
-                                <img id="photoPreview" src="/images/placeholder.png" class="img-fluid rounded mb-2" style="height: 200px; object-fit: cover;" />
-                                <input asp-for="Photo" type="file" class="form-control" accept="image/*" onchange="previewImage(event)" />
-                                <span asp-validation-for="Photo" class="text-danger small d-block mt-1"></span>
-                            </div>
-                        </div>
+      
 
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -60,16 +52,56 @@
                         <div class="row g-3 mt-1">
                             <div class="col-md-6">
                                 <label asp-for="Ground.PricePerHour" class="form-label fw-semibold"></label>
-                                <input asp-for="Ground.PricePerHour" class="form-control rounded-3" />
+                                <input asp-for="Ground.PricePerHour" class="form-control rounded-3" placeholder="e.g. 500" />
                                 <span asp-validation-for="Ground.PricePerHour" class="text-danger small"></span>
                             </div>
 
-                            <div class="col-md-6">
-                                <label asp-for="Ground.SupportedSports" class="form-label fw-semibold"></label>
-                                <input asp-for="Ground.SupportedSports" class="form-control rounded-3" />
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Supported Sports</label>
+
+                                @{
+                                    var defaultSports = new List<string> {
+                                                                "Football", "Cricket", "Badminton", "Volleyball", "Tennis",
+                                                                "Basketball", "Hockey", "Kabaddi", "Table Tennis", "Kho-Kho"
+                                                                };
+
+                                    var selectedSports = Model.Ground.SupportedSports?
+                                    .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                                    .Select(s => s.Trim())
+                                    .ToHashSet(StringComparer.OrdinalIgnoreCase) ?? new HashSet<string>();
+
+                                    var allSports = defaultSports.Union(selectedSports).OrderBy(s => s).ToList();
+                                }
+
+                                <div id="sportsCheckboxes" class="mb-2">
+                                    @foreach (var sport in allSports)
+                                    {
+                                        var isChecked = selectedSports.Contains(sport);
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="sport_@sport" value="@sport" onchange="updateSupportedSports()" @(isChecked ? "checked" : "") />
+                                            <label class="form-check-label" for="sport_@sport">@sport</label>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="input-group mb-2">
+                                    <input type="text" id="customSportInput" class="form-control w-50" placeholder="Add custom sport" />
+                                    <button type="button" class="btn btn-outline-secondary" onclick="addCustomSport()">Add</button>
+                                </div>
+
+                                <div class="position-relative mt-2">
+                                    <textarea id="sportsPreview" class="form-control" rows="2" readonly>@Model.Ground.SupportedSports</textarea>
+                                    <button type="button" id="clearSportsBtn"
+                                            class="btn-close position-absolute top-0 end-0 mt-2 me-2 @(string.IsNullOrWhiteSpace(Model.Ground.SupportedSports) ? "d-none" : "")"
+                                            onclick="clearAllSports()" aria-label="Clear"></button>
+                                </div>
+
+                                <input type="hidden" asp-for="Ground.SupportedSports" id="SupportedSports" />
                                 <span asp-validation-for="Ground.SupportedSports" class="text-danger small"></span>
                             </div>
                         </div>
+
 
                         <div class="form-check form-switch mt-4">
                             <input asp-for="Ground.IsActive" class="form-check-input" type="checkbox" />
@@ -88,43 +120,6 @@
     </div>
 </div>
 
-@section Styles {
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: url('/images/turfbg.jpg') no-repeat center center fixed;
-            background-size: cover;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        .form-container {
-            padding: 30px;
-            border-radius: 20px;
-            background-color: rgba(255, 255, 255, 0.85); /* semi-transparent white */
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-
-        .form-label {
-            font-weight: 600;
-        }
-
-        .form-control {
-            border-radius: 10px;
-        }
-
-        .btn-purple {
-            background-color: #6f42c1;
-            color: white;
-            border: none;
-        }
-
-            .btn-purple:hover {
-                background-color: #5936a2;
-            }
-    </style>
-}
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
@@ -135,6 +130,61 @@
                 output.src = reader.result;
             };
             reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function updateSupportedSports() {
+            const checkboxes = document.querySelectorAll('#sportsCheckboxes input[type="checkbox"]');
+            const selected = [];
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    selected.push(cb.value);
+                }
+            });
+
+            const result = selected.join(", ");
+            document.getElementById("SupportedSports").value = result;
+            document.getElementById("sportsPreview").value = result;
+
+            const clearBtn = document.getElementById("clearSportsBtn");
+            if (selected.length === 0) {
+                clearBtn.classList.add("d-none");
+            } else {
+                clearBtn.classList.remove("d-none");
+            }
+        }
+
+        function clearAllSports() {
+            const checkboxes = document.querySelectorAll('#sportsCheckboxes input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+            updateSupportedSports();
+        }
+
+        function addCustomSport() {
+            const input = document.getElementById("customSportInput");
+            const sport = input.value.trim();
+
+            if (!sport) return;
+
+            const existing = Array.from(document.querySelectorAll('#sportsCheckboxes input')).some(cb => cb.value.toLowerCase() === sport.toLowerCase());
+            if (existing) {
+                alert("Sport already exists.");
+                return;
+            }
+
+            const container = document.getElementById("sportsCheckboxes");
+            const id = "sport_" + sport.replace(/\s+/g, "_");
+
+            const div = document.createElement("div");
+            div.className = "form-check form-check-inline";
+            div.innerHTML = `
+                <input class="form-check-input" type="checkbox" id="${id}" value="${sport}" onchange="updateSupportedSports()" checked />
+                <label class="form-check-label" for="${id}">${sport}</label>
+            `;
+
+            container.appendChild(div);
+            input.value = "";
+            updateSupportedSports();
         }
     </script>
 }

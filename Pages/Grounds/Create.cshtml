@@ -14,10 +14,9 @@
                 </div>
 
                 <div class="card-body p-4">
-                    <!-- ✅ CHANGED: added asp-page-handler="" to support Razor Pages -->
                     <form method="post" enctype="multipart/form-data" asp-page-handler="">
-                        @Html.AntiForgeryToken() <!-- ✅ ADDED anti-forgery token -->
-                        <!-- ✅ ADDED validation summary for debug -->
+                        @Html.AntiForgeryToken()
+
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                         <div class="mb-4 text-center">
@@ -56,11 +55,45 @@
                                 <span asp-validation-for="Ground.PricePerHour" class="text-danger small"></span>
                             </div>
 
-                            <div class="col-md-6">
-                                <label asp-for="Ground.SupportedSports" class="form-label fw-semibold"></label>
-                                <input asp-for="Ground.SupportedSports" class="form-control rounded-3" placeholder="e.g. Football, Cricket" />
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Supported Sports</label>
+
+                                <div id="sportsCheckboxes" class="mb-2">
+                                    @{
+                                        var defaultSports = new List<string> {
+                                                                        "Football", "Cricket", "Badminton", "Volleyball", "Tennis",
+                                                                        "Basketball", "Hockey", "Kabaddi", "Table Tennis", "Kho-Kho"
+                                                                        };
+                                    }
+                                    @foreach (var sport in defaultSports)
+                                    {
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="sport_@sport" value="@sport" onchange="updateSupportedSports()" />
+                                            <label class="form-check-label" for="sport_@sport">@sport</label>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="input-group mb-2">
+                                    <input type="text" id="customSportInput" class="form-control w-50" placeholder="Add custom sport" />
+                                    <button type="button" class="btn btn-outline-secondary" onclick="addCustomSport()">Add</button>
+                                </div>
+
+                                <div class="position-relative mt-2">
+                                    <textarea id="sportsPreview" class="form-control" rows="2" readonly></textarea>
+                                    <button type="button" id="clearSportsBtn"
+                                            class="btn-close position-absolute top-0 end-0 mt-2 me-2 d-none"
+                                            onclick="clearAllSports()" aria-label="Clear"></button>
+                                </div>
+
+
+
+                                <input type="hidden" asp-for="Ground.SupportedSports" id="SupportedSports" />
                                 <span asp-validation-for="Ground.SupportedSports" class="text-danger small"></span>
                             </div>
+
+
+
                         </div>
 
                         <div class="form-check form-switch mt-4">
@@ -128,5 +161,63 @@
             };
             reader.readAsDataURL(event.target.files[0]);
         }
+                       function updateSupportedSports() {
+            const checkboxes = document.querySelectorAll('#sportsCheckboxes input[type="checkbox"]');
+            const selected = [];
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    selected.push(cb.value);
+                }
+            });
+
+            const result = selected.join(", ");
+            document.getElementById("SupportedSports").value = result;
+            document.getElementById("sportsPreview").value = result;
+
+            const clearBtn = document.getElementById("clearSportsBtn");
+            if (selected.length === 0) {
+                clearBtn.classList.add("d-none");
+            } else {
+                clearBtn.classList.remove("d-none");
+            }
+        }
+
+        function clearAllSports() {
+            const checkboxes = document.querySelectorAll('#sportsCheckboxes input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+            updateSupportedSports(); // This will also hide the clear button now
+        }
+
+
+        function addCustomSport() {
+            const input = document.getElementById("customSportInput");
+            const sport = input.value.trim();
+
+            if (!sport) return;
+
+            const existing = Array.from(document.querySelectorAll('#sportsCheckboxes input')).some(cb => cb.value.toLowerCase() === sport.toLowerCase());
+            if (existing) {
+                alert("Sport already exists.");
+                return;
+            }
+
+            const container = document.getElementById("sportsCheckboxes");
+            const id = "sport_" + sport.replace(/\s+/g, "_");
+
+            const div = document.createElement("div");
+            div.className = "form-check form-check-inline";
+            div.innerHTML = `
+                <input class="form-check-input" type="checkbox" id="${id}" value="${sport}" onchange="updateSupportedSports()" checked />
+                <label class="form-check-label" for="${id}">${sport}</label>
+            `;
+
+            container.appendChild(div);
+            input.value = "";
+            updateSupportedSports();
+        }
+
+        
+
     </script>
 }
