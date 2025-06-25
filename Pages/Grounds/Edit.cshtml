@@ -55,6 +55,25 @@
                                 <input asp-for="Ground.PricePerHour" class="form-control rounded-3" placeholder="e.g. 500" />
                                 <span asp-validation-for="Ground.PricePerHour" class="text-danger small"></span>
                             </div>
+                            <div class="row g-3 mt-1">
+                                <div class="row g-3 mt-1">
+        <div class="col-md-4">
+            <label asp-for="SlotDurationHours" class="form-label fw-semibold">Slot Duration (hours)</label>
+            <input asp-for="SlotDurationHours" class="form-control rounded-3" type="number" min="1" max="12" placeholder="e.g. 1" />
+            <span asp-validation-for="SlotDurationHours" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Ground.StartTime" class="form-label fw-semibold"></label>
+            <input asp-for="Ground.StartTime" class="form-control rounded-3" type="time" />
+            <span asp-validation-for="Ground.StartTime" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Ground.EndTime" class="form-label fw-semibold"></label>
+            <input asp-for="Ground.EndTime" class="form-control rounded-3" type="time" />
+            <span asp-validation-for="Ground.EndTime" class="text-danger small"></span>
+        </div>
+                            </div>
+                            </div>
 
                         <div class="row g-3 mt-1">
                             <div class="col-md-12">

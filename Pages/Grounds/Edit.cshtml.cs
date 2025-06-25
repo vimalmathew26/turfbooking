@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using turfbooking.Data;
 using turfbooking.Models;
@@ -28,6 +29,10 @@ namespace turfbooking.Pages.Grounds
 
         public string[] SelectedSports { get; set; } = Array.Empty<string>();
 
+        [BindProperty]
+        [Range(1, 12, ErrorMessage = "Slot duration must be between 1 and 12 hours.")]
+        public int SlotDurationHours { get; set; }
+
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -37,6 +42,9 @@ namespace turfbooking.Pages.Grounds
                 return NotFound();
 
             Ground = ground;
+
+            SlotDurationHours = (int)Ground.SlotDuration.TotalHours;
+
 
             if (!string.IsNullOrWhiteSpace(Ground.SupportedSports))
                 SelectedSports = Ground.SupportedSports.Split(",", StringSplitOptions.TrimEntries);
@@ -60,6 +68,12 @@ namespace turfbooking.Pages.Grounds
                 Console.WriteLine("Error");
                 return Page();
             }
+            // Map SlotDurationHours to SlotDuration
+            Ground.SlotDuration = TimeSpan.FromHours(SlotDurationHours);
+
+            // Parse StartTime and EndTime as in Create
+            groundInDb.StartTime = DateTime.Today.Add(TimeSpan.Parse(Request.Form["Ground.StartTime"]));
+            groundInDb.EndTime = DateTime.Today.Add(TimeSpan.Parse(Request.Form["Ground.EndTime"]));
 
             groundInDb.GroundName = Ground.GroundName;
             groundInDb.Location = Ground.Location;
@@ -67,6 +81,9 @@ namespace turfbooking.Pages.Grounds
             groundInDb.PricePerHour = Ground.PricePerHour;
             groundInDb.SupportedSports = Ground.SupportedSports;
             groundInDb.IsActive = Ground.IsActive;
+            groundInDb.SlotDuration = Ground.SlotDuration;
+            groundInDb.StartTime = Ground.StartTime;
+            groundInDb.EndTime = Ground.EndTime;
 
             if (Photo != null && Photo.Length > 0)
             {

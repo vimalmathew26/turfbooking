@@ -30,6 +30,9 @@ namespace turfbooking.Pages.Grounds
             SupportedSports = string.Empty,
             IsActive = true,
             PhotoPath = string.Empty,
+            SlotDuration = TimeSpan.FromMinutes(60), // Default: 1 hour
+            StartTime = DateTime.Today.AddHours(6),  // Default: 6 AM today
+            EndTime = DateTime.Today.AddHours(22)    // Default: 10 PM today
         };
 
         [BindProperty]
@@ -37,14 +40,24 @@ namespace turfbooking.Pages.Grounds
         [Display(Name = "Upload Photo")]
         public required IFormFile Photo { get; set; }
 
+        [BindProperty]
+        [Range(1, 12, ErrorMessage = "Slot duration must be between 1 and 12 hours.")]
+        public int SlotDurationHours { get; set; }
+
         public IActionResult OnGet()
         {
+            SlotDurationHours = (int)Ground.SlotDuration.TotalHours;
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            Console.WriteLine("? OnPostAsync triggered"); // ? DEBUG
+            Ground.SlotDuration = TimeSpan.FromHours(SlotDurationHours);
+
+            // For StartTime and EndTime, if you only want the time part:
+            Ground.StartTime = DateTime.Today.Add(TimeSpan.Parse(Request.Form["Ground.StartTime"]));
+            Ground.EndTime = DateTime.Today.Add(TimeSpan.Parse(Request.Form["Ground.EndTime"]));
 
             if (!ModelState.IsValid)
             {

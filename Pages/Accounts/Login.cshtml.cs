@@ -33,14 +33,7 @@ namespace turfbooking.Pages.Accounts
 
             if (!string.IsNullOrEmpty(returnUrl))
             {
-                if ( returnUrl.Contains("/Admin", StringComparison.OrdinalIgnoreCase))
-                {
-                    TempData["Error"] = "You are logged in as an User. Access denied.";
-                }
-                else
-                {
-                    TempData["Error"] = "You are logged in as an Admin. Access denied.";
-                }
+                    TempData["Error"] = "Unauthorized access denied.";
             }
         }
 
