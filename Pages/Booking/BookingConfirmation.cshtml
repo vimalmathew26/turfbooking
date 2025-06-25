@@ -1,5 +1,5 @@
 ﻿@page
-@model BookingConfirmationModel
+@model turfbooking.Pages.Booking.BookingConfirmationModel
 @{
     ViewData["Title"] = "Booking Confirmation";
 }
@@ -13,5 +13,4 @@
     <p><strong>Total Price:</strong> ₹@Model.Booking.TotalPrice</p>
 </div>
 
-<a class="btn btn-primary" asp-page="/MyBookings">View My Bookings</a>
-<a class="btm btn-primary" asp-page="/Users/GroundDetails"></a>
+<a class="btn btn-primary" asp-page="/Booking/MyBookings">View My Bookings</a>

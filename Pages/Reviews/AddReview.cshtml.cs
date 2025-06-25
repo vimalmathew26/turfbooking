@@ -42,9 +42,6 @@ namespace turfbooking.Pages.Reviews
                 TempData["GroundNotFound"] = "Ground not found!";
                 return RedirectToPage("./AddReview"); 
             }
-
-
-
             return Page();
         }
 

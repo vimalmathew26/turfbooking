@@ -27,8 +27,10 @@ namespace turfbooking.Pages.Admin
         
         public async Task OnGetAsync(int? groundId)
         {
-            GroundId = groundId;
-
+            if (groundId == null)
+            {
+                GroundId = groundId;
+            }
             var query = _context.Bookings
                 .Include(b => b.User)
                 .Include(b => b.Ground)
@@ -44,19 +46,9 @@ namespace turfbooking.Pages.Admin
                 query = query.Where(b => b.BookingDate.Date == SearchDate.Value.Date);
             }
 
-            if (groundId.HasValue)
-            {
-                query = query.Where(b => b.GroundId == groundId);
-            }
-
+            query = query.Where(b => b.GroundId == GroundId);
+           
             Bookings = await query.ToListAsync();
-            //Bookings = await _context.Bookings
-
-            //    .Include(b => b.User)
-            //    .Include(b=>b.Ground)
-            //    .Where(b => b.GroundId == GroundId)
-            //    .ToListAsync();
-            //return Page();
         }
 
         public async Task<IActionResult> OnPostCancelBookingAsync(int bookingId,int GroundId)

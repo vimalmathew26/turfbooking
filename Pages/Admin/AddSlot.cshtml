@@ -1,5 +1,5 @@
 ﻿@page
-@model AddSlotModel
+@model turfbooking.Pages.Admin.AddSlotModel
 @{
     ViewData["Title"] = "Add Slot";
 }
@@ -36,9 +36,4 @@
 else
 {
     <div class="alert alert-danger">Ground not found.</div>
-}
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
 }

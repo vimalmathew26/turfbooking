@@ -6,7 +6,7 @@ using turfbooking.Models;
 using turfbooking.Data;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace.turfbooking.Pages.Admin {
+namespace turfbooking.Pages.Admin {
     public class AddSlotModel : PageModel
     {
         private readonly AppDbContext _context;

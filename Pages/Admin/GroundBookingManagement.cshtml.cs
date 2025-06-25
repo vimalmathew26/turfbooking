@@ -14,7 +14,6 @@ namespace turfbooking.Pages.Admin
          {
             _context = context;
          }
-
          public IList<Ground> Grounds { get; set; } = new List<Ground>();
          public async Task OnGetAsync(bool showInactive = false)
 
