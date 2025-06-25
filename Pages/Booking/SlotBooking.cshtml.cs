@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using turfbooking.Models;
 using turfbooking.Data;
-namespace turfbooking.Pages.Booking
+using turfbooking.Models;
+
+namespace turbfbooking.Pages.Booking
 {
+    [Authorize(Roles = "User")]
     public class SlotBookingModel : PageModel
     {
         private readonly AppDbContext _context;
@@ -67,7 +70,7 @@ namespace turfbooking.Pages.Booking
                 return Page();
             }
 
-            var booking = new Models.Booking
+            var booking = new turfbooking.Models.Booking
             {
                 UserId = userId,
                 GroundId = slot.GroundId,
@@ -90,5 +93,4 @@ namespace turfbooking.Pages.Booking
             return RedirectToPage("/Booking/BookingConfirmation", new { bookingId = booking.Id });
         }
     }
-
 }

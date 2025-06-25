@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -7,6 +8,7 @@ using turfbooking.Models;
 
 namespace turfbooking.Pages.Admin
 {
+    [Authorize(Roles = "Admin")]
     public class AdminProfileModel : PageModel
     {
         private readonly AppDbContext _context;

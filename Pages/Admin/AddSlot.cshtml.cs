@@ -1,12 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using turfbooking.Models;
 using turfbooking.Data;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using turfbooking.Models;
 
-namespace turfbooking.Pages.Admin {
+namespace turfbooking.Pages.Admin
+{
+    [Authorize(Roles = "Admin")]
     public class AddSlotModel : PageModel
     {
         private readonly AppDbContext _context;
@@ -55,5 +58,6 @@ namespace turfbooking.Pages.Admin {
             return RedirectToPage("/Admin/AddSlot", new { GroundId = GroundId });
 
         }
+
     }
 }

@@ -8,7 +8,7 @@ using turfbooking.Models;
 namespace turfbooking.Pages.Admin
 
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class GroundSlotModel : PageModel
 
     {

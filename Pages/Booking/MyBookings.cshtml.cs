@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using turfbooking.Models;
 using turfbooking.Data;
+using turfbooking.Models;
 
-namespace turfbooking.Pages.Booking {
+namespace turfbooking.Pages.Booking
+{
+    [Authorize(Roles = "User")]
     public class MyBookingsModel : PageModel
     {
         private readonly AppDbContext _context;
@@ -68,8 +71,5 @@ namespace turfbooking.Pages.Booking {
             return RedirectToPage();
         }
 
-
-
     }
-
 }

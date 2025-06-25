@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using turfbooking.Models;
 
 namespace turfbooking.Pages.Grounds
 {
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly AppDbContext _context;

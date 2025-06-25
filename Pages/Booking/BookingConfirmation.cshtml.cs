@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using turfbooking.Models;
 
 namespace turfbooking.Pages.Booking
 {
+    [Authorize(Roles = "User")]
     public class BookingConfirmationModel : PageModel
     {
         private readonly AppDbContext _context;
