@@ -1,31 +1,36 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using turfbooking.Data;
 using turfbooking.Models;
 
-public class BookingConfirmationModel : PageModel
+namespace turfbooking.Pages.Booking
 {
-    private readonly AppDbContext _context;
-
-    public BookingConfirmationModel(AppDbContext context)
+    [Authorize(Roles = "User")]
+    public class BookingConfirmationModel : PageModel
     {
-        _context = context;
-    }
+        private readonly AppDbContext _context;
 
-    public Booking Booking { get; set; }
-
-    public async Task<IActionResult> OnGetAsync(int bookingId)
-    {
-        Booking = await _context.Bookings
-            .Include(b => b.Ground)
-            .FirstOrDefaultAsync(b => b.Id == bookingId);
-
-        if (Booking == null)
+        public BookingConfirmationModel(AppDbContext context)
         {
-            return NotFound();
+            _context = context;
         }
 
-        return Page();
+        public Models.Booking Booking { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int bookingId)
+        {
+            Booking = await _context.Bookings
+                .Include(b => b.Ground)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+
+            if (Booking == null)
+            {
+                return NotFound();
+            }
+
+            return Page();
+        }
     }
 }

@@ -1,72 +1,75 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using turfbooking.Models;
 using turfbooking.Data;
+using turfbooking.Models;
 
-public class MyBookingsModel : PageModel
+namespace turfbooking.Pages.Booking
 {
-    private readonly AppDbContext _context;
-
-    public MyBookingsModel(AppDbContext context)
+    [Authorize(Roles = "User")]
+    public class MyBookingsModel : PageModel
     {
-        _context = context;
-    }
+        private readonly AppDbContext _context;
 
-    public List<Booking> Bookings { get; set; }
-
-    public async Task<IActionResult> OnGetAsync()
-    {
-        var userIdClaim = User.FindFirst("UserId");
-        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+        public MyBookingsModel(AppDbContext context)
         {
-            ModelState.AddModelError(string.Empty, "User authentication required.");
+            _context = context;
+        }
+
+        public List<Models.Booking> Bookings { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
+        {
+            var userIdClaim = User.FindFirst("UserId");
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                ModelState.AddModelError(string.Empty, "User authentication required.");
+                return Page();
+            }
+
+            Bookings = await _context.Bookings
+                .Where(b => b.UserId == userId)
+                .Include(b => b.Ground)
+                .OrderByDescending(b => b.BookingDate)
+                .ToListAsync();
+
             return Page();
         }
 
-        Bookings = await _context.Bookings
-            .Where(b => b.UserId == userId)
-            .Include(b => b.Ground)
-            .OrderByDescending(b => b.BookingDate)
-            .ToListAsync();
 
-        return Page();
+        public async Task<IActionResult> OnPostCancelAsync(int bookingId)
+        {
+            var booking = await _context.Bookings
+                .Include(b => b.Ground)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+
+
+
+            if (booking == null || booking.Status == BookingStatus.Cancelled)
+            {
+                return NotFound();
+            }
+            var slotDateTime = booking.BookingDate.Add(booking.StartTime);
+            if (DateTime.Now >= slotDateTime.AddHours(-24))
+            {
+                TempData["ErrorMessage"] = "Cannot cancel the booking. Cancellations must be made at least 24 hours in advance.";
+                return RedirectToPage();
+            }
+
+            booking.Status = BookingStatus.Cancelled;
+
+            var slot = await _context.Slots.FirstOrDefaultAsync(s => s.BookingId == booking.Id);
+            if (slot != null)
+            {
+                slot.Status = Slot.SlotStatus.Available;
+                slot.BookingId = null;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage();
+        }
+
     }
-
-
-    public async Task<IActionResult> OnPostCancelAsync(int bookingId)
-    {
-        var booking = await _context.Bookings
-            .Include(b => b.Ground)
-            .FirstOrDefaultAsync(b => b.Id == bookingId);
-
-         
-
-        if (booking == null || booking.Status == BookingStatus.Cancelled)
-        {
-            return NotFound();
-        }
-        var slotDateTime = booking.BookingDate.Add(booking.StartTime);
-        if (DateTime.Now >=  slotDateTime.AddHours(-24))
-        {
-            TempData["ErrorMessage"] = "Cannot cancel the booking. Cancellations must be made at least 24 hours in advance.";
-            return RedirectToPage(); 
-        }
-
-        booking.Status = BookingStatus.Cancelled;
-
-        var slot = await _context.Slots.FirstOrDefaultAsync(s => s.BookingId == booking.Id);
-        if (slot != null)
-        {
-            slot.Status = Slot.SlotStatus.Available;
-            slot.BookingId = null;
-        }
-
-        await _context.SaveChangesAsync();
-
-        return RedirectToPage();
-    }
-
-
-
 }

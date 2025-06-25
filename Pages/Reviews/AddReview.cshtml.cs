@@ -7,7 +7,7 @@ using turfbooking.Models;
 
 namespace turfbooking.Pages.Reviews
 {
-   
+    [Authorize(Roles = "User")]
     public class AddReviewModel : PageModel
     {
         private readonly AppDbContext _context;

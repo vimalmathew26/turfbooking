@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using turfbooking.Models;
 
 namespace turfbooking.Pages.Admin
 {
+    [Authorize(Roles = "Admin")]
     public class BookingManagementModel : PageModel
     {
         private readonly AppDbContext _context;
@@ -50,13 +52,13 @@ namespace turfbooking.Pages.Admin
             }
 
             Bookings = await query.ToListAsync();
-            //Bookings = await _context.Bookings
+           /* Bookings = await _context.Bookings
 
-            //    .Include(b => b.User)
-            //    .Include(b=>b.Ground)
-            //    .Where(b => b.GroundId == GroundId)
-            //    .ToListAsync();
-            //return Page();
+                .Include(b => b.User)
+                .Include(b => b.Ground)
+                .Where(b => b.GroundId == GroundId)
+                .ToListAsync();
+            return Page();*/
         }
 
         public async Task<IActionResult> OnPostCancelBookingAsync(int bookingId,int GroundId)

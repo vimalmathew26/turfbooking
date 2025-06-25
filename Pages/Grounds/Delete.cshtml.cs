@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.RegularExpressions;
@@ -6,6 +7,7 @@ using turfbooking.Models;
 
 namespace turfbooking.Pages.Grounds
 {
+    [Authorize(Roles = "Admin")]
     public class DeleteModel : PageModel
     {
         private readonly AppDbContext _context;
