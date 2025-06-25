@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using turfbooking.Data;
+using turfbooking.Helper;
 using turfbooking.Models;
 
 namespace turfbooking.Pages.Admin
@@ -11,11 +12,15 @@ namespace turfbooking.Pages.Admin
     public class SlotManagementModel : PageModel
     {
         private readonly AppDbContext _context;
+        private readonly DefaultSlots _defaultSlots;
 
-        public SlotManagementModel(AppDbContext context)
+        public SlotManagementModel(AppDbContext context, DefaultSlots defaultSlots)
         {
             _context = context;
+            _defaultSlots = defaultSlots;
         }
+
+        
 
         [BindProperty(SupportsGet = true)]
         public DateTime? SelectedDate { get; set; }
@@ -30,6 +35,7 @@ namespace turfbooking.Pages.Admin
         public List<DateTime>? SlotDates { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
+            await _defaultSlots.SetDefaultSlots(GroundId);
             Ground = await _context.Grounds.FindAsync(GroundId);
 
             SlotDates = await _context.Slots
