@@ -1,6 +1,6 @@
 ﻿@page
 @using turfbooking.Models
-@model MyBookingsModel
+@model turfbooking.Pages.Booking.MyBookingsModel
 @{
     ViewData["Title"] = "My Bookings";
 }
@@ -27,6 +27,7 @@ else
                 <th>Time</th>
                 <th>Total Price</th>
                 <th>Status</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -45,9 +46,18 @@ else
                     <td>@booking.BookingDate.ToString("dd-MM-yyyy")</td>
                     <td>@booking.StartTime - @booking.EndTime</td>
                     <td>@booking.TotalPrice</td>
-                    <td>@booking.Status</td>
+                    <td>@if (booking.Status==BookingStatus.Confirmed && booking.Slot==null)
+                        {
+                            <p class="text-danger">Your Booked Slot was Cancelled Due to Turf Maintanance.Your Refund is Initiated.</p>
+                        }
+                        else
+                        {
+                            @booking.Status
+                        }
+
+                    </td>
                     <td>
-                        @if (booking.Status == BookingStatus.Confirmed && isValidTime && slotTime > DateTime.Now)
+                        @if (booking.Status == BookingStatus.Confirmed && isValidTime && slotTime > DateTime.Now && booking.Slot != null)
                         {
                             <form method="post" asp-page-handler="Cancel">
                                 <input type="hidden" name="bookingId" value="@booking.Id" />

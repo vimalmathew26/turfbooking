@@ -63,7 +63,7 @@ namespace turfbooking.Pages.Admin
         public async Task<IActionResult> OnPostBlockAsync(int id, int GroundId, DateTime SelectedDate)
         {
             var slot = await _context.Slots.FindAsync(id);
-            if (slot != null && slot.Status == Slot.SlotStatus.Available)
+            if (slot != null && (slot.Status == Slot.SlotStatus.Available || slot.Status == Slot.SlotStatus.Booked ))
             {
                 slot.Status = Slot.SlotStatus.Blocked;
                 await _context.SaveChangesAsync();

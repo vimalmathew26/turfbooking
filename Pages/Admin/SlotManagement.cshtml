@@ -90,14 +90,14 @@
                                 @if (slot.Status == Slot.SlotStatus.Available)
                                 {
                                     <form method="post" asp-page-handler="Block" asp-route-id="@slot.Id" asp-route-groundId="@slot.GroundId" asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")" style="display:inline;">
-                                        <button type="submit" class="btn btn-warning">Disable</button>
+                                        <button type="submit" class="btn btn-warning">Block</button>
                                     </form>
                                 }
                                 else if (slot.Status == Slot.SlotStatus.Blocked)
                                 {
                                     <form method="post" asp-page-handler="Enable" asp-route-id="@slot.Id" asp-route-groundId="@slot.GroundId" asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")"
                                           style="display:inline;">
-                                        <button type="submit" class="btn btn-success">Enable</button>
+                                        <button type="submit" class="btn btn-success">Unblock</button>
                                     </form>
                                 }
                             </td>

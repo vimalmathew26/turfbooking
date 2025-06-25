@@ -1,6 +1,6 @@
 ﻿@page
-@model turfbooking.Pages.Booking.SlotBookingModel
 @using turfbooking.Models
+@model turfbooking.Pages.Booking.SlotBookingModel
 
 @{
     ViewData["Title"] = "Slot Booking";
@@ -68,9 +68,13 @@ else
             var date = slot.BookingDate.Date.ToString("dd-MM-yyyy");
             var slotText = $"{slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}";
             var isExpired = (Model.Date.Date == DateTime.Now.Date && slot.StartTime <= @Model.CurrentTime) || Model.Date.Date < DateTime.Now.Date;
+            var Blocked = slot.Status == Slot.SlotStatus.Blocked;
             if (slot.Status == Slot.SlotStatus.Blocked)
             {
-                continue;
+                <div class="slot-card booked">
+                    @date<br />
+                    @slotText<br />Under Maintanance
+                </div>
             }
             else if (isExpired)
             {

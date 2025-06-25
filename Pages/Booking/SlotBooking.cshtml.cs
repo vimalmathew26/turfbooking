@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using turfbooking.Data;
 using turfbooking.Models;
 
-namespace turbfbooking.Pages.Booking
+namespace turfbooking.Pages.Booking
 {
     [Authorize(Roles = "User")]
     public class SlotBookingModel : PageModel
