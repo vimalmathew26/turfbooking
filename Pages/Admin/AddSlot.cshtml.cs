@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using turfbooking.Data;
+using turfbooking.Helper;
 using turfbooking.Models;
 
 namespace turfbooking.Pages.Admin
@@ -13,10 +14,12 @@ namespace turfbooking.Pages.Admin
     public class AddSlotModel : PageModel
     {
         private readonly AppDbContext _context;
+        private readonly DefaultSlots _defaultSlots;
 
-        public AddSlotModel(AppDbContext context)
+        public AddSlotModel(AppDbContext context,DefaultSlots defaultSlots)
         {
             _context = context;
+            _defaultSlots = defaultSlots;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -50,12 +53,20 @@ namespace turfbooking.Pages.Admin
             {
                 return Page();
             }
-            Slot.Status = Slot.SlotStatus.Available;
-            Slot.GroundId = GroundId;
-            _context.Slots.Add(Slot);
-            await _context.SaveChangesAsync();
+           
+            if (Slot.StartTime < Ground.StartTime.TimeOfDay || Slot.StartTime > Ground.EndTime.TimeOfDay) {
+                Slot.Status = Slot.SlotStatus.Available;
+                Slot.GroundId = GroundId;
+                _context.Slots.Add(Slot);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty,$"Cann't Add Ground Slot Between Default Time Slot");
+                return Page();
+            }
 
-            return RedirectToPage("/Admin/AddSlot", new { GroundId = GroundId });
+                return RedirectToPage("/Admin/AddSlot", new { GroundId = GroundId });
 
         }
 

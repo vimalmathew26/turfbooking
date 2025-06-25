@@ -76,6 +76,9 @@ namespace turfbooking.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("GroundName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -94,6 +97,12 @@ namespace turfbooking.Migrations
 
                     b.Property<decimal>("PricePerHour")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<TimeSpan>("SlotDuration")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SupportedSports")
                         .IsRequired()

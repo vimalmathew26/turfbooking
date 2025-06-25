@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using turfbooking.Data;
 using turfbooking.Models;
+using turfbooking.Helper;
 
 namespace turfbooking.Pages.Booking
 {
@@ -11,11 +12,15 @@ namespace turfbooking.Pages.Booking
     public class SlotBookingModel : PageModel
     {
         private readonly AppDbContext _context;
+        private readonly DefaultSlots _defaultSlots;
 
-        public SlotBookingModel(AppDbContext context)
+        public SlotBookingModel(AppDbContext context,DefaultSlots defaultSlots)
         {
             _context = context;
+            _defaultSlots = defaultSlots;
+
         }
+        
 
         [BindProperty(SupportsGet = true)]
         public int GroundId { get; set; }
@@ -30,6 +35,10 @@ namespace turfbooking.Pages.Booking
 
         public async Task OnGetAsync()
         {
+
+
+
+            await _defaultSlots.SetDefaultSlots(GroundId);
 
             CurrentTime = DateTime.Now.TimeOfDay;
 
@@ -81,6 +90,7 @@ namespace turfbooking.Pages.Booking
                 Status = BookingStatus.Confirmed,
                 SlotId = slotId
             };
+
 
             _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();

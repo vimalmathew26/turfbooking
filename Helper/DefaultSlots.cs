@@ -17,10 +17,11 @@ namespace turfbooking.Helper
 
             var Ground = await _context.Grounds.FindAsync(groundId);
 
-            DateTime startTime = Ground.StartTime;
-            DateTime endTime = Ground.EndTime;
+            TimeSpan startTime = Ground.StartTime.TimeOfDay;
+            TimeSpan endTime = Ground.EndTime.TimeOfDay;
 
-            TimeSpan duration = Ground.duration;
+            TimeSpan duration = Ground.SlotDuration;
+
 
 
             for (int dayOffset=0;dayOffset<7;dayOffset++)
@@ -44,7 +45,10 @@ namespace turfbooking.Helper
                     if (existingSlot == null)
                     {
                         _context.Slots.Add(slot);
+                        await _context.SaveChangesAsync();
+
                     }
+
                 }
 
                 
