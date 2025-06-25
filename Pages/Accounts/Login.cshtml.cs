@@ -31,9 +31,16 @@ namespace turfbooking.Pages.Accounts
         {
             var returnUrl = Request.Query["ReturnUrl"].ToString();
 
-            if (!string.IsNullOrEmpty(returnUrl) && returnUrl.Contains("/Admin/AdminDashboard", StringComparison.OrdinalIgnoreCase) || returnUrl.Contains("UserDashboard", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(returnUrl))
             {
-                TempData["Error"] = "You are not authorized to access that page.";
+                if ( returnUrl.Contains("/Admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    TempData["Error"] = "You are logged in as an User. Access denied.";
+                }
+                else
+                {
+                    TempData["Error"] = "You are logged in as an Admin. Access denied.";
+                }
             }
         }
 
@@ -81,6 +88,15 @@ namespace turfbooking.Pages.Accounts
                 IsPersistent = true,
                 ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
             });
+
+            var returnUrl = Request.Query["ReturnUrl"].ToString();
+
+            Console.WriteLine(returnUrl);
+
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
 
             if (user.Role == "Admin")
                 return RedirectToPage("/Admin/AdminDashboard");
