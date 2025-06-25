@@ -9,8 +9,6 @@ namespace turfbooking.Models
         [Required(ErrorMessage = "Ground name is required.")]
         [StringLength(100, ErrorMessage = "Ground name cannot exceed 100 characters.")]
         public  string GroundName { get; set; }
-
-    
         public required string? PhotoPath { get; set; }
 
         [Required(ErrorMessage = "Location is required.")]
@@ -29,6 +27,15 @@ namespace turfbooking.Models
         public string SupportedSports { get; set; }
 
         public bool IsActive { get; set; } = true;
+
+        [Required]
+        public TimeSpan SlotDuration { get; set; }
+        
+        [Required]
+        public DateTime StartTime { get; set; }
+        
+        [Required]
+        public DateTime EndTime { get; set; }
 
         public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
         public ICollection<Review>? Reviews { get; set; } = new List<Review>();
