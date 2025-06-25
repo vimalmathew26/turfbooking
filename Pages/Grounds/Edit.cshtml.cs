@@ -33,6 +33,12 @@ namespace turfbooking.Pages.Grounds
         [Range(1, 12, ErrorMessage = "Slot duration must be between 1 and 12 hours.")]
         public int SlotDurationHours { get; set; }
 
+        [BindProperty]
+        [Range(0, 59, ErrorMessage = "Minutes must be between 0 and 59.")]
+        public int SlotDurationMinutes { get; set; }
+
+       
+
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -43,7 +49,9 @@ namespace turfbooking.Pages.Grounds
 
             Ground = ground;
 
-            SlotDurationHours = (int)Ground.SlotDuration.TotalHours;
+            SlotDurationHours = Ground.SlotDuration.Hours;
+            SlotDurationMinutes = Ground.SlotDuration.Minutes;
+
 
 
             if (!string.IsNullOrWhiteSpace(Ground.SupportedSports))
@@ -68,8 +76,9 @@ namespace turfbooking.Pages.Grounds
                 Console.WriteLine("Error");
                 return Page();
             }
-            // Map SlotDurationHours to SlotDuration
-            Ground.SlotDuration = TimeSpan.FromHours(SlotDurationHours);
+
+            Ground.SlotDuration = new TimeSpan(SlotDurationHours, SlotDurationMinutes, 0);
+
 
             // Parse StartTime and EndTime as in Create
             groundInDb.StartTime = DateTime.Today.Add(TimeSpan.Parse(Request.Form["Ground.StartTime"]));
