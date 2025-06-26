@@ -52,21 +52,29 @@ namespace turfbooking.Pages.Admin
             if (!ModelState.IsValid)
             {
                 return Page();
-            }
-           
-            if (Slot.StartTime < Ground.StartTime.TimeOfDay || Slot.StartTime > Ground.EndTime.TimeOfDay) {
-                Slot.Status = Slot.SlotStatus.Available;
-                Slot.GroundId = GroundId;
-                _context.Slots.Add(Slot);
-                await _context.SaveChangesAsync();
+            }           
+            if ((Slot.StartTime <= Ground.StartTime.TimeOfDay || Slot.StartTime >= Ground.EndTime.TimeOfDay) && (Slot.EndTime<=Ground.StartTime.TimeOfDay || Slot.EndTime >=Ground.EndTime.TimeOfDay)) {
+                if ((Slot.EndTime-Slot.StartTime).TotalHours>=1) 
+                {
+                    Slot.Status = Slot.SlotStatus.Available;
+                    Slot.GroundId = GroundId;
+                    _context.Slots.Add(Slot);
+                    await _context.SaveChangesAsync();
+                
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty,"Only Allowed to add a slot with minimum duration of 1 hours");
+                    return Page();
+                }
+                
             }
             else
             {
-                ModelState.AddModelError(string.Empty,$"Cann't Add Ground Slot Between Default Time Slot");
+                ModelState.AddModelError(string.Empty,"Cann't Add Ground Slot Between Default Time Slot");
                 return Page();
             }
-
-                return RedirectToPage("/Admin/AddSlot", new { GroundId = GroundId });
+                return RedirectToPage("/Admin/SlotManagement", new { GroundId = GroundId });
 
         }
 

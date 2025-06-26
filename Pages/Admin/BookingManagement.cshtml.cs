@@ -29,10 +29,10 @@ namespace turfbooking.Pages.Admin
         
         public async Task OnGetAsync(int? groundId)
         {
-            if (groundId == null)
+            if (groundId!=null) 
             {
                 GroundId = groundId;
-            }
+            }            
             var query = _context.Bookings
                 .Include(b => b.User)
                 .Include(b => b.Ground)

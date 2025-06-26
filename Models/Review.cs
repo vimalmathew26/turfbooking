@@ -6,19 +6,18 @@ namespace turfbooking.Models
     public class Review
     {
         public int Id { get; set; }
-
-        [Required]
+       
         public int UserId { get; set; }
-        [Required]
+      
         public int GroundId { get; set; }
-        [Required]
+    
         public int BookingId { get; set; }
 
-
+        [Required]
         [Range(1, 5)]
         public int Rating { get; set; }
 
-
+        [Required]
         [MaxLength(500)]
         public string Comment { get; set; }
 

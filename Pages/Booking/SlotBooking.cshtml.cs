@@ -19,27 +19,19 @@ namespace turfbooking.Pages.Booking
             _context = context;
             _defaultSlots = defaultSlots;
 
-        }
-        
-
+        }       
         [BindProperty(SupportsGet = true)]
         public int GroundId { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public DateTime Date { get; set; }
-
         public List<DateTime> Next7Days { get; set; }
         public TimeSpan CurrentTime { get; set; }
-
         public List<Slot> AvailableSlots { get; set; }
 
         public async Task OnGetAsync()
         {
-
-
-
             await _defaultSlots.SetDefaultSlots(GroundId);
-
             CurrentTime = DateTime.Now.TimeOfDay;
 
             if (Date == default)
@@ -50,27 +42,25 @@ namespace turfbooking.Pages.Booking
             Next7Days = Enumerable.Range(0, 7)
                 .Select(i => DateTime.Today.AddDays(i))
                 .ToList();
-
-
+            
             AvailableSlots = await _context.Slots
            .Where(s => s.GroundId == GroundId
                     && s.BookingDate.Date == Date.Date)
            .OrderBy(s => s.StartTime)
-           .ToListAsync();
-
-
+           .ToListAsync();           
         }
-
 
         public async Task<IActionResult> OnPostBookAsync(int slotId)
         {
+
             var slot = await _context.Slots
                        .Include(s => s.Ground)
                        .FirstOrDefaultAsync(s => s.Id == slotId);
 
             if (slot == null || slot.Status == Slot.SlotStatus.Booked)
             {
-                return NotFound();
+                ModelState.AddModelError(string.Empty,"Selected Slot Not Available");
+                return Page();
             }
             var userIdClaim = User.FindFirst("UserId");
             if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))

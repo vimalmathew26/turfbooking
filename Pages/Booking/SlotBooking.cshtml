@@ -8,6 +8,7 @@
 
 <h2>Book a Slot for @Model.Date.ToString("dd-MM-yyyy")</h2>
 
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <style>
     .slot-grid {
         display: flex;
@@ -56,7 +57,7 @@
         }
     </div>
 </div>
-@if (!Model.AvailableSlots.Any())
+@if (Model.AvailableSlots==null)
 {
     <p>No available slots for the selected date.</p>
 }
@@ -68,7 +69,7 @@ else
             var date = slot.BookingDate.Date.ToString("dd-MM-yyyy");
             var slotText = $"{slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}";
             var isExpired = (Model.Date.Date == DateTime.Now.Date && slot.StartTime <= @Model.CurrentTime) || Model.Date.Date < DateTime.Now.Date;
-            var Blocked = slot.Status == Slot.SlotStatus.Blocked;
+           
             if (slot.Status == Slot.SlotStatus.Blocked)
             {
                 <div class="slot-card booked">

@@ -8,12 +8,13 @@
 
 <h2>Slot Management for @Model.Ground.GroundName</h2>
 
-<!-- Add Slot Button: Always visible, before slot list -->
+
+
 <a asp-page="/Admin/AddSlot" asp-route-GroundId="@Model.GroundId" class="btn btn-primary mb-3 float-end">
     Add Slot
 </a>
 
-@if (Model.SlotDates?.Any() == true)
+@if (Model.SlotDates!=null && Model.SlotDates.Any())
 {
     <div class="row">
         <div class="col-md-3">
@@ -21,11 +22,13 @@
             <ul class="list-group">
                 @foreach (var date in Model.SlotDates)
                 {
-                    <li class="list-group-item">
-                        <a asp-page="/Admin/SlotManagement" asp-route-SelectedDate="@date.ToString("yyyy-MM-dd")" asp-route-GroundID="@Model.GroundId">
-                            @date.ToShortDateString()
-                        </a>
-                    </li>
+                    @if(date>=DateTime.Now.Date){
+                        <li class="list-group-item">
+                            <a asp-page="/Admin/SlotManagement" asp-route-SelectedDate="@date.ToString("yyyy-MM-dd")" asp-route-GroundID="@Model.GroundId">
+                                @date.ToShortDateString()
+                             </a>
+                         </li>
+                    }
                 }
             </ul>
         </div>
@@ -99,10 +102,12 @@
                                         <button type="submit" class="btn btn-success">Unblock</button>
                                     </form>
                                 }
+                                @if(slot.Status!=Slot.SlotStatus.Booked){
                            
                                 <form method="post" asp-page-handler="Delete" asp-route-id="@slot.Id" asp-route-GroundId="@slot.GroundId" style="display:inline;">
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                 </form>
+                                }
                             </td>
                         </tr>
                     }
