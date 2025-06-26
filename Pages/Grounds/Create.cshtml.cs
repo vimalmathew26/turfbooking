@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using turfbooking.Data;
+using turfbooking.Helper;
 using turfbooking.Models;
 
 namespace turfbooking.Pages.Grounds
@@ -93,6 +94,9 @@ namespace turfbooking.Pages.Grounds
 
             _context.Grounds.Add(Ground);
             await _context.SaveChangesAsync();
+
+            var slotHelper = new DefaultSlots(_context);
+            await slotHelper.SetDefaultSlots(Ground.Id);
 
             return RedirectToPage("/Grounds/Index");
         }

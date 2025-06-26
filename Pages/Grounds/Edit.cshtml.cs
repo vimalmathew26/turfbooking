@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using turfbooking.Data;
+using turfbooking.Helper;
 using turfbooking.Models;
 
 namespace turfbooking.Pages.Grounds
@@ -110,6 +111,10 @@ namespace turfbooking.Pages.Grounds
             }
 
             await _context.SaveChangesAsync();
+
+            var slotHelper = new DefaultSlots(_context);
+            await slotHelper.SetDefaultSlots(Ground.Id);
+
             return RedirectToPage("/Grounds/Index");
         }
     }

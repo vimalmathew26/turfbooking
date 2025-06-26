@@ -28,8 +28,8 @@ namespace turfbooking.Helper
             {
                 DateTime CurrentDate = DateTime.Today.AddDays(dayOffset);
 
-                
-                for (TimeSpan time = startTime; time < endTime; time += duration)
+
+                for (TimeSpan time = startTime; time + duration <= endTime; time += duration)
                 {
                     var slot = new Slot
                     {
