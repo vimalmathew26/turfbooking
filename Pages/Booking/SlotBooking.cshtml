@@ -17,8 +17,8 @@
     }
 
     .slot-card {
-        width: 140px;
-        height: 70px;
+        width: 180px;
+        height: 80px;
         border-radius: 8px;
         color: white;
         font-weight: bold;
@@ -29,8 +29,11 @@
         padding: 5px;
     }
 
-    .booked {
-        background-color: #dc3545;
+    .expired{
+        background-color:   #dc3545;
+    }
+    .booked{
+        background-color: lightgreen;
     }
 
     .available {
@@ -79,7 +82,7 @@ else
             }
             else if (isExpired)
             {
-                <div class="slot-card booked">
+                <div class="slot-card expired">
                     @date<br />
                     @slotText<br />Expired
                 </div>
