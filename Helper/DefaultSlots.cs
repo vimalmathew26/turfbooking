@@ -1,6 +1,7 @@
 ﻿using turfbooking.Models;
 using turfbooking.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.HttpResults;        
 namespace turfbooking.Helper
 {
     public class DefaultSlots
@@ -16,7 +17,7 @@ namespace turfbooking.Helper
         {
 
             var Ground = await _context.Grounds.FindAsync(groundId);
-
+            
             TimeSpan startTime = Ground.StartTime.TimeOfDay;
             TimeSpan endTime = Ground.EndTime.TimeOfDay;
 

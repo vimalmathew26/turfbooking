@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.RegularExpressions;
 using turfbooking.Data;
 using turfbooking.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace turfbooking.Pages.Grounds
 {
@@ -36,13 +37,46 @@ namespace turfbooking.Pages.Grounds
             var groundToDelete = await _context.Grounds.FindAsync(Ground.Id);
             if (groundToDelete == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Ground Not Exists";
+                return RedirectToPage("/Grounds/Index");
             }
+            var HasBookings =await _context.Bookings
+                            .Where(s=>s.GroundId == groundToDelete.Id)
+                            .Where(s => s.BookingDate >= DateTime.Today)
+                            .Where(s => s.Status == BookingStatus.Confirmed)                           
+                            .ToListAsync();
 
-            _context.Grounds.Remove(groundToDelete);
-            await _context.SaveChangesAsync();
+            if (HasBookings.Any())
+            {
+                TempData["ErrorMessage"] = "Cannot delete ground with existing bookings. Please cancel the bookings first.";
+                return RedirectToPage("/Grounds/Index");
+            }
+            else
+            {
+                var slots = await _context.Slots
+                    .Where(s => s.GroundId == groundToDelete.Id)
+                    .ToListAsync();
+                _context.Slots.RemoveRange(slots);
 
-            return RedirectToPage("/Grounds/Index");
+
+                var bookings = await _context.Bookings
+                    .Where(b => b.GroundId == groundToDelete.Id)
+                    .ToListAsync();
+                _context.Bookings.RemoveRange(bookings);
+
+
+                var reviews = await _context.Reviews
+                    .Where(b => b.GroundId == groundToDelete.Id)
+                    .ToListAsync();
+                _context.Reviews.RemoveRange(reviews);
+
+
+                await _context.SaveChangesAsync();
+
+                _context.Grounds.Remove(groundToDelete);
+                await _context.SaveChangesAsync();
+            }
+                return RedirectToPage("/Grounds/Index");
         }
     }
 }

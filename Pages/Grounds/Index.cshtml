@@ -3,7 +3,12 @@
 @{
     ViewData["Title"] = "Ground Listings";
 }
-
+@if (TempData["ErrorMessage"]!=null)
+{
+    <div class="alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-primary">🏟️ Ground Listings</h2>
