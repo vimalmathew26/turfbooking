@@ -19,8 +19,7 @@ namespace turfbooking.Pages.Admin
             _context = context;
             _defaultSlots = defaultSlots;
         }
-
-        
+       
 
         [BindProperty(SupportsGet = true)]
         public DateTime? SelectedDate { get; set; }

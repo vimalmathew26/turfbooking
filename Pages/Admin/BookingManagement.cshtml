@@ -5,7 +5,7 @@
     ViewData["Title"] = "Booking Management";
 }
 
-<h2>Booking Management</h2>
+<h2>Booking Management for @Model.GroundName</h2>
 
 
 
@@ -27,13 +27,12 @@
         @TempData["ErrorMessage"]
     </div>
 }
-@if (Model.Bookings != null && Model.Bookings.Any())
+@if ( Model.Bookings.Any())
 {
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>User</th>
-                <th>Ground</th>
                 <th>Booking Date</th>
                 <th>Time</th>
                 <th>Status</th>
@@ -45,7 +44,7 @@
             {
                 <tr>
                     <td>@b.User.Username</td>
-                    <td>@b.Ground.GroundName</td>
+                   
                     <td>@b.BookingDate.ToString("dd-MM-yyyy")</td>
                     <td>@b.StartTime.ToString(@"hh\:mm") - @b.EndTime.ToString(@"hh\:mm")</td>
                     <td>@b.Status</td>
