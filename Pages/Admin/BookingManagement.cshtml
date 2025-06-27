@@ -7,8 +7,8 @@
 
 <div class="container mt-4">
     <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0"><i class="bi bi-calendar-check me-2"></i> Booking Management</h4>
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-calendar-check me-2"></i> Booking Management for @Model.GroundName</h4>
         </div>
         <div class="card-body">
             <form method="get" class="row g-3 align-items-end mb-4">
@@ -42,7 +42,6 @@
                         <thead class="table-light">
                             <tr>
                                 <th>User</th>
-                                <th>Ground</th>
                                 <th>Date</th>
                                 <th>Time</th>
                                 <th>Status</th>
@@ -54,7 +53,6 @@
                             {
                                 <tr>
                                     <td>@b.User.Username</td>
-                                    <td>@b.Ground.GroundName</td>
                                     <td>@b.BookingDate.ToString("dd-MM-yyyy")</td>
                                     <td>@b.StartTime.ToString(@"hh\:mm") - @b.EndTime.ToString(@"hh\:mm")</td>
                                     <td>

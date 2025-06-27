@@ -76,7 +76,8 @@
                                 </a>
 
                                 <a asp-page="/Grounds/Delete" asp-route-id="@ground.Id" class="btn btn-outline-danger btn-sm px-3 rounded-pill d-flex align-items-center"
-                                   onclick="return confirm('Are you sure you want to delete this ground?');">
+                                   @* onclick="return confirm('Are you sure you want to delete this ground?');" *@
+                                   >
                                     <i class="bi bi-trash3 me-2"></i> Delete
                                 </a>
                             </div>
