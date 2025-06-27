@@ -64,6 +64,7 @@ namespace turfbooking.Pages.Grounds
 
         public async Task<IActionResult> OnPostAsync()
         {
+            bool updateSlots = false;
             var groundInDb = await _context.Grounds.FindAsync(Ground.Id);
             if (groundInDb == null)
                 return NotFound();
@@ -80,8 +81,11 @@ namespace turfbooking.Pages.Grounds
 
             Ground.SlotDuration = new TimeSpan(SlotDurationHours, SlotDurationMinutes, 0);
 
-
-            // Parse StartTime and EndTime as in Create
+            if (groundInDb.SlotDuration != Ground.SlotDuration || groundInDb.StartTime != Ground.StartTime || groundInDb.EndTime != Ground.EndTime)
+            {
+                updateSlots = true;
+            }
+            
             groundInDb.StartTime = DateTime.Today.Add(TimeSpan.Parse(Request.Form["Ground.StartTime"]));
             groundInDb.EndTime = DateTime.Today.Add(TimeSpan.Parse(Request.Form["Ground.EndTime"]));
 
@@ -112,10 +116,13 @@ namespace turfbooking.Pages.Grounds
 
             await _context.SaveChangesAsync();
 
-            var slotHelper = new DefaultSlots(_context);
-            await slotHelper.SetDefaultSlots(Ground.Id);
+            if (updateSlots)
+            {
+                var defaultSlots = new DefaultSlots(_context);
+                await defaultSlots.UpdateDefaultSlots(groundInDb.Id);
+            }
 
-            return RedirectToPage("/Grounds/Index");
+                return RedirectToPage("/Grounds/Index");
         }
     }
 }
