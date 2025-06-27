@@ -5,66 +5,84 @@
     ViewData["Title"] = "Booking Management";
 }
 
-<h2>Booking Management</h2>
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-calendar-check me-2"></i> Booking Management</h4>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end mb-4">
+                <div class="col-md-5">
+                    <label for="SearchUsername" class="form-label fw-semibold">Username</label>
+                    <input type="text" name="SearchUsername" value="@Model.SearchUsername" class="form-control shadow-sm" placeholder="Search by username" />
+                </div>
+                <div class="col-md-4">
+                    <label for="SearchDate" class="form-label fw-semibold">Booking Date</label>
+                    <input type="date" name="SearchDate" value="@(Model.SearchDate?.ToString("yyyy-MM-dd"))" class="form-control shadow-sm" />
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-success w-100 shadow-sm">
+                        <i class="bi bi-funnel me-1"></i> Filter
+                    </button>
+                    <a asp-page="./BookingManagement" asp-route-GroundId="@Model.GroundId" class="btn btn-outline-secondary w-100 shadow-sm">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Reset
+                    </a>
+                </div>
+            </form>
 
-
-
-<form method="get" class="form-inline mb-3">
-    <div class="form-group mr-2">
-        <input type="text" name="SearchUsername" value="@Model.SearchUsername" class="form-control" placeholder="Search by Username" />
-    </div>
-    <div class="form-group mr-2">
-        <input type="date" name="SearchDate" value="@(Model.SearchDate?.ToString("yyyy-MM-dd"))" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Filter</button>
-    <a asp-page="./BookingManagement" asp-route-GroundId="@Model.GroundId" class="btn btn-secondary ml-2">Reset</a>
-</form>
-
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
-    </div>
-}
-@if (Model.Bookings != null && Model.Bookings.Any())
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>User</th>
-                <th>Ground</th>
-                <th>Booking Date</th>
-                <th>Time</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var b in Model.Bookings)
+            @if (TempData["ErrorMessage"] != null)
             {
-                <tr>
-                    <td>@b.User.Username</td>
-                    <td>@b.Ground.GroundName</td>
-                    <td>@b.BookingDate.ToString("dd-MM-yyyy")</td>
-                    <td>@b.StartTime.ToString(@"hh\:mm") - @b.EndTime.ToString(@"hh\:mm")</td>
-                    <td>@b.Status</td>
-                    <td>
-                        @if (b.Status != BookingStatus.Cancelled &&(b.BookingDate.Date > DateTime.Now.Date ||(b.BookingDate.Date == DateTime.Now.Date && b.StartTime >= DateTime.Now.TimeOfDay))){
-                        
-                            <form method="post" asp-page-handler="CancelBooking" asp-route-bookingId="@b.Id" asp-route-GroundId="@Model.GroundId" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
-                                <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
-                            </form>
-                        }                        
-                    </td>
-                </tr>
+                <div class="alert alert-danger text-center shadow-sm">@TempData["ErrorMessage"]</div>
             }
-        </tbody>
-    </table>
-}
-else
-{
-    <div class="alert alert-info">No bookings found.</div>
-}
 
-
+            @if (Model.Bookings != null && Model.Bookings.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle shadow-sm">
+                        <thead class="table-light">
+                            <tr>
+                                <th>User</th>
+                                <th>Ground</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var b in Model.Bookings)
+                            {
+                                <tr>
+                                    <td>@b.User.Username</td>
+                                    <td>@b.Ground.GroundName</td>
+                                    <td>@b.BookingDate.ToString("dd-MM-yyyy")</td>
+                                    <td>@b.StartTime.ToString(@"hh\:mm") - @b.EndTime.ToString(@"hh\:mm")</td>
+                                    <td>
+                                        <span class="badge @(b.Status == BookingStatus.Cancelled ? "bg-danger" : "bg-success")">@b.Status</span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (b.Status != BookingStatus.Cancelled && (b.BookingDate.Date > DateTime.Now.Date || (b.BookingDate.Date == DateTime.Now.Date && b.StartTime >= DateTime.Now.TimeOfDay)))
+                                        {
+                                            <form method="post" asp-page-handler="CancelBooking" asp-route-bookingId="@b.Id" asp-route-GroundId="@Model.GroundId"
+                                                  onsubmit="return confirm('Are you sure you want to cancel this booking?');" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                    <i class="bi bi-x-circle me-1"></i> Cancel
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center shadow-sm mt-4">
+                    <i class="bi bi-info-circle me-2"></i> No bookings found.
+                </div>
+            }
+        </div>
+    </div>
+</div>
