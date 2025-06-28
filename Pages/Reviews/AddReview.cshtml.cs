@@ -27,7 +27,6 @@ namespace turfbooking.Pages.Reviews
 
         public int UserId { get; set; }
 
-
         public async Task<IActionResult> OnGetAsync()
         {
             Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == GroundId);
@@ -60,7 +59,8 @@ namespace turfbooking.Pages.Reviews
 
                 if (booking == null)
                 {
-                    ModelState.AddModelError("book", "You First book the ground to add REVIEW");
+                    ModelState.AddModelError(string.Empty, "You must book the ground before adding a review.");
+
                     return Page();
                 }
                 Review.BookingId = booking.Id;

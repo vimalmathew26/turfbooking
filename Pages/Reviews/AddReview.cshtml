@@ -5,7 +5,7 @@
     Layout = "/Pages/Shared/_Layout.cshtml";
     ViewData["Title"] = "Add Review";
 }
-
+<div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 <div class="container mt-4">
     <div class="card shadow-sm">
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
@@ -19,9 +19,6 @@
                     @TempData["GroundAlert"]
                 </div>
             }
-
-            <div asp-validation-for="book" class="text-danger"></div>
-
             @if (Model.Ground != null)
             {
                 <div class="mb-4">
@@ -31,9 +28,8 @@
                     <p class="text-muted">@Model.Ground.Description</p>
                 </div>
 
-                <form method="post" novalidate>
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-
+                <form method="post">
+                   
                     <input type="hidden" asp-for="GroundId" value="@Model.GroundId" />
 
                     <div class="mb-4">
