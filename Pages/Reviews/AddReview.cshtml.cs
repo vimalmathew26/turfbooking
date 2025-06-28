@@ -41,6 +41,11 @@ namespace turfbooking.Pages.Reviews
         public async Task<IActionResult> OnPostAsync()
         {
             Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == GroundId);
+            if (Ground == null)
+            {
+                TempData["GroundAlert"] = "Ground not found!";
+                return Page();
+            }
 
             var userIdClaim = User.FindFirst("UserId");
             if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
