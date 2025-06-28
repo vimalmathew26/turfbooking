@@ -68,7 +68,6 @@ namespace turfbooking.Pages.Reviews
 
                     return Page();
                 }
-                Review.BookingId = booking.Id;
                 Review.GroundId = GroundId;
                 Review.UserId = userId;
                 _context.Reviews.Add(Review);
