@@ -58,9 +58,9 @@ namespace turfbooking.Pages.Admin
                    .ThenInclude(s => s.User)
                    .Where(s => s.BookingDate.Date == SelectedDate.Value.Date && s.GroundId == GroundId)
                    .ToListAsync();
-            }
+            }           
 
-            
+
 
             return Page();
         }

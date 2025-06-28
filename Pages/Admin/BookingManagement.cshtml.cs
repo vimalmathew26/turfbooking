@@ -18,6 +18,8 @@ namespace turfbooking.Pages.Admin
 
         [BindProperty(SupportsGet =true)]
         public int? GroundId { get; set; }
+
+        public string GroundName { get; set; }
         public List<Models.Booking> Bookings { get; set; }
 
         [BindProperty(SupportsGet = true)]
@@ -26,17 +28,13 @@ namespace turfbooking.Pages.Admin
         [BindProperty(SupportsGet = true)]
         public DateTime? SearchDate { get; set; }
 
-        public String GroundName { get; set; }
-
         
         public async Task OnGetAsync()
         {
-
-            GroundName = await _context.Grounds
-                        .Where(g => g.Id == GroundId)
-                        .Select(g => g.GroundName)
-                        .FirstAsync();
-
+           GroundName = await _context.Grounds.
+                 Where(s => s.Id == GroundId).
+                Select(s=>s.GroundName).
+               FirstAsync();
 
             var query = _context.Bookings
                 .Include(b => b.User)
@@ -53,11 +51,13 @@ namespace turfbooking.Pages.Admin
                 query = query.Where(b => b.BookingDate.Date == SearchDate.Value.Date);
             }
 
-            if (GroundId.HasValue)
+            if(GroundId.HasValue)
             {
                 query = query.Where(b => b.GroundId == GroundId.Value);
             }
 
+           
+           
             Bookings = await query.ToListAsync();
            /* Bookings = await _context.Bookings
 

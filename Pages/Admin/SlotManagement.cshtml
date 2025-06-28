@@ -1,122 +1,150 @@
 ﻿@page
 @model turfbooking.Pages.Admin.SlotManagementModel
-@using turfbooking.Models;
+@using turfbooking.Models
 
 @{
     ViewData["Title"] = "Admin Slot Management";
 }
 
-<h2>Slot Management for @Model.Ground.GroundName</h2>
-
-
-
-<a asp-page="/Admin/AddSlot" asp-route-GroundId="@Model.GroundId" class="btn btn-primary mb-3 float-end">
-    Add Slot
-</a>
-
-@if (Model.SlotDates!=null && Model.SlotDates.Any())
-{
-    <div class="row">
-        <div class="col-md-3">
-            <h4>Select Date</h4>
-            <ul class="list-group">
-                @foreach (var date in Model.SlotDates)
-                {
-                    @if(date>=DateTime.Now.Date){
-                        <li class="list-group-item">
-                            <a asp-page="/Admin/SlotManagement" asp-route-SelectedDate="@date.ToString("yyyy-MM-dd")" asp-route-GroundID="@Model.GroundId">
-                                @date.ToShortDateString()
-                             </a>
-                         </li>
-                    }
-                }
-            </ul>
-        </div>
-
-        <div class="col-md-9">
-            <h4>Slots for @Model.SelectedDate?.ToShortDateString()</h4>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Start</th>
-                        <th>End</th>
-                        
-                        <th>Status</th>
-                        <th>Customer Name</th>
-                        <th>Contact Number</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var slot in Model.Slots)
-                    {
-                        <tr>
-                            <td>@slot.StartTime</td>
-                            <td>@slot.EndTime</td>
-                            
-                            <td>
-                                @if (slot.Status == Slot.SlotStatus.Booked)
-                                {
-                                    <span class="text-danger">Booked</span>
-                                }
-                                else if (slot.Status == Slot.SlotStatus.Available)
-                                {
-                                    <span class="text-success">Available</span>
-                                }
-                                else
-                                {
-                                    <span class="text-success">Blocked</span>
-                                }
-                            </td>
-                            <td>
-                                @if (slot.Status == Slot.SlotStatus.Booked && slot.Booking?.User != null)
-                                {
-                                    @slot.Booking.User.Username
-                                }
-                                else
-                                {
-                                    <span class="text-muted">-</span>
-                                }
-                            </td>
-                            <td>
-                                @if (slot.Status == Slot.SlotStatus.Booked && slot.Booking?.User != null)
-                                {
-                                    @slot.Booking.User.PhoneNumber
-                                }
-                                else
-                                {
-                                    <span class="text-muted">-</span>
-                                }
-                            </td>
-                            <td>
-                                @if (slot.Status == Slot.SlotStatus.Available)
-                                {
-                                    <form method="post" asp-page-handler="Block" asp-route-id="@slot.Id" asp-route-groundId="@slot.GroundId" asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")" style="display:inline;">
-                                        <button type="submit" class="btn btn-warning">Block</button>
-                                    </form>
-                                }
-                                else if (slot.Status == Slot.SlotStatus.Blocked)
-                                {
-                                    <form method="post" asp-page-handler="Enable" asp-route-id="@slot.Id" asp-route-groundId="@slot.GroundId" asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")"
-                                          style="display:inline;">
-                                        <button type="submit" class="btn btn-success">Unblock</button>
-                                    </form>
-                                }
-                                @if(slot.Status!=Slot.SlotStatus.Booked){
-                           
-                                <form method="post" asp-page-handler="Delete" asp-route-id="@slot.Id" asp-route-GroundId="@slot.GroundId" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-success">Slot Management – @Model.Ground.GroundName</h2>
+        <a asp-page="/Admin/AddSlot" asp-route-GroundId="@Model.GroundId" class="btn btn-success shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> Add Slot
+        </a>
     </div>
-}
-else
-{
-    <div class="alert alert-warning text-center my-lg-5"> No Slots are available</div>
-}
+
+    @if (Model.SlotDates != null && Model.SlotDates.Any())
+    {
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <strong>Select Date</strong>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var date in Model.SlotDates)
+                        {
+                            if (date >= DateTime.Now.Date)
+                            {
+                                var isActive = date.Date == Model.SelectedDate?.Date;
+                                <li class="list-group-item @(isActive ? "active text-white" : "")">
+                                    <a asp-page="/Admin/SlotManagement"
+                                       asp-route-SelectedDate="@date.ToString("yyyy-MM-dd")"
+                                       asp-route-GroundID="@Model.GroundId"
+                                       class="text-decoration-none @(isActive ? "text-white" : "text-dark") d-block">
+                                        <i class="bi bi-calendar3 me-1"></i> @date.ToString("dddd, dd MMM yyyy")
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slot Table -->
+            <div class="col-md-8 col-lg-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Slots for <span class="text-success">@Model.SelectedDate?.ToString("dd MMM yyyy")</span></h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-success">
+                                <tr>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Status</th>
+                                    <th>Customer</th>
+                                    <th>Contact</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var slot in Model.Slots)
+                                {
+                                    <tr>
+                                        <td>@slot.StartTime</td>
+                                        <td>@slot.EndTime</td>
+                                        <td>
+                                            @switch (slot.Status)
+                                            {
+                                                case Slot.SlotStatus.Booked:
+                                                    <span class="badge bg-danger">Booked</span>
+                                                    break;
+                                                case Slot.SlotStatus.Available:
+                                                    <span class="badge bg-success">Available</span>
+                                                    break;
+                                                default:
+                                                    <span class="badge bg-secondary">Blocked</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (slot.Status == Slot.SlotStatus.Booked && slot.Booking?.User != null)
+                                            {
+                                                @slot.Booking.User.Username
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">–</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (slot.Status == Slot.SlotStatus.Booked && slot.Booking?.User != null)
+                                            {
+                                                @slot.Booking.User.PhoneNumber
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">–</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                @if (slot.Status == Slot.SlotStatus.Available)
+                                                {
+                                                    <form method="post" asp-page-handler="Block"
+                                                          asp-route-id="@slot.Id"
+                                                          asp-route-groundId="@slot.GroundId"
+                                                          asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")">
+                                                        <button type="submit" class="btn btn-warning btn-sm shadow-sm">Block</button>
+                                                    </form>
+                                                }
+                                                else if (slot.Status == Slot.SlotStatus.Blocked)
+                                                {
+                                                    <form method="post" asp-page-handler="Enable"
+                                                          asp-route-id="@slot.Id"
+                                                          asp-route-groundId="@slot.GroundId"
+                                                          asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")">
+                                                        <button type="submit" class="btn btn-success btn-sm shadow-sm">Unblock</button>
+                                                    </form>
+                                                }
+
+                                                @if (slot.Status != Slot.SlotStatus.Booked)
+                                                {
+                                                    <form method="post" asp-page-handler="Delete"
+                                                          asp-route-id="@slot.Id"
+                                                          asp-route-GroundId="@slot.GroundId">
+                                                        <button type="submit" class="btn btn-danger btn-sm shadow-sm">Delete</button>
+                                                    </form>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center mt-5">
+            <i class="bi bi-exclamation-circle me-2"></i>No Slots are available
+        </div>
+    }
+</div>

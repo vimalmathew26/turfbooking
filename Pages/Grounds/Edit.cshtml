@@ -27,7 +27,7 @@
                             </div>
                         }
 
-      
+
 
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -68,77 +68,96 @@
                                         <span asp-validation-for="SlotDurationHours" class="text-danger small"></span>
                                         <span asp-validation-for="SlotDurationMinutes" class="text-danger small"></span>
                                     </div>
-        <div class="col-md-4">
-            <label asp-for="Ground.StartTime" class="form-label fw-semibold"></label>
-            <input asp-for="Ground.StartTime" class="form-control rounded-3" type="time" />
-            <span asp-validation-for="Ground.StartTime" class="text-danger small"></span>
-        </div>
-        <div class="col-md-4">
-            <label asp-for="Ground.EndTime" class="form-label fw-semibold"></label>
-            <input asp-for="Ground.EndTime" class="form-control rounded-3" type="time" />
-            <span asp-validation-for="Ground.EndTime" class="text-danger small"></span>
-        </div>
+                                    <div class="col-md-4">
+                                        <label asp-for="Ground.StartTime" class="form-label fw-semibold"></label>
+                                        <input asp-for="Ground.StartTime" class="form-control rounded-3" type="time" />
+                                        <span asp-validation-for="Ground.StartTime" class="text-danger small"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label asp-for="Ground.EndTime" class="form-label fw-semibold"></label>
+                                        <input asp-for="Ground.EndTime" class="form-control rounded-3" type="time" />
+                                        <span asp-validation-for="Ground.EndTime" class="text-danger small"></span>
+                                    </div>
+                                </div>
                             </div>
-                            </div>
 
-                        <div class="row g-3 mt-1">
-                            <div class="col-md-12">
-                                <label class="form-label fw-semibold">Supported Sports</label>
+                            <div class="row g-3 mt-1">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Supported Sports</label>
 
-                                @{
-                                    var defaultSports = new List<string> {
-                                                                "Football", "Cricket", "Badminton", "Volleyball", "Tennis",
-                                                                "Basketball", "Hockey", "Kabaddi", "Table Tennis", "Kho-Kho"
-                                                                };
+                                    @{
+                                        var defaultSports = new List<string> {
+                                                                        "Football", "Cricket", "Badminton", "Volleyball", "Tennis",
+                                                                        "Basketball", "Hockey", "Kabaddi", "Table Tennis", "Kho-Kho"
+                                                                        };
 
-                                    var selectedSports = Model.Ground.SupportedSports?
-                                    .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                                    .Select(s => s.Trim())
-                                    .ToHashSet(StringComparer.OrdinalIgnoreCase) ?? new HashSet<string>();
+                                        var selectedSports = Model.Ground.SupportedSports?
+                                        .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(s => s.Trim())
+                                        .ToHashSet(StringComparer.OrdinalIgnoreCase) ?? new HashSet<string>();
 
-                                    var allSports = defaultSports.Union(selectedSports).OrderBy(s => s).ToList();
-                                }
-
-                                <div id="sportsCheckboxes" class="mb-2">
-                                    @foreach (var sport in allSports)
-                                    {
-                                        var isChecked = selectedSports.Contains(sport);
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="sport_@sport" value="@sport" onchange="updateSupportedSports()" @(isChecked ? "checked" : "") />
-                                            <label class="form-check-label" for="sport_@sport">@sport</label>
-                                        </div>
+                                        var allSports = defaultSports.Union(selectedSports).OrderBy(s => s).ToList();
                                     }
-                                </div>
 
-                                <div class="input-group mb-2">
-                                    <input type="text" id="customSportInput" class="form-control w-50" placeholder="Add custom sport" />
-                                    <button type="button" class="btn btn-outline-secondary" onclick="addCustomSport()">Add</button>
-                                </div>
+                                    <div id="sportsCheckboxes" class="mb-2">
+                                        @foreach (var sport in allSports)
+                                        {
+                                            var isChecked = selectedSports.Contains(sport);
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="sport_@sport" value="@sport" onchange="updateSupportedSports()" @(isChecked ? "checked" : "") />
+                                                <label class="form-check-label" for="sport_@sport">@sport</label>
+                                            </div>
+                                        }
+                                    </div>
 
-                                <div class="position-relative mt-2">
-                                    <textarea id="sportsPreview" class="form-control" rows="2" readonly>@Model.Ground.SupportedSports</textarea>
-                                    <button type="button" id="clearSportsBtn"
-                                            class="btn-close position-absolute top-0 end-0 mt-2 me-2 @(string.IsNullOrWhiteSpace(Model.Ground.SupportedSports) ? "d-none" : "")"
-                                            onclick="clearAllSports()" aria-label="Clear"></button>
-                                </div>
+                                    <div class="input-group mb-2">
+                                        <input type="text" id="customSportInput" class="form-control w-50" placeholder="Add custom sport" />
+                                        <button type="button" class="btn btn-outline-secondary" onclick="addCustomSport()">Add</button>
+                                    </div>
 
-                                <input type="hidden" asp-for="Ground.SupportedSports" id="SupportedSports" />
-                                <span asp-validation-for="Ground.SupportedSports" class="text-danger small"></span>
+                                    <div class="position-relative mt-2">
+                                        <textarea id="sportsPreview" class="form-control" rows="2" readonly>@Model.Ground.SupportedSports</textarea>
+                                        <button type="button" id="clearSportsBtn"
+                                                class="btn-close position-absolute top-0 end-0 mt-2 me-2 @(string.IsNullOrWhiteSpace(Model.Ground.SupportedSports) ? "d-none" : "")"
+                                                onclick="clearAllSports()" aria-label="Clear"></button>
+                                    </div>
+
+                                    <input type="hidden" asp-for="Ground.SupportedSports" id="SupportedSports" />
+                                    <span asp-validation-for="Ground.SupportedSports" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+
+                            <div class="form-check form-switch mt-4">
+                                <input asp-for="Ground.IsActive" class="form-check-input" type="checkbox" />
+                                <label asp-for="Ground.IsActive" class="form-check-label fw-semibold">Active Ground</label>
+                            </div>
+
+                            <div class="text-end mt-4">
+                                <button type="submit" class="btn text-white rounded-pill px-4 shadow-sm" style="background-color: #4B0082;">
+                                    <i class="bi bi-save me-1"></i> Save Changes
+                                </button>
+                            </div>
+                    </form>
+                    <div class="modal fade" id="timingChangeModal" tabindex="-1" aria-labelledby="timingChangeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-warning">
+                                <div class="modal-header bg-warning text-dark">
+                                    <h5 class="modal-title" id="timingChangeModalLabel">⚠️ Warning</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    You have made changes to the scheduled timings of this turf.<br />
+                                    <strong>Saving changes will reset future slots and cancel future bookings.</strong>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-warning" id="confirmSubmit">Yes, Save Changes</button>
+                                </div>
                             </div>
                         </div>
+                    </div>
 
-
-                        <div class="form-check form-switch mt-4">
-                            <input asp-for="Ground.IsActive" class="form-check-input" type="checkbox" />
-                            <label asp-for="Ground.IsActive" class="form-check-label fw-semibold">Active Ground</label>
-                        </div>
-
-                        <div class="text-end mt-4">
-                            <button type="submit" class="btn text-white rounded-pill px-4 shadow-sm" style="background-color: #4B0082;">
-                                <i class="bi bi-save me-1"></i> Save Changes
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -211,5 +230,61 @@
             input.value = "";
             updateSupportedSports();
         }
+                let isTimingModified = false;
+
+        const originalValues = {
+            SlotDurationHours: "",
+            SlotDurationMinutes: "",
+            StartTime: "",
+            EndTime: ""
+        };
+
+        function checkTimingChanges() {
+            const currentValues = {
+                SlotDurationHours: document.querySelector('[name="SlotDurationHours"]')?.value || "",
+                SlotDurationMinutes: document.querySelector('[name="SlotDurationMinutes"]')?.value || "",
+                StartTime: document.querySelector('[name="Ground.StartTime"]')?.value || "",
+                EndTime: document.querySelector('[name="Ground.EndTime"]')?.value || ""
+            };
+
+            isTimingModified = (
+                currentValues.SlotDurationHours !== originalValues.SlotDurationHours ||
+                currentValues.SlotDurationMinutes !== originalValues.SlotDurationMinutes ||
+                currentValues.StartTime !== originalValues.StartTime ||
+                currentValues.EndTime !== originalValues.EndTime
+            );
+
+            console.log("🟡 isTimingModified:", isTimingModified);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Store original values
+            originalValues.SlotDurationHours = document.querySelector('[name="SlotDurationHours"]')?.value || "";
+            originalValues.SlotDurationMinutes = document.querySelector('[name="SlotDurationMinutes"]')?.value || "";
+            originalValues.StartTime = document.querySelector('[name="Ground.StartTime"]')?.value || "";
+            originalValues.EndTime = document.querySelector('[name="Ground.EndTime"]')?.value || "";
+
+            // Listen for changes
+            document.querySelector('[name="SlotDurationHours"]')?.addEventListener("input", checkTimingChanges);
+            document.querySelector('[name="SlotDurationMinutes"]')?.addEventListener("input", checkTimingChanges);
+            document.querySelector('[name="Ground.StartTime"]')?.addEventListener("input", checkTimingChanges);
+            document.querySelector('[name="Ground.EndTime"]')?.addEventListener("input", checkTimingChanges);
+
+            const form = document.querySelector('form');
+            const modal = new bootstrap.Modal(document.getElementById('timingChangeModal'));
+            const confirmBtn = document.getElementById('confirmSubmit');
+
+            form.addEventListener('submit', function (e) {
+                if (isTimingModified) {
+                    e.preventDefault();
+                    modal.show();
+                }
+            });
+
+            confirmBtn.addEventListener('click', () => {
+                modal.hide();
+                form.submit();
+            });
+        });
     </script>
 }
