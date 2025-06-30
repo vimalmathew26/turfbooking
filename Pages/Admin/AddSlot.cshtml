@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Add Slot";
 }
-
+<div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 @if (Model.Ground != null)
 {
     <div class="container mt-4">
@@ -12,8 +12,8 @@
                 <h4 class="mb-0"><i class="bi bi-calendar-plus me-2"></i> Add Slot – @Model.Ground.GroundName</h4>
             </div>
             <div class="card-body">
-                <form method="post" novalidate>
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <form method="post">
+                    
 
                     <div class="mb-3">
                         <label asp-for="Slot.BookingDate" class="form-label fw-semibold"></label>
@@ -44,9 +44,4 @@
         </div>
     </div>
 }
-else
-{
-    <div class="alert alert-danger mt-4 text-center">
-        <i class="bi bi-exclamation-triangle me-2"></i> Ground not found.
-    </div>
-}
+

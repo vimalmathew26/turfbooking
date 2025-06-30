@@ -5,20 +5,19 @@
     Layout = "/Pages/Shared/_Layout.cshtml";
     ViewData["Title"] = "Add Review";
 }
-<div asp-validation-summary="All" class="alert alert-danger"></div>
+@if (TempData["GroundAlert"] != null)
+{
+     <div class="alert alert-danger text-center shadow-sm">
+        @TempData["GroundAlert"]
+    </div>
+ }
+<div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 <div class="container mt-4">
     <div class="card shadow-sm">
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
             <h4 class="mb-0"><i class="bi bi-star-fill me-2"></i> Add Review</h4>
         </div>
-        <div class="card-body">
-
-            @if (TempData["GroundAlert"] != null)
-            {
-                <div class="alert alert-danger text-center shadow-sm">
-                    @TempData["GroundAlert"]
-                </div>
-            }
+        <div class="card-body">            
             @if (Model.Ground != null)
             {
                 <div class="mb-4">
@@ -54,13 +53,7 @@
                         <i class="bi bi-send me-1"></i> Submit Review
                     </button>
                 </form>
-            }
-            else
-            {
-                <div class="alert alert-warning text-center mt-4">
-                    <i class="bi bi-exclamation-triangle me-1"></i> Ground information is unavailable.
-                </div>
-            }
+            }          
         </div>
     </div>
 </div>

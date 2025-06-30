@@ -19,7 +19,11 @@ namespace turfbooking.Pages.Booking
             _context = context;
             _defaultSlots = defaultSlots;
 
-        }       
+        }
+        [BindProperty(SupportsGet =true)]
+        public DateTime SelectedDate { get; set; }
+
+
         [BindProperty(SupportsGet = true)]
         public int GroundId { get; set; }
 
@@ -29,7 +33,10 @@ namespace turfbooking.Pages.Booking
         public TimeSpan CurrentTime { get; set; }
         public List<Slot> AvailableSlots { get; set; }
 
-        public async Task OnGetAsync()
+        [BindProperty(SupportsGet = true)]
+        public int slotId { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
             var previousUrl = Url.Page(
      "/Users/GroundDetails",
@@ -40,6 +47,7 @@ namespace turfbooking.Pages.Booking
 
             HttpContext.Session.SetString("PreviousPage",previousUrl);
             await _defaultSlots.SetDefaultSlots(GroundId);
+
             CurrentTime = DateTime.Now.TimeOfDay;
 
             if (Date == default)
@@ -48,28 +56,29 @@ namespace turfbooking.Pages.Booking
             }
 
             Next7Days = Enumerable.Range(0, 7)
-                .Select(i => DateTime.Today.AddDays(i))
-                .ToList();
+                       .Select(i => DateTime.Today.AddDays(i))
+                       .ToList();
             
             AvailableSlots = await _context.Slots
-           .Where(s => s.GroundId == GroundId
-                    && s.BookingDate.Date == Date.Date)
-           .OrderBy(s => s.StartTime)
-           .ToListAsync();           
+                            .Where(s => s.GroundId == GroundId&& s.BookingDate.Date == Date.Date)
+                            .OrderBy(s => s.StartTime)
+                            .ToListAsync();
+          
+            if (!AvailableSlots.Any())
+            {
+                ModelState.AddModelError(string.Empty, "No Slots Available for the Selected Date");
+                return Page();
+           }
+            return Page();
         }
 
-        public async Task<IActionResult> OnPostBookAsync(int slotId)
+        public async Task<IActionResult> OnPostBookAsync()
         {
-
+         
             var slot = await _context.Slots
                        .Include(s => s.Ground)
                        .FirstOrDefaultAsync(s => s.Id == slotId);
 
-            if (slot == null || slot.Status == Slot.SlotStatus.Booked)
-            {
-                ModelState.AddModelError(string.Empty,"Selected Slot Not Available");
-                return Page();
-            }
             var userIdClaim = User.FindFirst("UserId");
             if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
             {

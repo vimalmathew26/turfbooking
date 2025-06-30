@@ -42,12 +42,23 @@ namespace turfbooking.Pages.Admin
 
             HttpContext.Session.SetString("PreviousPage", previousUrl);
             Ground = await _context.Grounds.FindAsync(GroundId);
+            if (Ground == null)
+            {
+                ModelState.AddModelError(string.Empty, "The Ground Not Found");
+                return Page();
+            }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
             Ground = await _context.Grounds.FindAsync(GroundId);
+
+            if (Ground == null)
+            {
+                ModelState.AddModelError(string.Empty, "The Ground Not Found");
+                return Page();
+            }
 
             if (Slot.BookingDate < DateTime.Today)
             {
@@ -79,7 +90,7 @@ namespace turfbooking.Pages.Admin
             }
             else
             {
-                ModelState.AddModelError(string.Empty,"Cann't Add Ground Slot Between Default Time Slot");
+                ModelState.AddModelError(string.Empty,"Can't Add Ground Slot Between Default Time Slot");
                 return Page();
             }
                 return RedirectToPage("/Admin/SlotManagement", new { GroundId = GroundId });

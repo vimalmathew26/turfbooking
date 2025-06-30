@@ -25,9 +25,10 @@ namespace turfbooking.Pages.Booking
                 .Include(b => b.Ground)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
 
-            if (Booking == null)
+            if (Booking==null)
             {
-                return NotFound();
+                ModelState.AddModelError(string.Empty,"The Booking was Unsuccessfull !! Please Try Again");
+                return Page();
             }
 
             return Page();

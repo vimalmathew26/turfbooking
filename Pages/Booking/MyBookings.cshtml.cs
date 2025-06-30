@@ -37,6 +37,12 @@ namespace turfbooking.Pages.Booking
                 .OrderByDescending(b => b.BookingDate)
                 .ToListAsync();
 
+            if (!Bookings.Any())
+            {
+                ModelState.AddModelError(string.Empty, "Booking not found or already cancelled.");
+                return Page();
+            }
+
             return Page();
         }
 
@@ -47,11 +53,10 @@ namespace turfbooking.Pages.Booking
                 .Include(b => b.Ground)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
 
-
-
             if (booking == null || booking.Status == BookingStatus.Cancelled)
             {
-                return NotFound();
+                ModelState.AddModelError(string.Empty, "Booking not found or already cancelled.");
+                return Page();
             }
             var slotDateTime = booking.BookingDate.Add(booking.StartTime);
             if (DateTime.Now >= slotDateTime.AddHours(-24))

@@ -11,8 +11,6 @@ namespace turfbooking.Models
       
         public int GroundId { get; set; }
     
-        public int BookingId { get; set; }
-
         [Required]
         [Range(1, 5)]
         public int Rating { get; set; }
