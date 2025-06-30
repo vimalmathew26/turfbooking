@@ -39,7 +39,7 @@ namespace turfbooking.Pages.Booking
 
             if (!Bookings.Any())
             {
-                ModelState.AddModelError(string.Empty, "Booking not found or already cancelled.");
+                ModelState.AddModelError(string.Empty, "No Bookings Found");
                 return Page();
             }
 
@@ -55,7 +55,7 @@ namespace turfbooking.Pages.Booking
 
             if (booking == null || booking.Status == BookingStatus.Cancelled)
             {
-                ModelState.AddModelError(string.Empty, "Booking not found or already cancelled.");
+                ModelState.AddModelError(string.Empty, "Booking Not Found.");
                 return Page();
             }
             var slotDateTime = booking.BookingDate.Add(booking.StartTime);

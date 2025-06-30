@@ -87,47 +87,43 @@
     </style>
 }
 
-<div class="container">
-    @if (Model.Ground == null)
-    {
-        <div class="alert alert-danger mt-5">
-            <strong>Ground not found.</strong> The requested ground does not exist or is not available.
-        </div>
-    }
-    else
-    {
-        <div class="row ground-card">
-            <div class="col-md-6 img-container p-0">
-                @if (!string.IsNullOrEmpty(Model.Ground.PhotoPath))
-                {
-                    <img src="@Model.Ground.PhotoPath" class="ground-img" alt="@Model.Ground.GroundName" />
-                }
-                else
-                {
-                    <div class="bg-secondary d-flex align-items-center justify-content-center text-white" style="height: 100%; font-size: 1.5rem;">
-                        No Image Available
+    <div asp-validation-summary="ModelOnly"
+         style="font-size: 1.5rem; padding: 1rem; border-radius: 8px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    </div>
+@if(Model.Ground!=null){
+    <div class="container">
+        
+            <div class="row ground-card">
+                <div class="col-md-6 img-container p-0">
+                    @if (!string.IsNullOrEmpty(Model.Ground.PhotoPath))
+                    {
+                        <img src="@Model.Ground.PhotoPath" class="ground-img" alt="@Model.Ground.GroundName" />
+                    }
+                    else
+                    {
+                        <div class="bg-secondary d-flex align-items-center justify-content-center text-white" style="height: 100%; font-size: 1.5rem;">
+                            No Image Available
+                        </div>
+                    }
+                </div>
+
+                <div class="col-md-6 content-section">
+                    <h2 class="text-dark">@Model.Ground.GroundName</h2>
+                    <p><strong>📍 Location:</strong> @Model.Ground.Location</p>
+                    <p><strong>💸 Price/Hour:</strong> ₹@Model.Ground.PricePerHour.ToString()</p>
+                    <p><strong>🎯 Supported Sports:</strong> @Model.Ground.SupportedSports</p>
+                    <p><strong>📝 Description:</strong> @Model.Ground.Description</p>
+                    <p>
+                        <strong>⭐ Avg. Rating:</strong>
+                        <span class="rating-stars">@Model.AverageRating.ToString("0.0") / 5</span>
+                    </p>
+
+                    <div class="mt-4 d-flex flex-wrap gap-3">
+                        <a class="btn btn-book btn-action" asp-route-GroundId="@Model.Ground.Id" asp-page="/Booking/SlotBooking">Book Now</a>
+                        <a class="btn btn-rating btn-action" asp-route-GroundId="@Model.Ground.Id" asp-page="/Reviews/AddReview">Leave Rating</a>
                     </div>
-                }
-            </div>
-
-            <div class="col-md-6 content-section">
-                <h2 class="text-dark">@Model.Ground.GroundName</h2>
-                <p><strong>📍 Location:</strong> @Model.Ground.Location</p>
-                <p><strong>💸 Price/Hour:</strong> ₹@Model.Ground.PricePerHour.ToString()</p>
-                <p><strong>🎯 Supported Sports:</strong> @Model.Ground.SupportedSports</p>
-                <p><strong>📝 Description:</strong> @Model.Ground.Description</p>
-                <p>
-                    <strong>⭐ Avg. Rating:</strong>
-                    <span class="rating-stars">@Model.AverageRating.ToString("0.0") / 5</span>
-                </p>
-
-                <div class="mt-4 d-flex flex-wrap gap-3">
-                    <a class="btn btn-book btn-action" asp-route-GroundId="@Model.Ground.Id" asp-page="/Booking/SlotBooking">Book Now</a>
-                    <a class="btn btn-rating btn-action" asp-route-GroundId="@Model.Ground.Id" asp-page="/Reviews/AddReview">Leave Rating</a>
                 </div>
             </div>
-        </div>
-        <partial name="_ViewReviews" model="Model.Reviews" />
-
-    }
-</div>
+            
+    </div>
+}

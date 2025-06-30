@@ -4,8 +4,12 @@
 @{
     ViewData["Title"] = "My Bookings";
 }
-<div asp-validation-summary="All" class="alert-danger"></div>
-@if(Model.Bookings!=null)
+<div asp-validation-summary="ModelOnly"
+     style="font-size: 1.25rem; padding: 1.5rem; border-radius: 12px; background-color: #ffe0e0; color: #b30000; border-left: 6px solid #ff4d4d; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; list-style: none; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);">
+   
+</div>
+
+@if(Model.Bookings.Any())
 {
 <div class="container mt-4">
     <div class="card shadow-sm">
@@ -83,3 +87,17 @@
     </div>
 </div>
 }
+
+
+<style>
+    .validation-summary-errors ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .validation-summary-errors li {
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+</style>

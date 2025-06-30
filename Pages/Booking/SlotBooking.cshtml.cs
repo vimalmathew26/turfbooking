@@ -31,23 +31,34 @@ namespace turfbooking.Pages.Booking
         public DateTime Date { get; set; }
         public List<DateTime> Next7Days { get; set; }
         public TimeSpan CurrentTime { get; set; }
-        public List<Slot> AvailableSlots { get; set; }
+        public List<Slot> AvailableSlots { get; set; } = new List<Slot>();
 
         [BindProperty(SupportsGet = true)]
         public int slotId { get; set; }
 
+        public Ground Ground { get; set; }
+
         public async Task<IActionResult> OnGetAsync()
         {
+            Ground = await _context.Grounds.FindAsync(GroundId);
+
+            if (Ground==null)
+            {
+                ModelState.AddModelError(string.Empty,"Ground Not Found");
+                return Page();
+            }
+
             var previousUrl = Url.Page(
-     "/Users/GroundDetails",
-     pageHandler: null,
-     values: new { id = GroundId },
-     protocol: Request.Scheme
- );
+                 "/Users/GroundDetails",
+                 pageHandler: null,
+                 values: new { id = GroundId },
+                 protocol: Request.Scheme
+            );
 
             HttpContext.Session.SetString("PreviousPage",previousUrl);
-            await _defaultSlots.SetDefaultSlots(GroundId);
 
+            await _defaultSlots.SetDefaultSlots(GroundId);
+            
             CurrentTime = DateTime.Now.TimeOfDay;
 
             if (Date == default)
@@ -69,6 +80,8 @@ namespace turfbooking.Pages.Booking
                 ModelState.AddModelError(string.Empty, "No Slots Available for the Selected Date");
                 return Page();
            }
+
+           
             return Page();
         }
 

@@ -38,10 +38,7 @@ namespace turfbooking.Pages.Users
                 return RedirectToPage("/Accounts/Login");
             }
 
-            if (!CurrentUser.IsActive)
-            {
-                return RedirectToPage("/Accounts/SetupSecurity");
-            }
+          
 
             GroundsWithPhotos = await _context.Grounds
                .Where(g => g.IsActive && !string.IsNullOrEmpty(g.PhotoPath))

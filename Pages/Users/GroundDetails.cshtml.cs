@@ -38,7 +38,11 @@ namespace turfbooking.Pages.Users
             Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == id && g.IsActive);
 
             if (Ground == null)
-                return NotFound();
+            {
+                ModelState.AddModelError(string.Empty,"Ground Not Found");
+                return Page();
+            }
+                
 
             Reviews = await _context.Reviews
              .Where(r => r.GroundId == id && r.IsVisible)
