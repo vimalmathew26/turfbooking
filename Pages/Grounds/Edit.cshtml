@@ -60,11 +60,12 @@
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">Slot Duration</label>
                                         <div class="input-group">
-                                            <input asp-for="SlotDurationHours" class="form-control rounded-3" type="number" min="0" max="12" placeholder="Hours" />
-                                            <span class="input-group-text">Hours</span>
-                                            <input asp-for="SlotDurationMinutes" class="form-control rounded-3" type="number" min="0" max="59" placeholder="Minutes" />
-                                            <span class="input-group-text">minutes</span>
+                                            <input asp-for="SlotDurationHours" class="form-control rounded-3 hours-box" type="number" min="0" max="12" placeholder="Hours" />
+                                            <span class="input-group-text">hrs</span>
+                                            <input asp-for="SlotDurationMinutes" class="form-control rounded-3 minutes-box" type="number" min="0" max="59" placeholder="Minutes" />
+                                            <span class="input-group-text">mins</span>
                                         </div>
+
                                         <span asp-validation-for="SlotDurationHours" class="text-danger small"></span>
                                         <span asp-validation-for="SlotDurationMinutes" class="text-danger small"></span>
                                     </div>
