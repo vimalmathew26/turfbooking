@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
@@ -26,6 +27,7 @@ namespace turfbooking.Pages.Grounds
         //    .ToListAsync();
         public async Task OnGetAsync(bool showInactive = false)
         {
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Admin/AdminDashboard"));
             //Grounds = await _context.Grounds
             //    .Where(g => showInactive || g.IsActive)
             //    .ToListAsync();

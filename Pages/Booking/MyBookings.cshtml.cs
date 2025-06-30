@@ -21,6 +21,8 @@ namespace turfbooking.Pages.Booking
 
         public async Task<IActionResult> OnGetAsync()
         {
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Users/UserDashboard"));
+
             var userIdClaim = User.FindFirst("UserId");
             if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
             {

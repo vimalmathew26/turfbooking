@@ -23,6 +23,8 @@ namespace turfbooking.Pages.Grounds
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Grounds/Index"));
+
             var ground = await _context.Grounds.FindAsync(id);
             if (ground == null)
             {

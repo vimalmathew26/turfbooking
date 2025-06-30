@@ -23,6 +23,7 @@ namespace turfbooking.Pages.Admin
 
         public void OnGet()
         {
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Admin/AdminDashboard"));
             Users = _context.Users.ToList();
         }
 

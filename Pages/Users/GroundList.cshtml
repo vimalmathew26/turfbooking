@@ -95,7 +95,9 @@
                                 <strong>💰 Price/Hour:</strong> @ground.PricePerHour.ToString("C")<br />
                                 <strong>🏅 Sports:</strong> @ground.SupportedSports
                             </p>
-                            <a class="btn btn-outline-primary w-100" href="/Users/GroundDetails/@ground.Id">
+                            <a class="btn btn-outline-primary w-100" asp-page="/Users/GroundDetails"
+                               asp-route-id="@ground.Id">
+                                >
                                 View Details
                             </a>
                         </div>

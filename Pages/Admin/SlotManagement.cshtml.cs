@@ -35,6 +35,9 @@ namespace turfbooking.Pages.Admin
         public List<DateTime>? SlotDates { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
+           
+            HttpContext.Session.SetString("PreviousPage", "/Admin/GroundSlot");
+
             await _defaultSlots.SetDefaultSlots(GroundId);
             Ground = await _context.Grounds.FindAsync(GroundId);
 

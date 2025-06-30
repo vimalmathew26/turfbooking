@@ -51,6 +51,7 @@ namespace turfbooking.Pages.Grounds
 
         public IActionResult OnGet()
         {
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Grounds/Index"));
             SlotDurationHours = Ground.SlotDuration.Hours;
             SlotDurationMinutes = Ground.SlotDuration.Minutes;
             return Page();
