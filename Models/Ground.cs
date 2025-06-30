@@ -39,6 +39,8 @@ namespace turfbooking.Models
 
         public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
         public ICollection<Review>? Reviews { get; set; } = new List<Review>();
+        public ICollection<Court> Courts { get; set; } = new List<Court>();
+
 
         public Ground()
         {
@@ -49,6 +51,7 @@ namespace turfbooking.Models
             SupportedSports = string.Empty;
             Bookings = new List<Booking>();
             Reviews = new List<Review>();
+            Courts = new List<Court>();
             
         }
     }
