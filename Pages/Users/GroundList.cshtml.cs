@@ -35,6 +35,7 @@ namespace turfbooking.Pages.Users
 
         public async Task OnGetAsync()
         {
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Users/UserDashboard"));
             var query = _context.Grounds.Where(g => g.IsActive).AsQueryable();
 
             if (!string.IsNullOrEmpty(Location))

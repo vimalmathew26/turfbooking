@@ -33,6 +33,14 @@ namespace turfbooking.Pages.Admin
 
         public async Task<IActionResult> OnGetAsync()
         {
+            var previousUrl = Url.Page(
+                "/Admin/SlotManagement",
+                pageHandler: null,
+                values: new { GroundId = GroundId },
+                protocol: Request.Scheme
+            );
+
+            HttpContext.Session.SetString("PreviousPage", previousUrl);
             Ground = await _context.Grounds.FindAsync(GroundId);
             return Page();
         }

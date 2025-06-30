@@ -35,6 +35,12 @@ namespace turfbooking.Pages.Accounts
 
         public IActionResult OnGet()
         {
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (role == "Admin")
+                HttpContext.Session.SetString("PreviousPage", Url.Page("/Admin/AdminProfile"));
+            else
+                HttpContext.Session.SetString("PreviousPage", Url.Page("/Users/UserProfile"));
+
             if (User.FindFirst("UserId") == null)
                 return RedirectToPage("/Accounts/Login");
 

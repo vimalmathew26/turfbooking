@@ -31,6 +31,14 @@ namespace turfbooking.Pages.Booking
 
         public async Task OnGetAsync()
         {
+            var previousUrl = Url.Page(
+     "/Users/GroundDetails",
+     pageHandler: null,
+     values: new { id = GroundId },
+     protocol: Request.Scheme
+ );
+
+            HttpContext.Session.SetString("PreviousPage",previousUrl);
             await _defaultSlots.SetDefaultSlots(GroundId);
             CurrentTime = DateTime.Now.TimeOfDay;
 

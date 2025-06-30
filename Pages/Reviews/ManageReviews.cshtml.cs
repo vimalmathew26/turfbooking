@@ -31,6 +31,7 @@ namespace turfbooking.Pages.Admin
 
         public void OnGet()
         {
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Admin/AdminDashboard"));
             Reviews = _context.Reviews
                 .Include(r => r.Ground)
                 .Join(_context.Users,

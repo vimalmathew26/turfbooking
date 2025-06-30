@@ -17,9 +17,10 @@ namespace turfbooking.Pages.Admin
             _context = context;
          }
          public IList<Ground> Grounds { get; set; } = new List<Ground>();
-         public async Task OnGetAsync(bool showInactive = false)
+         public async Task OnGetAsync()
 
-         {     
+         {
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Admin/AdminDashboard"));
             Grounds = await _context.Grounds.ToListAsync();
          }
     }

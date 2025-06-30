@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Turf Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/turfbooking.styles.css" asp-append-version="true" />
@@ -35,17 +36,46 @@
                 .navbar-darkgreen .navbar-nav .nav-link:focus {
                     color: #e0e0e0 !important;
                 }
+
+        .back-arrow {
+            text-decoration: none;
+            color: black;
+            font-size: 1.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s ease;
+        }
+
+            .back-arrow:hover {
+                background-color: white;
+            }
     </style>
 </head>
 <body>
     <header>
+       
+
         <nav class="navbar navbar-expand-lg navbar-dark navbar-darkgreen mb-4" id="nav">
             <div class="container-fluid">
+
+                @if ((ViewData["ShowBackButton"] == null || (bool)ViewData["ShowBackButton"] == true)
+                                && !string.IsNullOrEmpty(Context.Session.GetString("PreviousPage")))
+                {
+                    <a href="@Context.Session.GetString("PreviousPage")">
+                    <i class="fa fa-arrow-circle-left me-3 bg-green text-white" style="font-size:24px"
+                       >
+                    </i>
+                        
+                    </a>
+                }
+
                 <a class="navbar-brand" href="/">Turf Booking</a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
@@ -59,14 +89,13 @@
                             }
                         </li>
                         <li class="nav-item ms-3">
-                            <a asp-page="/Accounts/Logout" class="nav-link">
-                                Logout
-                            </a>
+                            <a asp-page="/Accounts/Logout" class="nav-link">Logout</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">

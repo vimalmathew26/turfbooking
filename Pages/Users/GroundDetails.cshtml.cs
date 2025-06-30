@@ -26,10 +26,15 @@ namespace turfbooking.Pages.Users
         [BindProperty(SupportsGet = true)]
         public double AverageRating { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public int id { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int id)
+
+
+
+        public async Task<IActionResult> OnGetAsync()
         {
-
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Users/GroundList"));
             Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == id && g.IsActive);
 
             if (Ground == null)

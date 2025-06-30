@@ -40,6 +40,8 @@ namespace turfbooking.Pages.Users
 
         public IActionResult OnGet()
         {
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Users/UserDashboard"));
+
             var userIdClaim = User.FindFirst("UserId");
             if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
                 return RedirectToPage("/Login");

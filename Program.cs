@@ -23,6 +23,8 @@ builder.Services.AddAuthentication("UserAuth")
 
 builder.Services.AddAuthorization();
 builder.Services.AddRazorPages();
+builder.Services.AddSession();
+
 
 var app = builder.Build();
 
@@ -51,5 +53,7 @@ app.MapGet("/", context =>
 
 
 app.MapDefaultControllerRoute();
+app.UseSession();
+
 
 app.Run();

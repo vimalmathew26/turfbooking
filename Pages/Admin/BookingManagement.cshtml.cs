@@ -31,7 +31,9 @@ namespace turfbooking.Pages.Admin
         
         public async Task OnGetAsync()
         {
-           GroundName = await _context.Grounds.
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Admin/GroundBookingManagement"));
+
+            GroundName = await _context.Grounds.
                  Where(s => s.Id == GroundId).
                 Select(s=>s.GroundName).
                FirstAsync();

@@ -29,6 +29,15 @@ namespace turfbooking.Pages.Reviews
 
         public async Task<IActionResult> OnGetAsync()
         {
+
+            var previousUrl = Url.Page(
+     "/Users/GroundDetails",
+     pageHandler: null,
+     values: new { id = GroundId },
+     protocol: Request.Scheme
+ );
+
+            HttpContext.Session.SetString("PreviousPage", previousUrl);
             Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == GroundId);
 
             if (Ground == null)
