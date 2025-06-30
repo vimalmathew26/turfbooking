@@ -5,10 +5,70 @@
 @{
     ViewData["Title"] = "Slot Booking";
 }
+<div asp-validation-summary="All" class="text-danger" style="font-size: 24px; font-weight: bold;"></div>
 
-<h2>Book a Slot for @Model.Date.ToString("dd-MM-yyyy")</h2>
 
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+@if (Model.AvailableSlots.Any())
+{
+    <h2>Book a Slot for @Model.Date.ToString("dd-MM-yyyy")</h2>
+
+
+<div>
+    <strong>Select Date:</strong>
+    <div class="btn-group mb-3" role="group">
+        @foreach (var day in Model.Next7Days)
+        { 
+            <a asp-page="./SlotBooking"
+               asp-route-GroundId="@Model.GroundId"
+               asp-route-Date="@day.ToString("yyyy-MM-dd")"
+               class="btn btn-sm @(Model.Date.Date == day.Date ? "btn-primary" : "btn-outline-primary")">
+                @day.ToString("ddd, MMM dd")
+            </a>
+        }
+    </div>
+</div>
+
+
+    <div class="slot-grid">
+        @foreach (var slot in Model.AvailableSlots)
+        {
+            var date = slot.BookingDate.Date.ToString("dd-MM-yyyy");
+            var slotText = $"{slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}";
+            var isExpired = (Model.Date.Date == DateTime.Now.Date && slot.StartTime <= @Model.CurrentTime) || Model.Date.Date < DateTime.Now.Date;
+           
+            if (slot.Status == Slot.SlotStatus.Blocked)
+            {
+                <div class="slot-card booked">
+                    @date<br />
+                    @slotText<br />Under Maintanance
+                </div>
+            }
+            else if (isExpired)
+            {
+                <div class="slot-card expired">
+                        @date<br />
+                        @slotText<br />Expired
+                    </div>
+                }
+                else if (slot.Status==Slot.SlotStatus.Booked)
+                {
+                    <div class="slot-card booked">
+                        @date<br />
+                        @slotText<br />Booked
+                    </div>
+                }
+                else
+                {
+                    <form method="post" asp-page-handler="Book" asp-route-slotId="@slot.Id">
+                   
+                        <button type="submit" class="slot-card available">
+                            @slotText<br />Book
+                        </button>
+                    </form>
+                }
+            }
+        </div>
+}
 <style>
     .slot-grid {
         display: flex;
@@ -29,10 +89,11 @@
         padding: 5px;
     }
 
-    .expired{
-        background-color:   #dc3545;
+    .expired {
+        background-color: #dc3545;
     }
-    .booked{
+
+    .booked {
         background-color: lightgreen;
     }
 
@@ -45,64 +106,3 @@
             opacity: 0.9;
         }
 </style>
-
-<div>
-    <strong>Select Date:</strong>
-    <div class="btn-group mb-3" role="group">
-        @foreach (var day in Model.Next7Days)
-        { 
-            <a asp-page="./SlotBooking"
-               asp-route-GroundId="@Model.GroundId"
-               asp-route-Date="@day.ToString("yyyy-MM-dd")"
-               class="btn btn-sm @(Model.Date.Date == day.Date ? "btn-primary" : "btn-outline-primary")">
-                @day.ToString("ddd, MMM dd")
-            </a>
-        }
-    </div>
-</div>
-@if (Model.AvailableSlots==null)
-{
-    <p>No available slots for the selected date.</p>
-}
-else
-{
-    <div class="slot-grid">
-        @foreach (var slot in Model.AvailableSlots)
-        {
-            var date = slot.BookingDate.Date.ToString("dd-MM-yyyy");
-            var slotText = $"{slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}";
-            var isExpired = (Model.Date.Date == DateTime.Now.Date && slot.StartTime <= @Model.CurrentTime) || Model.Date.Date < DateTime.Now.Date;
-           
-            if (slot.Status == Slot.SlotStatus.Blocked)
-            {
-                <div class="slot-card booked">
-                    @date<br />
-                    @slotText<br />Under Maintanance
-                </div>
-            }
-            else if (isExpired)
-            {
-                <div class="slot-card expired">
-                    @date<br />
-                    @slotText<br />Expired
-                </div>
-            }
-            else if (slot.Status==Slot.SlotStatus.Booked)
-            {
-                <div class="slot-card booked">
-                    @date<br />
-                    @slotText<br />Booked
-                </div>
-            }
-            else
-            {
-                <form method="post" asp-page-handler="Book">
-                    <input type="hidden"  name="slotId" value="@slot.Id" />
-                    <button type="submit" class="slot-card available">
-                        @slotText<br />Book
-                    </button>
-                </form>
-            }
-        }
-    </div>
-}

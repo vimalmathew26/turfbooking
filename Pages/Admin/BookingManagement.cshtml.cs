@@ -17,29 +17,37 @@ namespace turfbooking.Pages.Admin
         }
 
         [BindProperty(SupportsGet =true)]
-        public int? GroundId { get; set; }
-
-        public string GroundName { get; set; }
-        public List<Models.Booking> Bookings { get; set; }
+        public int GroundId { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public string? SearchUsername { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public DateTime? SearchDate { get; set; }
+        public string GroundName { get; set; }
+        public List<Models.Booking> Bookings { get; set; }
 
-        
-        public async Task OnGetAsync()
+        public Ground Ground { get; set; }
+    
+        public async Task<IActionResult> OnGetAsync()
         {
-           GroundName = await _context.Grounds.
-                 Where(s => s.Id == GroundId).
-                Select(s=>s.GroundName).
-               FirstAsync();
+            Ground = await _context.Grounds
+                    .FirstOrDefaultAsync(s=>s.Id==GroundId);
+            if (Ground==null)
+            {
+                ModelState.AddModelError(string.Empty,"The Ground Not Found");
+                return Page();
+            }
+
+            GroundName = await _context.Grounds
+                        .Where(s => s.Id == GroundId)
+                        .Select(s=>s.GroundName)
+                        .FirstAsync();
 
             var query = _context.Bookings
-                .Include(b => b.User)
-                .Include(b => b.Ground)
-                .AsQueryable();
+                        .Include(b => b.User)
+                        .Include(b => b.Ground)
+                        .AsQueryable();
 
             if (!string.IsNullOrEmpty(SearchUsername))
             {
@@ -51,21 +59,19 @@ namespace turfbooking.Pages.Admin
                 query = query.Where(b => b.BookingDate.Date == SearchDate.Value.Date);
             }
 
-            if(GroundId.HasValue)
-            {
-                query = query.Where(b => b.GroundId == GroundId.Value);
-            }
-
-           
-           
+            
+                query = query.Where(b => b.GroundId == GroundId);
+            
+          
             Bookings = await query.ToListAsync();
-           /* Bookings = await _context.Bookings
+            /* Bookings = await _context.Bookings
 
-                .Include(b => b.User)
-                .Include(b => b.Ground)
-                .Where(b => b.GroundId == GroundId)
-                .ToListAsync();
-            return Page();*/
+                 .Include(b => b.User)
+                 .Include(b => b.Ground)
+                 .Where(b => b.GroundId == GroundId)
+                 .ToListAsync();
+             return Page();*/
+            return Page();
         }
 
         public async Task<IActionResult> OnPostCancelBookingAsync(int bookingId,int GroundId)
@@ -75,11 +81,10 @@ namespace turfbooking.Pages.Admin
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
             if (booking == null)
             {
-                TempData["ErrorMessage"] = "Booking not found.";
-                return RedirectToPage("BookingManagement");
-
-            }
-            
+                ModelState.AddModelError(string.Empty, "Booking not found.");
+                return Page();
+                    
+            }           
             booking.Slot.Status = Slot.SlotStatus.Available;
             booking.Status = BookingStatus.Cancelled;
             booking.Slot.BookingId = null;

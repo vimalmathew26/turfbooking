@@ -4,7 +4,9 @@
 @{
     ViewData["Title"] = "My Bookings";
 }
-
+<div asp-validation-summary="All" class="alert-danger"></div>
+@if(Model.Bookings!=null)
+{
 <div class="container mt-4">
     <div class="card shadow-sm">
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
@@ -80,3 +82,4 @@
         </div>
     </div>
 </div>
+}

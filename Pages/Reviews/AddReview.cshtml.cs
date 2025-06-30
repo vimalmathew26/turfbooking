@@ -15,7 +15,7 @@ namespace turfbooking.Pages.Reviews
         {
             _context = context;
         }
-        public string book { get; set; }
+        public int UserId { get; set; }
         public Ground Ground { get; set; }
         public List<Review> Reviews { get; set; }
 
@@ -24,8 +24,6 @@ namespace turfbooking.Pages.Reviews
 
         [BindProperty(SupportsGet = true)]
         public int GroundId { get; set; }
-
-        public int UserId { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -52,6 +50,7 @@ namespace turfbooking.Pages.Reviews
             {
                 ModelState.AddModelError(string.Empty, "User authentication required.");
                 return Page();
+                
             }
             
             if (!ModelState.IsValid)
@@ -65,7 +64,6 @@ namespace turfbooking.Pages.Reviews
                 if (booking == null)
                 {
                     ModelState.AddModelError(string.Empty, "You must book the ground before adding a review.");
-
                     return Page();
                 }
                 Review.GroundId = GroundId;
