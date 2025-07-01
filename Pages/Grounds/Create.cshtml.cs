@@ -46,8 +46,8 @@ namespace turfbooking.Pages.Grounds
             IsActive = true,
             PhotoPath = string.Empty,
             SlotDuration = TimeSpan.FromMinutes(60),
-            StartTime = DateTime.Today.AddHours(6), 
-            EndTime = DateTime.Today.AddHours(22)   
+            StartTime = DateTime.Today.AddHours(6),
+            EndTime = DateTime.Today.AddHours(22)
         };
 
         [BindProperty]
@@ -70,6 +70,13 @@ namespace turfbooking.Pages.Grounds
                 ModelState.AddModelError("", "Please correct the errors in the form.");
                 return Page();
             }
+
+            var uniqueSports = Courts
+               .Select(c => c.Name.Trim())
+               .Where(name => !string.IsNullOrWhiteSpace(name))
+               .Distinct(StringComparer.OrdinalIgnoreCase);
+
+            Ground.SupportedSports = string.Join(", ", uniqueSports);
 
             var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
             Directory.CreateDirectory(uploadsFolder);
@@ -106,6 +113,8 @@ namespace turfbooking.Pages.Grounds
                     Duration = new TimeSpan(courtInput.DurationHours, courtInput.DurationMinutes, 0),
                     GroundId = Ground.Id
                 };
+                
+
                 _context.Courts.Add(court);
             }
             await _context.SaveChangesAsync();

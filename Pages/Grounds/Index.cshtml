@@ -40,13 +40,6 @@
                                 <span>No Photo</span>
                             </div>
                         }
-                        @* <div class="card-body">
-                            <h5 class="card-title">@ground.GroundName</h5>
-                            <p class="card-text">
-                                <strong>Location:</strong> @ground.Location<br />
-                                <strong>Price/Hour:</strong> @ground.PricePerHour.ToString("C")<br />
-                                <strong>Sports:</strong> @ground.SupportedSports
-                            </p> *@
                         <div class="card-body @(ground.IsActive ? "" : "bg-light text-muted border border-warning")">
                             <h5 class="card-title d-flex justify-content-between align-items-center">
                                 @ground.GroundName

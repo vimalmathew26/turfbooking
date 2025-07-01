@@ -53,30 +53,7 @@
                                 <input asp-for="Ground.PricePerHour" class="form-control rounded-3" placeholder="e.g. 500" />
                                 <span asp-validation-for="Ground.PricePerHour" class="text-danger small"></span>
                             </div>
-                            @* <div class="row g-3 mt-1">
-                                <div class="col-md-4">
-                                    <label class="form-label fw-semibold">Slot Duration</label>
-                                    <div class="input-group">
-                                        <input asp-for="SlotDurationHours" class="form-control rounded-3 hours-box" type="number" min="0" max="12" placeholder="Hours" />
-                                        <span class="input-group-text">hrs</span>
-                                        <input asp-for="SlotDurationMinutes" class="form-control rounded-3 minutes-box" type="number" min="0" max="59" placeholder="Minutes" />
-                                        <span class="input-group-text">mins</span>
-                                    </div>
-
-                                    <span asp-validation-for="SlotDurationHours" class="text-danger small"></span>
-                                    <span asp-validation-for="SlotDurationMinutes" class="text-danger small"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <label asp-for="Ground.StartTime" class="form-label fw-semibold"></label>
-                                    <input asp-for="Ground.StartTime" class="form-control rounded-3" type="time" />
-                                    <span asp-validation-for="Ground.StartTime" class="text-danger small"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <label asp-for="Ground.EndTime" class="form-label fw-semibold"></label>
-                                    <input asp-for="Ground.EndTime" class="form-control rounded-3" type="time" />
-                                    <span asp-validation-for="Ground.EndTime" class="text-danger small"></span>
-                                </div>
-                            </div> *@
+                           
 
                             @* <div class="col-md-12">
                                 <label class="form-label fw-semibold">Supported Sports</label>
@@ -127,24 +104,49 @@
                                     <!-- No remove button for the first court -->
                                 </h5>
                                 <div class="row g-2 align-items-end">
-                                    <!-- Sport (Court Name) -->
+                                    <!-- Dropdown Sport -->
                                     <div class="col-md-3">
-                                        <label class="form-label">Sport (Court Name)</label>
-                                        <input name="Courts[0].Name" class="form-control" placeholder="e.g. Football" required />
+                                        <label class="form-label">Select Sport</label>
+                                        <div class="position-relative">
+                                            <select name="Courts[0].Name" class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
+                                                <option value="">-- Choose Sport --</option>
+                                                <option value="Football">Football</option>
+                                                <option value="Cricket">Cricket</option>
+                                                <option value="Badminton">Badminton</option>
+                                                <option value="Volleyball">Volleyball</option>
+                                                <option value="Tennis">Tennis</option>
+                                                <option value="Basketball">Basketball</option>
+                                                <option value="Hockey">Hockey</option>
+                                                <option value="Kabaddi">Kabaddi</option>
+                                                <option value="Table Tennis">Table Tennis</option>
+                                                <option value="Kho-Kho">Kho-Kho</option>
+                                                <option value="__other__">Other</option>
+                                            </select>
+                                            <input type="text" class="form-control mt-2 d-none court-custom-sport" placeholder="Enter custom sport" />
+                                        </div>
                                     </div>
+
 
                                     <!-- Duration -->
                                     <div class="col-md-3">
                                         <label class="form-label">Duration</label>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div>
-                                                <input name="Courts[0].DurationHours" type="number" min="0" max="12" class="form-control text-center" style="width: 80px;" placeholder="hrs" required />
+                                        <div class="d-flex gap-2">
+                                            <!-- Hours -->
+                                            <div class="input-group" style="width: 100px;">
+                                                <input name="Courts[0].DurationHours" type="number" min="0" max="12"
+                                                       class="form-control text-center" placeholder="hrs" value="1" required />
+                                                <span class="input-group-text">h</span>
                                             </div>
-                                            <div>
-                                                <input name="Courts[0].DurationMinutes" type="number" min="0" max="59" class="form-control text-center" style="width: 80px;" placeholder="mins" required />
+
+                                            <!-- Minutes -->
+                                            <div class="input-group" style="width: 100px;">
+                                                <input name="Courts[0].DurationMinutes" type="number" min="0" max="59"
+                                                       class="form-control text-center" placeholder="mins" value="0" required />
+                                                <span class="input-group-text">m</span>
                                             </div>
                                         </div>
                                     </div>
+
 
                                     <!-- Start Time -->
                                     <div class="col-md-3">
@@ -158,8 +160,6 @@
                                         <input name="Courts[0].EndTime" type="time" class="form-control" style="min-width: 140px;" required />
                                     </div>
                                 </div>
-
-
                             </div>
                         </div>
                         <button type="button" class="btn btn-outline-primary mt-2" onclick="addCourt()">+ Add Court</button>
@@ -294,59 +294,82 @@
 
         let courtIndex = 1;
 
-                               function addCourt() {
+                                       function addCourt() {
             const container = document.getElementById("courtsContainer");
 
             const div = document.createElement("div");
             div.className = "court-group border rounded-4 p-3 mb-3 position-relative";
 
+            const index = document.querySelectorAll('.court-group').length;
+
             div.innerHTML = `
-                <h5 class="fw-semibold">Court</h5>
+                <h5 class="fw-semibold">Court ${index + 1}</h5>
                 <button type="button" class="btn-close position-absolute top-0 end-0 m-3" onclick="removeCourt(this)" aria-label="Remove"></button>
                 <div class="row g-2 align-items-end">
                     <div class="col-md-3">
-                        <label class="form-label">Sport (Court Name)</label>
-                        <input class="form-control" placeholder="e.g. Cricket" required />
+                        <label class="form-label">Select Sport</label>
+                        <div class="position-relative">
+                            <select name="Courts[${index}].Name" class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
+                                <option value="">-- Choose Sport --</option>
+                                <option value="Football">Football</option>
+                                <option value="Cricket">Cricket</option>
+                                <option value="Badminton">Badminton</option>
+                                <option value="Volleyball">Volleyball</option>
+                                <option value="Tennis">Tennis</option>
+                                <option value="Basketball">Basketball</option>
+                                <option value="Hockey">Hockey</option>
+                                <option value="Kabaddi">Kabaddi</option>
+                                <option value="Table Tennis">Table Tennis</option>
+                                <option value="Kho-Kho">Kho-Kho</option>
+                                <option value="__other__">Other</option>
+                            </select>
+                            <input type="text" class="form-control mt-2 d-none court-custom-sport" placeholder="Enter custom sport" />
+                        </div>
                     </div>
+
                     <div class="col-md-3">
                         <label class="form-label">Duration</label>
-                        <div class="d-flex align-items-center gap-2">
-                            <div>
-                                <input type="number" min="0" max="12" class="form-control text-center" style="width: 80px;" placeholder="hrs" required />
+                        <div class="d-flex gap-2">
+                            <div class="input-group" style="width: 100px;">
+                                <input name="Courts[${index}].DurationHours" type="number" min="0" max="12" class="form-control text-center" placeholder="hrs" value="1" required />
+                                <span class="input-group-text">h</span>
                             </div>
-                            <div>
-                                <input type="number" min="0" max="59" class="form-control text-center" style="width: 80px;" placeholder="mins" required />
+                            <div class="input-group" style="width: 100px;">
+                                <input name="Courts[${index}].DurationMinutes" type="number" min="0" max="59" class="form-control text-center" placeholder="mins" value="0" required />
+                                <span class="input-group-text">m</span>
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3">
                         <label class="form-label">Start Time</label>
-                        <input type="time" class="form-control" style="min-width: 140px;" required />
+                        <input name="Courts[${index}].StartTime" type="time" class="form-control" style="min-width: 140px;" required />
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">End Time</label>
-                        <input type="time" class="form-control" style="min-width: 140px;" required />
+                        <input name="Courts[${index}].EndTime" type="time" class="form-control" style="min-width: 140px;" required />
                     </div>
                 </div>
             `;
 
             container.appendChild(div);
-            reindexCourts();
         }
+
 
                 function reindexCourts() {
             const courtGroups = document.querySelectorAll('#courtsContainer .court-group');
             courtGroups.forEach((group, index) => {
                 group.querySelector('h5').innerText = `Court ${index + 1}`;
 
-                const inputs = group.querySelectorAll('input');
-                if (inputs.length >= 5) {
-                    inputs[0].name = `Courts[${index}].Name`;
-                    inputs[1].name = `Courts[${index}].DurationHours`;
-                    inputs[2].name = `Courts[${index}].DurationMinutes`;
-                    inputs[3].name = `Courts[${index}].StartTime`;
-                    inputs[4].name = `Courts[${index}].EndTime`;
-                }
+                       const select = group.querySelector('select');
+        const inputs = group.querySelectorAll('input');
+        if (select && inputs.length >= 4) {
+            select.name = `Courts[${index}].Name`;
+            inputs[0].name = `Courts[${index}].DurationHours`;
+            inputs[1].name = `Courts[${index}].DurationMinutes`;
+            inputs[2].name = `Courts[${index}].StartTime`;
+            inputs[3].name = `Courts[${index}].EndTime`;
+        }
             });
         }
 
@@ -363,6 +386,23 @@
             reindexCourts();
         }
 
+                function handleSportSelectChange(selectEl) {
+            const wrapper = selectEl.closest('.col-md-3');
+            const customInput = wrapper.querySelector('.court-custom-sport');
 
+            if (selectEl.value === "__other__") {
+                customInput.classList.remove('d-none');
+                customInput.setAttribute('required', 'required');
+
+                // When user types custom sport, update the hidden select's value before submit
+                customInput.addEventListener('input', function () {
+                    selectEl.value = this.value;
+                });
+            } else {
+                customInput.classList.add('d-none');
+                customInput.removeAttribute('required');
+                customInput.value = "";
+            }
+        }
     </script>
 }

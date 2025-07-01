@@ -1,4 +1,4 @@
-﻿@page "{id:int}"
+﻿@page
 @model turfbooking.Pages.Grounds.EditModel
 @{
     ViewData["Title"] = "Edit Ground";
@@ -8,44 +8,45 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-header text-white rounded-top-4" style="background-color: #4B0082;">
-                    <h3 class="mb-0">✏️ Edit Ground</h3>
+                <div class="card-header bg-success text-white rounded-top-4" style="background-color: white;">
+                    <h3 class="mb-0">Edit Ground</h3>
                 </div>
 
                 <div class="card-body p-4">
-                    <form method="post" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data" asp-page-handler="">
+                        @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="Ground.Id" />
+                        <input type="hidden" asp-for="Ground.PhotoPath" />
 
-                        @if (!string.IsNullOrEmpty(Model.Ground.PhotoPath))
-                        {
-                            <div class="mb-4 text-center">
-                                <div class="border rounded-4 p-3 bg-light shadow-sm" style="max-width: 300px; margin: auto;">
-                                    <img id="photoPreview" src="@(string.IsNullOrEmpty(Model.Ground.PhotoPath) ? "/images/placeholder.png" : Model.Ground.PhotoPath)" class="img-fluid rounded mb-2" style="height: 200px; object-fit: cover;" />
-                                    <input asp-for="Photo" type="file" class="form-control" accept="image/*" onchange="previewImage(event)" />
-                                    <span asp-validation-for="Photo" class="text-danger small d-block mt-1"></span>
-                                </div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-4 text-center">
+                            <label class="form-label d-block fw-semibold">Upload Ground Photo</label>
+                            <div class="border rounded-4 p-3 bg-light shadow-sm" style="max-width: 300px; margin: auto;">
+                                <img id="photoPreview" src="@(string.IsNullOrEmpty(Model.Ground.PhotoPath) ? "/images/placeholder.png" : Model.Ground.PhotoPath)" class="img-fluid rounded mb-2" style="height: 200px; object-fit: cover;" />
+                                <input asp-for="Photo" type="file" class="form-control" accept="image/*" onchange="previewImage(event)" />
+                                <span asp-validation-for="Photo" class="text-danger small d-block mt-1"></span>
+                                <small class="text-muted">Leave empty to keep current photo</small>
                             </div>
-                        }
-
-
+                        </div>
 
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label asp-for="Ground.GroundName" class="form-label fw-semibold"></label>
-                                <input asp-for="Ground.GroundName" class="form-control rounded-3" />
+                                <input asp-for="Ground.GroundName" class="form-control rounded-3" placeholder="e.g. Sunrise Turf" />
                                 <span asp-validation-for="Ground.GroundName" class="text-danger small"></span>
                             </div>
 
                             <div class="col-md-6">
                                 <label asp-for="Ground.Location" class="form-label fw-semibold"></label>
-                                <input asp-for="Ground.Location" class="form-control rounded-3" />
+                                <input asp-for="Ground.Location" class="form-control rounded-3" placeholder="e.g. Kochi, Kerala" />
                                 <span asp-validation-for="Ground.Location" class="text-danger small"></span>
                             </div>
                         </div>
 
                         <div class="mt-3">
                             <label asp-for="Ground.Description" class="form-label fw-semibold"></label>
-                            <textarea asp-for="Ground.Description" class="form-control rounded-3" rows="3"></textarea>
+                            <textarea asp-for="Ground.Description" class="form-control rounded-3" rows="3" placeholder="Write a short description..."></textarea>
                             <span asp-validation-for="Ground.Description" class="text-danger small"></span>
                         </div>
 
@@ -55,115 +56,144 @@
                                 <input asp-for="Ground.PricePerHour" class="form-control rounded-3" placeholder="e.g. 500" />
                                 <span asp-validation-for="Ground.PricePerHour" class="text-danger small"></span>
                             </div>
-                            <div class="row g-3 mt-1">
-                                <div class="row g-3 mt-1">
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Slot Duration</label>
-                                        <div class="input-group">
-                                            <input asp-for="SlotDurationHours" class="form-control rounded-3 hours-box" type="number" min="0" max="12" placeholder="Hours" />
-                                            <span class="input-group-text">hrs</span>
-                                            <input asp-for="SlotDurationMinutes" class="form-control rounded-3 minutes-box" type="number" min="0" max="59" placeholder="Minutes" />
-                                            <span class="input-group-text">mins</span>
+                        </div>
+
+                        <div class="form-check form-switch mt-4">
+                            <input asp-for="Ground.IsActive" class="form-check-input" type="checkbox" role="switch" />
+                            <label asp-for="Ground.IsActive" class="form-check-label fw-semibold">Active Ground</label>
+                        </div>
+
+                        <div id="courtsContainer">
+                            @for (int i = 0; i < Model.Courts.Count; i++)
+                            {
+                                <div class="court-group border rounded-4 p-3 mb-3 @(i == 0 ? "" : "position-relative")">
+                                    <input type="hidden" asp-for="Courts[i].Id" />
+                                    <h5 class="fw-semibold d-flex justify-content-between align-items-center">
+                                        Court @(i + 1)
+                                        @if (i > 0)
+                                        {
+                                            <button type="button" class="btn-close" onclick="removeCourt(this)" aria-label="Remove"></button>
+                                        }
+                                    </h5>
+                                    <div class="row g-2 align-items-end">
+                                        <!-- Dropdown Sport -->
+                                        <div class="col-md-3">
+                                            <label class="form-label">Select Sport</label>
+                                            <div class="position-relative">
+                                                <select asp-for="Courts[i].Name" class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
+                                                    <option value="">-- Choose Sport --</option>
+                                                    <option value="Football">Football</option>
+                                                    <option value="Cricket">Cricket</option>
+                                                    <option value="Badminton">Badminton</option>
+                                                    <option value="Volleyball">Volleyball</option>
+                                                    <option value="Tennis">Tennis</option>
+                                                    <option value="Basketball">Basketball</option>
+                                                    <option value="Hockey">Hockey</option>
+                                                    <option value="Kabaddi">Kabaddi</option>
+                                                    <option value="Table Tennis">Table Tennis</option>
+                                                    <option value="Kho-Kho">Kho-Kho</option>
+                                                    <option value="__other__">Other</option>
+                                                </select>
+                                                <input type="text" class="form-control mt-2 @(Model.IsCustomSport(Model.Courts[i].Name) ? "" : "d-none") court-custom-sport" placeholder="Enter custom sport" value="@(Model.IsCustomSport(Model.Courts[i].Name) ? Model.Courts[i].Name : "")" />
+                                            </div>
                                         </div>
 
-                                        <span asp-validation-for="SlotDurationHours" class="text-danger small"></span>
-                                        <span asp-validation-for="SlotDurationMinutes" class="text-danger small"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label asp-for="Ground.StartTime" class="form-label fw-semibold"></label>
-                                        <input asp-for="Ground.StartTime" class="form-control rounded-3" type="time" />
-                                        <span asp-validation-for="Ground.StartTime" class="text-danger small"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label asp-for="Ground.EndTime" class="form-label fw-semibold"></label>
-                                        <input asp-for="Ground.EndTime" class="form-control rounded-3" type="time" />
-                                        <span asp-validation-for="Ground.EndTime" class="text-danger small"></span>
-                                    </div>
-                                </div>
-                            </div>
+                                        <!-- Duration -->
+                                        <div class="col-md-3">
+                                            <label class="form-label">Duration</label>
+                                            <div class="d-flex gap-2">
+                                                <!-- Hours -->
+                                                <div class="input-group" style="width: 100px;">
+                                                    <input asp-for="Courts[i].DurationHours" type="number" min="0" max="12" class="form-control text-center" placeholder="hrs" required />
+                                                    <span class="input-group-text">h</span>
+                                                </div>
 
-                            <div class="row g-3 mt-1">
-                                <div class="col-md-12">
-                                    <label class="form-label fw-semibold">Supported Sports</label>
-
-                                    @{
-                                        var defaultSports = new List<string> {
-                                                                        "Football", "Cricket", "Badminton", "Volleyball", "Tennis",
-                                                                        "Basketball", "Hockey", "Kabaddi", "Table Tennis", "Kho-Kho"
-                                                                        };
-
-                                        var selectedSports = Model.Ground.SupportedSports?
-                                        .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                                        .Select(s => s.Trim())
-                                        .ToHashSet(StringComparer.OrdinalIgnoreCase) ?? new HashSet<string>();
-
-                                        var allSports = defaultSports.Union(selectedSports).OrderBy(s => s).ToList();
-                                    }
-
-                                    <div id="sportsCheckboxes" class="mb-2">
-                                        @foreach (var sport in allSports)
-                                        {
-                                            var isChecked = selectedSports.Contains(sport);
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="sport_@sport" value="@sport" onchange="updateSupportedSports()" @(isChecked ? "checked" : "") />
-                                                <label class="form-check-label" for="sport_@sport">@sport</label>
+                                                <!-- Minutes -->
+                                                <div class="input-group" style="width: 100px;">
+                                                    <input asp-for="Courts[i].DurationMinutes" type="number" min="0" max="59" class="form-control text-center" placeholder="mins" required />
+                                                    <span class="input-group-text">m</span>
+                                                </div>
                                             </div>
-                                        }
+                                        </div>
+
+                                        <!-- Start Time -->
+                                        <div class="col-md-3">
+                                            <label class="form-label">Start Time</label>
+                                            <input asp-for="Courts[i].StartTime" type="time" class="form-control" style="min-width: 140px;" required />
+                                        </div>
+
+                                        <!-- End Time -->
+                                        <div class="col-md-3">
+                                            <label class="form-label">End Time</label>
+                                            <input asp-for="Courts[i].EndTime" type="time" class="form-control" style="min-width: 140px;" required />
+                                        </div>
                                     </div>
-
-                                    <div class="input-group mb-2">
-                                        <input type="text" id="customSportInput" class="form-control w-50" placeholder="Add custom sport" />
-                                        <button type="button" class="btn btn-outline-secondary" onclick="addCustomSport()">Add</button>
-                                    </div>
-
-                                    <div class="position-relative mt-2">
-                                        <textarea id="sportsPreview" class="form-control" rows="2" readonly>@Model.Ground.SupportedSports</textarea>
-                                        <button type="button" id="clearSportsBtn"
-                                                class="btn-close position-absolute top-0 end-0 mt-2 me-2 @(string.IsNullOrWhiteSpace(Model.Ground.SupportedSports) ? "d-none" : "")"
-                                                onclick="clearAllSports()" aria-label="Clear"></button>
-                                    </div>
-
-                                    <input type="hidden" asp-for="Ground.SupportedSports" id="SupportedSports" />
-                                    <span asp-validation-for="Ground.SupportedSports" class="text-danger small"></span>
                                 </div>
-                            </div>
-
-
-                            <div class="form-check form-switch mt-4">
-                                <input asp-for="Ground.IsActive" class="form-check-input" type="checkbox" />
-                                <label asp-for="Ground.IsActive" class="form-check-label fw-semibold">Active Ground</label>
-                            </div>
-
-                            <div class="text-end mt-4">
-                                <button type="submit" class="btn text-white rounded-pill px-4 shadow-sm" style="background-color: #4B0082;">
-                                    <i class="bi bi-save me-1"></i> Save Changes
-                                </button>
-                            </div>
-                    </form>
-                    <div class="modal fade" id="timingChangeModal" tabindex="-1" aria-labelledby="timingChangeModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content border-warning">
-                                <div class="modal-header bg-warning text-dark">
-                                    <h5 class="modal-title" id="timingChangeModalLabel">⚠️ Warning</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    You have made changes to the scheduled timings of this turf.<br />
-                                    <strong>Saving changes will reset future slots and cancel future bookings.</strong>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-warning" id="confirmSubmit">Yes, Save Changes</button>
-                                </div>
-                            </div>
+                            }
                         </div>
-                    </div>
+                        <button type="button" class="btn btn-outline-primary mt-2" onclick="addCourt()">+ Add Court</button>
 
+                        <div class="text-end mt-4">
+                            <a asp-page="/Grounds/Index" class="btn btn-secondary rounded-pill px-4 shadow-sm me-2">
+                                <i class="bi bi-arrow-left me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                                <i class="bi bi-check-circle me-1"></i> Update Ground
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Styles {
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('/images/turfbg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .form-container {
+            padding: 10px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .btn-purple {
+            background-color: white;
+            color: white;
+            border: none;
+        }
+
+            .btn-purple:hover {
+                background-color: white;
+            }
+
+        .minutes-box {
+            width: 60px !important;
+            flex: 0 0 auto !important;
+        }
+
+        .hours-box {
+            width: 60px !important;
+            flex: 0 0 auto !important;
+        }
+    </style>
+}
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -177,114 +207,132 @@
             reader.readAsDataURL(event.target.files[0]);
         }
 
-        function updateSupportedSports() {
-            const checkboxes = document.querySelectorAll('#sportsCheckboxes input[type="checkbox"]');
-            const selected = [];
-
-            checkboxes.forEach(cb => {
-                if (cb.checked) {
-                    selected.push(cb.value);
-                }
-            });
-
-            const result = selected.join(", ");
-            document.getElementById("SupportedSports").value = result;
-            document.getElementById("sportsPreview").value = result;
-
-            const clearBtn = document.getElementById("clearSportsBtn");
-            if (selected.length === 0) {
-                clearBtn.classList.add("d-none");
-            } else {
-                clearBtn.classList.remove("d-none");
-            }
-        }
-
-        function clearAllSports() {
-            const checkboxes = document.querySelectorAll('#sportsCheckboxes input[type="checkbox"]');
-            checkboxes.forEach(cb => cb.checked = false);
-            updateSupportedSports();
-        }
-
-        function addCustomSport() {
-            const input = document.getElementById("customSportInput");
-            const sport = input.value.trim();
-
-            if (!sport) return;
-
-            const existing = Array.from(document.querySelectorAll('#sportsCheckboxes input')).some(cb => cb.value.toLowerCase() === sport.toLowerCase());
-            if (existing) {
-                alert("Sport already exists.");
-                return;
-            }
-
-            const container = document.getElementById("sportsCheckboxes");
-            const id = "sport_" + sport.replace(/\s+/g, "_");
+        function addCourt() {
+            const container = document.getElementById("courtsContainer");
+            const index = document.querySelectorAll('.court-group').length;
 
             const div = document.createElement("div");
-            div.className = "form-check form-check-inline";
+            div.className = "court-group border rounded-4 p-3 mb-3 position-relative";
+
             div.innerHTML = `
-                <input class="form-check-input" type="checkbox" id="${id}" value="${sport}" onchange="updateSupportedSports()" checked />
-                <label class="form-check-label" for="${id}">${sport}</label>
+                <input type="hidden" name="Courts[${index}].Id" value="0" />
+                <h5 class="fw-semibold">Court ${index + 1}</h5>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" onclick="removeCourt(this)" aria-label="Remove"></button>
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label">Select Sport</label>
+                        <div class="position-relative">
+                            <select name="Courts[${index}].Name" class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
+                                <option value="">-- Choose Sport --</option>
+                                <option value="Football">Football</option>
+                                <option value="Cricket">Cricket</option>
+                                <option value="Badminton">Badminton</option>
+                                <option value="Volleyball">Volleyball</option>
+                                <option value="Tennis">Tennis</option>
+                                <option value="Basketball">Basketball</option>
+                                <option value="Hockey">Hockey</option>
+                                <option value="Kabaddi">Kabaddi</option>
+                                <option value="Table Tennis">Table Tennis</option>
+                                <option value="Kho-Kho">Kho-Kho</option>
+                                <option value="__other__">Other</option>
+                            </select>
+                            <input type="text" class="form-control mt-2 d-none court-custom-sport" placeholder="Enter custom sport" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Duration</label>
+                        <div class="d-flex gap-2">
+                            <div class="input-group" style="width: 100px;">
+                                <input name="Courts[${index}].DurationHours" type="number" min="0" max="12" class="form-control text-center" placeholder="hrs" value="1" required />
+                                <span class="input-group-text">h</span>
+                            </div>
+                            <div class="input-group" style="width: 100px;">
+                                <input name="Courts[${index}].DurationMinutes" type="number" min="0" max="59" class="form-control text-center" placeholder="mins" value="0" required />
+                                <span class="input-group-text">m</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Start Time</label>
+                        <input name="Courts[${index}].StartTime" type="time" class="form-control" style="min-width: 140px;" required />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">End Time</label>
+                        <input name="Courts[${index}].EndTime" type="time" class="form-control" style="min-width: 140px;" required />
+                    </div>
+                </div>
             `;
 
             container.appendChild(div);
-            input.value = "";
-            updateSupportedSports();
-        }
-                let isTimingModified = false;
-
-        const originalValues = {
-            SlotDurationHours: "",
-            SlotDurationMinutes: "",
-            StartTime: "",
-            EndTime: ""
-        };
-
-        function checkTimingChanges() {
-            const currentValues = {
-                SlotDurationHours: document.querySelector('[name="SlotDurationHours"]')?.value || "",
-                SlotDurationMinutes: document.querySelector('[name="SlotDurationMinutes"]')?.value || "",
-                StartTime: document.querySelector('[name="Ground.StartTime"]')?.value || "",
-                EndTime: document.querySelector('[name="Ground.EndTime"]')?.value || ""
-            };
-
-            isTimingModified = (
-                currentValues.SlotDurationHours !== originalValues.SlotDurationHours ||
-                currentValues.SlotDurationMinutes !== originalValues.SlotDurationMinutes ||
-                currentValues.StartTime !== originalValues.StartTime ||
-                currentValues.EndTime !== originalValues.EndTime
-            );
-
-            console.log("🟡 isTimingModified:", isTimingModified);
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            // Store original values
-            originalValues.SlotDurationHours = document.querySelector('[name="SlotDurationHours"]')?.value || "";
-            originalValues.SlotDurationMinutes = document.querySelector('[name="SlotDurationMinutes"]')?.value || "";
-            originalValues.StartTime = document.querySelector('[name="Ground.StartTime"]')?.value || "";
-            originalValues.EndTime = document.querySelector('[name="Ground.EndTime"]')?.value || "";
+        function reindexCourts() {
+            const courtGroups = document.querySelectorAll('#courtsContainer .court-group');
+            courtGroups.forEach((group, index) => {
+                group.querySelector('h5').innerText = `Court ${index + 1}`;
 
-            // Listen for changes
-            document.querySelector('[name="SlotDurationHours"]')?.addEventListener("input", checkTimingChanges);
-            document.querySelector('[name="SlotDurationMinutes"]')?.addEventListener("input", checkTimingChanges);
-            document.querySelector('[name="Ground.StartTime"]')?.addEventListener("input", checkTimingChanges);
-            document.querySelector('[name="Ground.EndTime"]')?.addEventListener("input", checkTimingChanges);
+                const hiddenId = group.querySelector('input[type="hidden"]');
+                const select = group.querySelector('select');
+                const inputs = group.querySelectorAll('input[type="number"], input[type="time"]');
 
-            const form = document.querySelector('form');
-            const modal = new bootstrap.Modal(document.getElementById('timingChangeModal'));
-            const confirmBtn = document.getElementById('confirmSubmit');
+                if (hiddenId) hiddenId.name = `Courts[${index}].Id`;
+                if (select) select.name = `Courts[${index}].Name`;
 
-            form.addEventListener('submit', function (e) {
-                if (isTimingModified) {
-                    e.preventDefault();
-                    modal.show();
+                if (inputs.length >= 4) {
+                    inputs[0].name = `Courts[${index}].DurationHours`;
+                    inputs[1].name = `Courts[${index}].DurationMinutes`;
+                    inputs[2].name = `Courts[${index}].StartTime`;
+                    inputs[3].name = `Courts[${index}].EndTime`;
                 }
             });
+        }
 
-            confirmBtn.addEventListener('click', () => {
-                modal.hide();
-                form.submit();
+        function removeCourt(button) {
+            const courtGroups = document.querySelectorAll('.court-group');
+            if (courtGroups.length <= 1) {
+                alert("At least one court is required.");
+                return;
+            }
+            const courtDiv = button.closest('.court-group');
+            courtDiv.remove();
+            reindexCourts();
+        }
+
+        function handleSportSelectChange(selectEl) {
+            const wrapper = selectEl.closest('.col-md-3');
+            const customInput = wrapper.querySelector('.court-custom-sport');
+
+            if (selectEl.value === "__other__") {
+                customInput.classList.remove('d-none');
+                customInput.setAttribute('required', 'required');
+
+                customInput.addEventListener('input', function () {
+                    selectEl.value = this.value;
+                });
+            } else {
+                customInput.classList.add('d-none');
+                customInput.removeAttribute('required');
+                customInput.value = "";
+            }
+        }
+
+        // Initialize custom sport handling on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const sportSelects = document.querySelectorAll('.court-sport-select');
+            sportSelects.forEach(select => {
+                const wrapper = select.closest('.col-md-3');
+                const customInput = wrapper.querySelector('.court-custom-sport');
+
+                if (!customInput.classList.contains('d-none')) {
+                    select.value = "__other__";
+                    customInput.setAttribute('required', 'required');
+
+                    customInput.addEventListener('input', function () {
+                        select.value = this.value;
+                    });
+                }
             });
         });
     </script>
