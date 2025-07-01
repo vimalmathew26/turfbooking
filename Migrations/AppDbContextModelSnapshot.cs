@@ -317,7 +317,7 @@ namespace turfbooking.Migrations
             modelBuilder.Entity("turfbooking.Models.Court", b =>
                 {
                     b.HasOne("turfbooking.Models.Ground", "Ground")
-                        .WithMany("Courts")
+                        .WithMany()
                         .HasForeignKey("GroundId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

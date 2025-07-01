@@ -19,7 +19,9 @@ namespace turfbooking.Pages.Admin
             _context = context;
             _defaultSlots = defaultSlots;
         }
-       
+
+        [BindProperty(SupportsGet =true)]
+        public int CourtId { set; get; } = 1;
 
         [BindProperty(SupportsGet = true)]
         public DateTime? SelectedDate { get; set; }
@@ -30,18 +32,24 @@ namespace turfbooking.Pages.Admin
         public Ground Ground { get; set; }
 
         public List<Slot>? Slots { get; set; }
+        public List<Court> Courts { get; set; }
 
         public List<DateTime>? SlotDates { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
-           
+
+            Courts = await _context.Courts
+                .Where(c => c.GroundId == GroundId)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+
             HttpContext.Session.SetString("PreviousPage", "/Admin/GroundSlot");
 
-            await _defaultSlots.SetDefaultSlots(GroundId);
+            await _defaultSlots.SetDefaultSlots(GroundId,CourtId);
             Ground = await _context.Grounds.FindAsync(GroundId);
 
             SlotDates = await _context.Slots
-                      .Where(s => s.GroundId == GroundId)
+                      .Where(s => s.GroundId == GroundId && s.courtId==CourtId)
                       .Select(s => s.BookingDate.Date)
                       .Distinct()
                       .OrderBy(s => s)

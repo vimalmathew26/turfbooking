@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.HttpResults;
 namespace turfbooking.Helper
 {
-    public class DefaultSlots
+     public class DefaultSlots
     {
 
         public readonly AppDbContext _context;
@@ -13,14 +13,15 @@ namespace turfbooking.Helper
         {
             _context = context;
         }
-        public async Task SetDefaultSlots(int groundId)
+        public async Task SetDefaultSlots(int groundId, int courtId)
         {
             var Ground = await _context.Grounds.FindAsync(groundId);
+            var Court = await _context.Courts.FindAsync(courtId);
 
-            TimeSpan startTime = Ground.StartTime.TimeOfDay;
-            TimeSpan endTime = Ground.EndTime.TimeOfDay;
+            TimeSpan startTime = Court.StartTime.TimeOfDay;
+            TimeSpan endTime = Court.EndTime.TimeOfDay;
 
-            TimeSpan duration = Ground.SlotDuration;
+            TimeSpan duration = Court.Duration;
 
 
 
@@ -37,11 +38,12 @@ namespace turfbooking.Helper
                         StartTime = time,
                         EndTime = time + duration,
                         BookingDate = CurrentDate,
-                        Status = Slot.SlotStatus.Available
+                        Status = Slot.SlotStatus.Available,
+                        courtId = Court.Id
                     };
 
                     var existingSlot = await _context.Slots
-                                      .FirstOrDefaultAsync(s => s.GroundId == groundId && s.BookingDate.Date == CurrentDate.Date && s.StartTime == time);
+                                      .FirstOrDefaultAsync(s => s.GroundId == groundId && s.courtId == courtId && s.BookingDate.Date == CurrentDate.Date && s.StartTime == time);
                     if (existingSlot == null)
                     {
                         _context.Slots.Add(slot);
@@ -54,11 +56,10 @@ namespace turfbooking.Helper
 
             }
         }
-
-        public async Task UpdateDefaultSlots(int groundId)
+        public async Task UpdateDefaultSlots(int groundId, int courtId)
         {
 
-            var existingSlots = await _context.Slots.Where(s => s.GroundId == groundId).ToListAsync();
+            var existingSlots = await _context.Slots.Where(s => s.GroundId == groundId && s.courtId == courtId).ToListAsync();
             if (existingSlots.Any())
             {
                 var bookingsToRemove = await _context.Bookings.Where(b => existingSlots.Select(s => s.Id).Contains(b.SlotId)).ToListAsync();
@@ -68,11 +69,13 @@ namespace turfbooking.Helper
             }
 
             var Ground = await _context.Grounds.FindAsync(groundId);
+            var Court = await _context.Courts.FindAsync(courtId);
 
-            TimeSpan startTime = Ground.StartTime.TimeOfDay;
-            TimeSpan endTime = Ground.EndTime.TimeOfDay;
 
-            TimeSpan duration = Ground.SlotDuration;
+            TimeSpan startTime = Court.StartTime.TimeOfDay;
+            TimeSpan endTime = Court.EndTime.TimeOfDay;
+
+            TimeSpan duration = Court.Duration;
 
 
 
@@ -89,12 +92,27 @@ namespace turfbooking.Helper
                         StartTime = time,
                         EndTime = time + duration,
                         BookingDate = CurrentDate,
-                        Status = Slot.SlotStatus.Available
+                        Status = Slot.SlotStatus.Available,
+                        courtId = Court.Id
                     };
 
+                    var existingSlot = await _context.Slots
+                                      .FirstOrDefaultAsync(s => s.GroundId == groundId && s.courtId == courtId && s.BookingDate.Date == CurrentDate.Date && s.StartTime == time);
+                    if (existingSlot == null)
+                    {
+                        _context.Slots.Add(slot);
+                        await _context.SaveChangesAsync();
+
+                    }
+
                 }
+
+
             }
         }
     }
+
 }
 
+
+    

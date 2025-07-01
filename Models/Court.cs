@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace turfbooking.Models
 {
@@ -13,10 +14,10 @@ namespace turfbooking.Models
         [Required]
         public DateTime EndTime { get; set; }
         [Required]
-        public TimeSpan Duration { get; set; }
+        public TimeSpan Duration { get; set; } 
         public int GroundId { get; set; }
         public Ground Ground { get; set; }
-        
+
 
     }
 }

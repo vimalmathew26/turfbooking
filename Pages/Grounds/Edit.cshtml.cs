@@ -119,7 +119,7 @@ namespace turfbooking.Pages.Grounds
             if (updateSlots)
             {
                 var defaultSlots = new DefaultSlots(_context);
-                await defaultSlots.UpdateDefaultSlots(groundInDb.Id);
+               // await defaultSlots.UpdateDefaultSlots(groundInDb.Id);
             }
 
                 return RedirectToPage("/Grounds/Index");

@@ -1,0 +1,35 @@
+﻿@page
+@model turfbooking.Pages.Users.CourtListModel
+@{
+    ViewData["Title"] = "Ground Courts";
+}
+
+<h2 class="mt-4 mb-3">Courts for Selected Ground</h2>
+
+<div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+@if (Model.courts.Any())
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var court in Model.courts)
+        {
+            <div class="col">
+                <div class="card shadow-sm h-100 border-primary position-relative">
+                    <div class="card-body">
+                        <h5 class="card-title">@court.Name</h5>
+                        <p class="card-text">
+                            <strong>Start Time:</strong> @court.StartTime.ToString("hh\\:mm tt") <br />
+                            <strong>End Time:</strong> @court.EndTime.ToString("hh\\:mm tt") <br />
+                            <strong>Duration:</strong> @court.Duration.ToString(@"hh\:mm")
+                        </p>
+                        <a asp-page="/Booking/SlotBooking" asp-route-CourtId="@court.Id" asp-route-GroundId="@court.GroundId"
+                           class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+
+
