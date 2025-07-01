@@ -97,7 +97,7 @@ namespace turfbooking.Pages.Grounds
             await _context.SaveChangesAsync();
 
             var slotHelper = new DefaultSlots(_context);
-            await slotHelper.SetDefaultSlots(Ground.Id);
+            //await slotHelper.SetDefaultSlots(Ground.Id,courtId);
 
             return RedirectToPage("/Grounds/Index");
         }

@@ -21,6 +21,8 @@ namespace turfbooking.Pages.Admin
             _context = context;
             _defaultSlots = defaultSlots;
         }
+        [BindProperty(SupportsGet = true)]
+        public int CourtId { get; set; }  
 
         [BindProperty(SupportsGet = true)]
         public int GroundId { get; set; }
@@ -28,6 +30,7 @@ namespace turfbooking.Pages.Admin
         [BindProperty]
         public Slot Slot { get; set; }
 
+        public Court Court { get; set; }
 
         public Ground Ground { get; set; }
 
@@ -52,6 +55,8 @@ namespace turfbooking.Pages.Admin
 
         public async Task<IActionResult> OnPostAsync()
         {
+            Court = await _context.Courts.FirstOrDefaultAsync(c => c.Id == CourtId);
+
             Ground = await _context.Grounds.FindAsync(GroundId);
 
             if (Ground == null)
@@ -72,7 +77,7 @@ namespace turfbooking.Pages.Admin
             {
                 return Page();
             }           
-            if ((Slot.StartTime <= Ground.StartTime.TimeOfDay || Slot.StartTime >= Ground.EndTime.TimeOfDay) && (Slot.EndTime<=Ground.StartTime.TimeOfDay || Slot.EndTime >=Ground.EndTime.TimeOfDay)) {
+            if ((Slot.StartTime <= Court.StartTime.TimeOfDay || Slot.StartTime >= Court.EndTime.TimeOfDay) && (Slot.EndTime<=Court.StartTime.TimeOfDay || Slot.EndTime >=Court.EndTime.TimeOfDay)) {
                 if ((Slot.EndTime-Slot.StartTime).TotalHours>=1) 
                 {
                     Slot.Status = Slot.SlotStatus.Available;
@@ -93,7 +98,7 @@ namespace turfbooking.Pages.Admin
                 ModelState.AddModelError(string.Empty,"Can't Add Ground Slot Between Default Time Slot");
                 return Page();
             }
-                return RedirectToPage("/Admin/SlotManagement", new { GroundId = GroundId });
+                return RedirectToPage("/Admin/SlotManagement", new { GroundId = GroundId ,CourtId=CourtId });
 
         }
 

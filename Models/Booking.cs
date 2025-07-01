@@ -28,6 +28,9 @@ namespace turfbooking.Models
         public Ground Ground { get; set; }
  
         public Slot Slot { get; set; }
+
+        public int courtId { get; set; }
+        public Court Court { get; set; }
     }
 
     public enum BookingStatus

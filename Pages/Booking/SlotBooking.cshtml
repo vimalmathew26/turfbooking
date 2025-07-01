@@ -23,6 +23,7 @@
             { 
                 <a asp-page="./SlotBooking"
                    asp-route-GroundId="@Model.GroundId"
+                   asp-route-CourtId="@Model.CourtId"
                    asp-route-Date="@day.ToString("yyyy-MM-dd")"
                    class="btn btn-sm @(Model.Date.Date == day.Date ? "btn-primary" : "btn-outline-primary")">
                     @day.ToString("ddd, MMM dd")

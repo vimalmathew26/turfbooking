@@ -21,6 +21,9 @@ namespace turfbooking.Pages.Booking
 
         }
         [BindProperty(SupportsGet =true)]
+        public int CourtId {get;set;}
+
+        [BindProperty(SupportsGet =true)]
         public DateTime SelectedDate { get; set; }
 
 
@@ -38,13 +41,22 @@ namespace turfbooking.Pages.Booking
 
         public Ground Ground { get; set; }
 
+        public Court Court { get; set; }    
+
         public async Task<IActionResult> OnGetAsync()
         {
             Ground = await _context.Grounds.FindAsync(GroundId);
 
+            Court=await _context.Courts.FirstOrDefaultAsync(c => c.Id == CourtId);
+
             if (Ground==null)
             {
                 ModelState.AddModelError(string.Empty,"Ground Not Found");
+                return Page();
+            }
+            if (Court == null)
+            {
+                ModelState.AddModelError(string.Empty, "Court Not Found");
                 return Page();
             }
 
@@ -57,7 +69,7 @@ namespace turfbooking.Pages.Booking
 
             HttpContext.Session.SetString("PreviousPage",previousUrl);
 
-            await _defaultSlots.SetDefaultSlots(GroundId);
+            await _defaultSlots.SetDefaultSlots(GroundId,CourtId);
             
             CurrentTime = DateTime.Now.TimeOfDay;
 
@@ -71,7 +83,7 @@ namespace turfbooking.Pages.Booking
                        .ToList();
             
             AvailableSlots = await _context.Slots
-                            .Where(s => s.GroundId == GroundId&& s.BookingDate.Date == Date.Date)
+                            .Where(s => s.GroundId == GroundId&& s.BookingDate.Date == Date.Date && s.courtId==CourtId)
                             .OrderBy(s => s.StartTime)
                             .ToListAsync();
           
@@ -103,6 +115,7 @@ namespace turfbooking.Pages.Booking
             {
                 UserId = userId,
                 GroundId = slot.GroundId,
+                courtId = slot.courtId,
                 BookingDate = slot.BookingDate,
                 StartTime = slot.StartTime,
                 EndTime = slot.EndTime,
