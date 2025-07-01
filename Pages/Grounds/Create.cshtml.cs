@@ -62,9 +62,10 @@ namespace turfbooking.Pages.Grounds
             HttpContext.Session.SetString("PreviousPage", Url.Page("/Grounds/Index"));
             return Page();
         }
-
+       
         public async Task<IActionResult> OnPostAsync()
         {
+            var slotHelper = new DefaultSlots(_context);
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Please correct the errors in the form.");
@@ -106,12 +107,16 @@ namespace turfbooking.Pages.Grounds
                     Duration = new TimeSpan(courtInput.DurationHours, courtInput.DurationMinutes, 0),
                     GroundId = Ground.Id
                 };
+                
                 _context.Courts.Add(court);
-            }
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+                await slotHelper.SetDefaultSlots(Ground.Id, court.Id);
 
-            //var slotHelper = new DefaultSlots(_context);
-            //await slotHelper.SetDefaultSlots(Ground.Id);
+            }
+            
+
+
+
 
             return RedirectToPage("/Grounds/Index");
         }

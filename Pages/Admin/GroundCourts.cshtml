@@ -10,25 +10,86 @@
 
 @if (Model.courts.Any())
 {
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach (var court in Model.courts)
         {
             <div class="col">
-                <div class="card shadow-sm h-100 border-primary position-relative">
+                <div class="card court-card h-100">
                     <div class="card-body">
                         <h5 class="card-title">@court.Name</h5>
-                        <p class="card-text">
-                            <strong>Start Time:</strong> @court.StartTime.ToString("hh\\:mm tt") <br />
-                            <strong>End Time:</strong> @court.EndTime.ToString("hh\\:mm tt") <br />
-                            <strong>Duration:</strong> @court.Duration.ToString(@"hh\:mm")
-                        </p>
+                        <ul class="court-info list-unstyled">
+                            <li><strong>Start:</strong> @court.StartTime.ToString("hh\\:mm tt")</li>
+                            <li><strong>End:</strong> @court.EndTime.ToString("hh\\:mm tt")</li>
+                            <li><strong>Duration:</strong> @court.Duration.ToString(@"hh\:mm")</li>
+                        </ul>
                         <a asp-page="/Admin/SlotManagement" asp-route-CourtId="@court.Id" asp-route-GroundId="@court.GroundId"
-                           class="stretched-link"></a>
+                           class="btn btn-book">Manage Slot</a>
                     </div>
                 </div>
             </div>
         }
     </div>
 }
+else
+{
+    <div class="alert alert-warning shadow-sm mt-4" role="alert">
+        No courts available for the selected ground.
+    </div>
+}
 
+@section Styles{
+    <style>
 
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa; /* Light pastel background */
+        }
+
+        .section-heading {
+            color: #4B0082; /* Indigo */
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+
+        .court-card {
+            border: none;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .court-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+            }
+
+        .card-title {
+            color: #0d6efd; /* Bootstrap primary */
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .court-info li {
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        .btn-book {
+            background-color: #4B0082;
+            color: #fff;
+            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-book:hover {
+                background-color: #5e2aa3;
+            }
+    </style>
+}

@@ -21,7 +21,7 @@ namespace turfbooking.Pages.Admin
         }
 
         [BindProperty(SupportsGet =true)]
-        public int CourtId { set; get; } = 1;
+        public int CourtId { set; get; } 
 
         [BindProperty(SupportsGet = true)]
         public DateTime? SelectedDate { get; set; }
@@ -29,86 +29,103 @@ namespace turfbooking.Pages.Admin
         [BindProperty(SupportsGet = true)]
         public int GroundId { get; set; }
 
+        [BindProperty(SupportsGet =true)]
+        public int SlotId { get; set; }
         public Ground Ground { get; set; }
-
-        public List<Slot>? Slots { get; set; }
+        public List<Slot> Slots { get; set; }
         public List<Court> Courts { get; set; }
-
-        public List<DateTime>? SlotDates { get; set; }
+        public List<DateTime> SlotDates { get; set; }=new List<DateTime>();
+        
         public async Task<IActionResult> OnGetAsync()
         {
 
-            Courts = await _context.Courts
-                .Where(c => c.GroundId == GroundId)
-                .OrderBy(c => c.Name)
-                .ToListAsync();
+            var previousUrl = Url.Page(
+                "/Admin/GroundCourts",
+                pageHandler: null,
+                values: new { GroundId = GroundId },
+                protocol: Request.Scheme
+            );
 
-            HttpContext.Session.SetString("PreviousPage", "/Admin/GroundSlot");
+            HttpContext.Session.SetString("PreviousPage", previousUrl);
+
+
+            if (GroundId==null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid GroundId.");
+                return Page();
+            }
+
+            if (CourtId==null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid CourtId.");
+                return Page();
+            }
 
             await _defaultSlots.SetDefaultSlots(GroundId,CourtId);
+
             Ground = await _context.Grounds.FindAsync(GroundId);
 
             SlotDates = await _context.Slots
-                      .Where(s => s.GroundId == GroundId && s.courtId==CourtId)
-                      .Select(s => s.BookingDate.Date)
-                      .Distinct()
-                      .OrderBy(s => s)
-                      .ToListAsync();
+                        .Where(s => s.GroundId == GroundId && s.courtId==CourtId)
+                        .Select(s => s.BookingDate.Date)
+                        .Distinct()
+                        .OrderBy(s => s)
+                        .ToListAsync();
 
-            SlotDates ??= new List<DateTime>();
 
-            if (!SelectedDate.HasValue && SlotDates.Any())
+            if (SelectedDate==null && SlotDates.Any())
             {
                 SelectedDate = SlotDates.First();
             }
-            if (SelectedDate.HasValue)
+            if (SelectedDate!=null)
             {
                 Slots = await _context.Slots
-                   .Include(s => s.Ground)
-                   .Include(s => s.Booking)
-                   .ThenInclude(s => s.User)
-                   .Where(s => s.BookingDate.Date == SelectedDate.Value.Date && s.GroundId == GroundId)
-                   .ToListAsync();
+                       .Include(s => s.Ground)
+                       .Include(s => s.Booking)
+                       .ThenInclude(s => s.User)
+                       .Where(s => s.BookingDate.Date == SelectedDate.Value.Date && s.GroundId == GroundId && s.courtId==CourtId)
+                       .ToListAsync();
             }           
-
-
-
             return Page();
         }
 
-        public async Task<IActionResult> OnPostBlockAsync(int id, int GroundId, DateTime SelectedDate)
+        public async Task<IActionResult> OnPostBlockAsync()
         {
-            var slot = await _context.Slots.FindAsync(id);
+            var slot = await _context.Slots.FindAsync(SlotId);
+                      
             if (slot != null && (slot.Status == Slot.SlotStatus.Available || slot.Status == Slot.SlotStatus.Booked ))
             {
                 slot.Status = Slot.SlotStatus.Blocked;
                 await _context.SaveChangesAsync();
             }
-            return RedirectToPage("./SlotManagement", new { GroundId, SelectedDate });
+            return RedirectToPage("./SlotManagement", new { GroundId, SelectedDate, CourtId });
         }
 
 
-        public async Task<IActionResult> OnPostEnableAsync(int id, int GroundId, DateTime SelectedDate)
+        public async Task<IActionResult> OnPostEnableAsync()
         {
-            var slot = await _context.Slots.FindAsync(id);
+            var slot = await _context.Slots.FindAsync(SlotId);
+             
+
             if (slot != null && slot.Status == Slot.SlotStatus.Blocked)
             {
                 slot.Status = Slot.SlotStatus.Available;
                 await _context.SaveChangesAsync();
             }
-            return RedirectToPage("./SlotManagement", new { GroundId, SelectedDate });
+            return RedirectToPage("./SlotManagement", new { GroundId, SelectedDate, CourtId});
         }
 
 
-        public async Task<IActionResult> OnPostDeleteAsync(int id, int GroundId)
+        public async Task<IActionResult> OnPostDeleteAsync()
         {
-            var slot = await _context.Slots.FindAsync(id);
+            var slot = await _context.Slots.FindAsync(SlotId);
+                         
             if (slot != null)
             {
                 _context.Slots.Remove(slot);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToPage("./SlotManagement", new { GroundId, SelectedDate });
+            return RedirectToPage("./SlotManagement", new { GroundId, SelectedDate ,CourtId});
         }
     }
 }

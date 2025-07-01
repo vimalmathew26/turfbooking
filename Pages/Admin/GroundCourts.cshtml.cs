@@ -22,7 +22,8 @@ namespace turfbooking.Pages.Admin
         public List<Court> courts { get; set; } = new List<Court>();
         public async Task<IActionResult> OnGetAsync()
         {
-            courts=await _context.Courts
+            HttpContext.Session.SetString("PreviousPage", "/Admin/AdminDashboard");
+            courts =await _context.Courts
                 .Where(c => c.GroundId==GroundId)
                 .ToListAsync();
 
