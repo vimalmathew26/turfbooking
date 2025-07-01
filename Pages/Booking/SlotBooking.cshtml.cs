@@ -61,9 +61,9 @@ namespace turfbooking.Pages.Booking
             }
 
             var previousUrl = Url.Page(
-                 "/Users/GroundDetails",
+                 "/Users/CourtList",
                  pageHandler: null,
-                 values: new { id = GroundId },
+                 values: new { GroundId = GroundId ,CourtId=CourtId},
                  protocol: Request.Scheme
             );
 

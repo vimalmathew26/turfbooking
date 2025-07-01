@@ -5,7 +5,7 @@
 @{
     ViewData["Title"] = "Admin Slot Management";
 }
-
+<div asp-validation-summary="All" class="alert-danger"></div>
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-success">Slot Management – @Model.Ground.GroundName</h2>
@@ -33,6 +33,7 @@
                                     <a asp-page="/Admin/SlotManagement"
                                        asp-route-SelectedDate="@date.ToString("yyyy-MM-dd")"
                                        asp-route-GroundID="@Model.GroundId"
+                                       asp-route-CourtId="@Model.CourtId"
                                        class="text-decoration-none @(isActive ? "text-white" : "text-dark") d-block">
                                         <i class="bi bi-calendar3 me-1"></i> @date.ToString("dddd, dd MMM yyyy")
                                     </a>
@@ -104,23 +105,27 @@
                                         <td>
                                             <div class="d-flex flex-wrap gap-2">
                                                 @{
-                                                    var currentTime = slot.BookingDate.Add(DateTime.Now.TimeOfDay);
+                                                    var slotDateTime = slot.BookingDate.Date + slot.StartTime;
                                                 }
-                                                @if (slot.Status == Slot.SlotStatus.Available && slot.BookingDate >= DateTime.Now.Date && currentTime>=DateTime.Now )
+                                                @if (slot.Status == Slot.SlotStatus.Available && slot.BookingDate.Date >= DateTime.Now.Date && slotDateTime>=DateTime.Now )
                                                 {
                                                     <form method="post" asp-page-handler="Block"
-                                                          asp-route-id="@slot.Id"
-                                                          asp-route-groundId="@slot.GroundId"
-                                                          asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")">
+                                                          asp-route-SlotId="@slot.Id"
+                                                          asp-route-GroundId="@slot.GroundId"
+                                                          asp-route-CourtId="@slot.courtId"
+                                                          asp-route-SelectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")">
+                                                          
+                                                          
                                                         <button type="submit" class="btn btn-warning btn-sm shadow-sm">Block</button>
                                                     </form>
                                                 }
                                                 else if (slot.Status == Slot.SlotStatus.Blocked)
                                                 {
                                                     <form method="post" asp-page-handler="Enable"
-                                                          asp-route-id="@slot.Id"
-                                                          asp-route-groundId="@slot.GroundId"
-                                                          asp-route-selectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")">
+                                                          asp-route-SlotId="@slot.Id"
+                                                          asp-route-GroundId="@slot.GroundId"
+                                                          asp-route-CourtId="@slot.courtId"
+                                                          asp-route-SelectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")">            
                                                         <button type="submit" class="btn btn-success btn-sm shadow-sm">Unblock</button>
                                                     </form>
                                                 }
@@ -128,8 +133,10 @@
                                                 @if (slot.Status != Slot.SlotStatus.Booked)
                                                 {
                                                     <form method="post" asp-page-handler="Delete"
-                                                          asp-route-id="@slot.Id"
-                                                          asp-route-GroundId="@slot.GroundId">
+                                                          asp-route-SlotId="@slot.Id"
+                                                          asp-route-GroundId="@slot.GroundId"
+                                                          asp-route-CourtId="@slot.courtId"
+                                                          asp-route-SelectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")">
                                                         <button type="submit" class="btn btn-danger btn-sm shadow-sm">Delete</button>
                                                     </form>
                                                 }

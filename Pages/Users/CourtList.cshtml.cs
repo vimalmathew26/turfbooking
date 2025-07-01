@@ -23,6 +23,7 @@ namespace turfbooking.Pages.Users
         public Slot Slot { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
+            HttpContext.Session.SetString("PreviousPage", Url.Page("/Users/GroundList"));
             courts = await _context.Courts
                 .Where(c => c.GroundId == GroundId)
                 .ToListAsync();

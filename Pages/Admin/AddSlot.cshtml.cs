@@ -39,7 +39,7 @@ namespace turfbooking.Pages.Admin
             var previousUrl = Url.Page(
                 "/Admin/SlotManagement",
                 pageHandler: null,
-                values: new { GroundId = GroundId },
+                values: new { GroundId = GroundId,CourtId=CourtId },
                 protocol: Request.Scheme
             );
 
