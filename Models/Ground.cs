@@ -22,19 +22,15 @@ namespace turfbooking.Models
         [Range(50, 10000, ErrorMessage = "Price per hour must be between ₹50 and ₹10,000.")]
         public decimal PricePerHour { get; set; }
 
-        [Required(ErrorMessage = "Please specify supported sports.")]
         [StringLength(200, ErrorMessage = "Supported sports cannot exceed 200 characters.")]
         public string SupportedSports { get; set; }
 
         public bool IsActive { get; set; } = true;
 
-        [Required]
         public TimeSpan SlotDuration { get; set; }
         
-        [Required]
         public DateTime StartTime { get; set; }
         
-        [Required]
         public DateTime EndTime { get; set; }
 
         public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();

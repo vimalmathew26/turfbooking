@@ -9,14 +9,14 @@ namespace turfbooking.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        public string StartTime { get; set; }
+        public DateTime StartTime { get; set; }
         [Required]
-        public string EndTime { get; set; }
+        public DateTime EndTime { get; set; }
         [Required]
         public TimeSpan Duration { get; set; }
         public int GroundId { get; set; }
         public Ground Ground { get; set; }
-
+        
 
     }
 }

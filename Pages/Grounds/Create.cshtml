@@ -53,7 +53,7 @@
                                 <input asp-for="Ground.PricePerHour" class="form-control rounded-3" placeholder="e.g. 500" />
                                 <span asp-validation-for="Ground.PricePerHour" class="text-danger small"></span>
                             </div>
-                            <div class="row g-3 mt-1">
+                            @* <div class="row g-3 mt-1">
                                 <div class="col-md-4">
                                     <label class="form-label fw-semibold">Slot Duration</label>
                                     <div class="input-group">
@@ -76,9 +76,9 @@
                                     <input asp-for="Ground.EndTime" class="form-control rounded-3" type="time" />
                                     <span asp-validation-for="Ground.EndTime" class="text-danger small"></span>
                                 </div>
-                            </div>
+                            </div> *@
 
-                            <div class="col-md-12">
+                            @* <div class="col-md-12">
                                 <label class="form-label fw-semibold">Supported Sports</label>
 
                                 <div id="sportsCheckboxes" class="mb-2">
@@ -113,16 +113,57 @@
 
                                 <input type="hidden" asp-for="Ground.SupportedSports" id="SupportedSports" />
                                 <span asp-validation-for="Ground.SupportedSports" class="text-danger small"></span>
-                            </div>
-
-
-
+                            </div> *@
                         </div>
 
                         <div class="form-check form-switch mt-4">
                             <input asp-for="Ground.IsActive" class="form-check-input" type="checkbox" role="switch" />
                             <label asp-for="Ground.IsActive" class="form-check-label fw-semibold">Active Ground</label>
                         </div>
+                        <div id="courtsContainer">
+                            <div class="court-group border rounded-4 p-3 mb-3" data-index="0">
+                                <h5 class="fw-semibold d-flex justify-content-between align-items-center">
+                                    Court 1
+                                    <!-- No remove button for the first court -->
+                                </h5>
+                                <div class="row g-2 align-items-end">
+                                    <!-- Sport (Court Name) -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">Sport (Court Name)</label>
+                                        <input name="Courts[0].Name" class="form-control" placeholder="e.g. Football" required />
+                                    </div>
+
+                                    <!-- Duration -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">Duration</label>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div>
+                                                <input name="Courts[0].DurationHours" type="number" min="0" max="12" class="form-control text-center" style="width: 80px;" placeholder="hrs" required />
+                                            </div>
+                                            <div>
+                                                <input name="Courts[0].DurationMinutes" type="number" min="0" max="59" class="form-control text-center" style="width: 80px;" placeholder="mins" required />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Start Time -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">Start Time</label>
+                                        <input name="Courts[0].StartTime" type="time" class="form-control" style="min-width: 140px;" required />
+                                    </div>
+
+                                    <!-- End Time -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">End Time</label>
+                                        <input name="Courts[0].EndTime" type="time" class="form-control" style="min-width: 140px;" required />
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary mt-2" onclick="addCourt()">+ Add Court</button>
+
 
                         <div class="text-end mt-4">
                             <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
@@ -251,7 +292,77 @@
             updateSupportedSports();
         }
 
-        
+        let courtIndex = 1;
+
+                               function addCourt() {
+            const container = document.getElementById("courtsContainer");
+
+            const div = document.createElement("div");
+            div.className = "court-group border rounded-4 p-3 mb-3 position-relative";
+
+            div.innerHTML = `
+                <h5 class="fw-semibold">Court</h5>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" onclick="removeCourt(this)" aria-label="Remove"></button>
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label">Sport (Court Name)</label>
+                        <input class="form-control" placeholder="e.g. Cricket" required />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Duration</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <div>
+                                <input type="number" min="0" max="12" class="form-control text-center" style="width: 80px;" placeholder="hrs" required />
+                            </div>
+                            <div>
+                                <input type="number" min="0" max="59" class="form-control text-center" style="width: 80px;" placeholder="mins" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Start Time</label>
+                        <input type="time" class="form-control" style="min-width: 140px;" required />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">End Time</label>
+                        <input type="time" class="form-control" style="min-width: 140px;" required />
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(div);
+            reindexCourts();
+        }
+
+                function reindexCourts() {
+            const courtGroups = document.querySelectorAll('#courtsContainer .court-group');
+            courtGroups.forEach((group, index) => {
+                group.querySelector('h5').innerText = `Court ${index + 1}`;
+
+                const inputs = group.querySelectorAll('input');
+                if (inputs.length >= 5) {
+                    inputs[0].name = `Courts[${index}].Name`;
+                    inputs[1].name = `Courts[${index}].DurationHours`;
+                    inputs[2].name = `Courts[${index}].DurationMinutes`;
+                    inputs[3].name = `Courts[${index}].StartTime`;
+                    inputs[4].name = `Courts[${index}].EndTime`;
+                }
+            });
+        }
+
+
+
+                function removeCourt(button) {
+            const courtGroups = document.querySelectorAll('.court-group');
+            if (courtGroups.length <= 1) {
+                alert("At least one court is required.");
+                return;
+            }
+            const courtDiv = button.closest('.court-group');
+            courtDiv.remove();
+            reindexCourts();
+        }
+
 
     </script>
 }

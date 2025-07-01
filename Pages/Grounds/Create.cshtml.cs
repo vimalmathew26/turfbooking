@@ -15,6 +15,20 @@ namespace turfbooking.Pages.Grounds
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _environment;
 
+        public class CourtInputModel
+        {
+            [Required]
+            public string Name { get; set; } = string.Empty;
+            [Required]
+            public int DurationHours { get; set; } = 1;
+            [Required]
+            public int DurationMinutes { get; set; } = 0;
+            [Required]
+            public string StartTime { get; set; } = "06:00"; // Default start time
+            [Required]
+            public string EndTime { get; set; } = "22:00"; // Default end time
+        }
+
         public CreateModel(AppDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
@@ -31,9 +45,9 @@ namespace turfbooking.Pages.Grounds
             SupportedSports = string.Empty,
             IsActive = true,
             PhotoPath = string.Empty,
-            SlotDuration = TimeSpan.FromMinutes(60), // Default: 1 hour
-            StartTime = DateTime.Today.AddHours(6),  // Default: 6 AM today
-            EndTime = DateTime.Today.AddHours(22)    // Default: 10 PM today
+            SlotDuration = TimeSpan.FromMinutes(60),
+            StartTime = DateTime.Today.AddHours(6), 
+            EndTime = DateTime.Today.AddHours(22)   
         };
 
         [BindProperty]
@@ -42,37 +56,23 @@ namespace turfbooking.Pages.Grounds
         public required IFormFile Photo { get; set; }
 
         [BindProperty]
-        [Range(1, 12, ErrorMessage = "Slot duration must be between 1 and 12 hours.")]
-        public int SlotDurationHours { get; set; }
-        
-        [BindProperty]
-        [Range(0, 59, ErrorMessage = "Minutes must be between 0 and 59.")]
-        public int SlotDurationMinutes { get; set; }
-
+        public List<CourtInputModel> Courts { get; set; } = new();
         public IActionResult OnGet()
         {
             HttpContext.Session.SetString("PreviousPage", Url.Page("/Grounds/Index"));
-            SlotDurationHours = Ground.SlotDuration.Hours;
-            SlotDurationMinutes = Ground.SlotDuration.Minutes;
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            Ground.SlotDuration = new TimeSpan(SlotDurationHours, SlotDurationMinutes, 0);
-
-            // For StartTime and EndTime, if you only want the time part:
-            Ground.StartTime = DateTime.Today.Add(TimeSpan.Parse(Request.Form["Ground.StartTime"]));
-            Ground.EndTime = DateTime.Today.Add(TimeSpan.Parse(Request.Form["Ground.EndTime"]));
-
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("Photo", "Photo is required.");
+                ModelState.AddModelError("", "Please correct the errors in the form.");
                 return Page();
             }
 
             var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-            Directory.CreateDirectory(uploadsFolder); // ? ENSURE folder exists
+            Directory.CreateDirectory(uploadsFolder);
 
             var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(Photo.FileName);
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -96,8 +96,22 @@ namespace turfbooking.Pages.Grounds
             _context.Grounds.Add(Ground);
             await _context.SaveChangesAsync();
 
-            var slotHelper = new DefaultSlots(_context);
-            await slotHelper.SetDefaultSlots(Ground.Id);
+            foreach (var courtInput in Courts)
+            {
+                var court = new Court
+                {
+                    Name = courtInput.Name,
+                    StartTime = DateTime.Today.Add(TimeSpan.Parse(courtInput.StartTime)),
+                    EndTime = DateTime.Today.Add(TimeSpan.Parse(courtInput.EndTime)),
+                    Duration = new TimeSpan(courtInput.DurationHours, courtInput.DurationMinutes, 0),
+                    GroundId = Ground.Id
+                };
+                _context.Courts.Add(court);
+            }
+            await _context.SaveChangesAsync();
+
+            //var slotHelper = new DefaultSlots(_context);
+            //await slotHelper.SetDefaultSlots(Ground.Id);
 
             return RedirectToPage("/Grounds/Index");
         }
