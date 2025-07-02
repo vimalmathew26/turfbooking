@@ -83,7 +83,7 @@ namespace turfbooking.Pages.Booking
                        .ToList();
             
             AvailableSlots = await _context.Slots
-                            .Where(s => s.GroundId == GroundId&& s.BookingDate.Date == Date.Date && s.courtId==CourtId)
+                            .Where(s => s.GroundId == GroundId&& s.BookingDate.Date == Date.Date && s.CourtId==CourtId)
                             .OrderBy(s => s.StartTime)
                             .ToListAsync();
           
@@ -91,12 +91,9 @@ namespace turfbooking.Pages.Booking
             {
                 ModelState.AddModelError(string.Empty, "No Slots Available for the Selected Date");
                 return Page();
-           }
-
-           
+           }           
             return Page();
         }
-
         public async Task<IActionResult> OnPostBookAsync()
         {
          
@@ -115,7 +112,7 @@ namespace turfbooking.Pages.Booking
             {
                 UserId = userId,
                 GroundId = slot.GroundId,
-                courtId = slot.courtId,
+                CourtId = slot.CourtId,
                 BookingDate = slot.BookingDate,
                 StartTime = slot.StartTime,
                 EndTime = slot.EndTime,
@@ -123,13 +120,11 @@ namespace turfbooking.Pages.Booking
                 Status = BookingStatus.Confirmed,
                 SlotId = slotId
             };
-
-
             _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
 
             slot.Status = Slot.SlotStatus.Booked;
-            slot.BookingId = booking.Id;
+            
 
             await _context.SaveChangesAsync();
 

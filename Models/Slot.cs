@@ -29,12 +29,10 @@ namespace turfbooking.Models
         [ValidateNever]
         public Ground Ground { get; set; }
 
-        public int? BookingId { get; set; }
-
         [ValidateNever]
         public Booking Booking { get; set; }
-        public int courtId { get; set; }
-        public Court Court { get; set; }
+        public int CourtId { get; set; }
+        public Court? Court { get; set; }
 
       
         public enum SlotStatus

@@ -23,43 +23,42 @@ namespace turfbooking.Pages.Reviews
         public Review Review { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public int GroundId { get; set; }
+        public int? GroundId { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-
+            
             var previousUrl = Url.Page(
-     "/Users/GroundDetails",
-     pageHandler: null,
-     values: new { id = GroundId },
-     protocol: Request.Scheme
- );
-
+                             "/Users/GroundDetails",
+                             pageHandler: null,
+                             values: new { GroundId=GroundId },
+                             protocol: Request.Scheme
+            );
             HttpContext.Session.SetString("PreviousPage", previousUrl);
-            Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == GroundId);
 
-            if (Ground == null)
+            if (GroundId == null)
             {
                 TempData["GroundAlert"] = "Ground not found!";
                 return Page();
             }
+           
+            Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == GroundId);           
             return Page();
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == GroundId);
-            if (Ground == null)
+            if (GroundId == null)
             {
                 TempData["GroundAlert"] = "Ground not found!";
                 return Page();
             }
-
+            Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == GroundId);
+          
             var userIdClaim = User.FindFirst("UserId");
             if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
             {
                 ModelState.AddModelError(string.Empty, "User authentication required.");
-                return Page();
-                
+                return Page();               
             }
             
             if (!ModelState.IsValid)
@@ -75,12 +74,12 @@ namespace turfbooking.Pages.Reviews
                     ModelState.AddModelError(string.Empty, "You must book the ground before adding a review.");
                     return Page();
                 }
-                Review.GroundId = GroundId;
+                Review.GroundId = GroundId.Value;
                 Review.UserId = userId;
                 _context.Reviews.Add(Review);
                 await _context.SaveChangesAsync();
 
-                return RedirectToPage("/Users/GroundDetails", new { id = GroundId });
+                return RedirectToPage("/Users/GroundDetails", new {GroundId=GroundId });
             }
         }
     }

@@ -51,6 +51,7 @@ namespace turfbooking.Pages.Booking
         {
             var booking = await _context.Bookings
                 .Include(b => b.Ground)
+                .Include(b=>b.Slot)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
 
             if (booking == null || booking.Status == BookingStatus.Cancelled)
@@ -67,11 +68,11 @@ namespace turfbooking.Pages.Booking
 
             booking.Status = BookingStatus.Cancelled;
 
-            var slot = await _context.Slots.FirstOrDefaultAsync(s => s.BookingId == booking.Id);
+            var slot = await _context.Slots.FirstOrDefaultAsync(s => s.Booking != null && s.Booking.Id == booking.Id);
             if (slot != null)
             {
                 slot.Status = Slot.SlotStatus.Available;
-                slot.BookingId = null;
+                booking.SlotId = null;
             }
 
             await _context.SaveChangesAsync();
