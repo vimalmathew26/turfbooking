@@ -33,7 +33,7 @@ namespace turfbooking.Migrations
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CourtId")
+                    b.Property<int?>("CourtId")
                         .HasColumnType("int");
 
                     b.Property<TimeSpan>("EndTime")
@@ -270,9 +270,7 @@ namespace turfbooking.Migrations
                 {
                     b.HasOne("turfbooking.Models.Court", "Court")
                         .WithMany()
-                        .HasForeignKey("CourtId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourtId");
 
                     b.HasOne("turfbooking.Models.Ground", "Ground")
                         .WithMany("Bookings")
@@ -352,8 +350,7 @@ namespace turfbooking.Migrations
 
             modelBuilder.Entity("turfbooking.Models.Slot", b =>
                 {
-                    b.Navigation("Booking")
-                        .IsRequired();
+                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("turfbooking.Models.User", b =>

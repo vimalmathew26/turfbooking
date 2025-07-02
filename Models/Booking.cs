@@ -7,13 +7,7 @@ namespace turfbooking.Models
     public class Booking
     {
         public int Id { get; set; }
-       
-        public int UserId { get; set; }
-    
-        public int GroundId { get; set; }
-        
-       
-
+      
         public DateTime BookingDate { get; set; }
 
         public TimeSpan StartTime { get; set; }
@@ -24,14 +18,16 @@ namespace turfbooking.Models
 
         public BookingStatus Status { get; set; } = BookingStatus.Confirmed;
 
-        public User User { get; set; }
-        public Ground Ground { get; set; }
+        public int UserId { get; set; }
+        public User? User { get; set; }
 
+        public int GroundId { get; set; }
+        public Ground? Ground { get; set; }
 
         public int? SlotId { get; set; }
-        public Slot Slot { get; set; }
+        public Slot? Slot { get; set; }
 
-        public int CourtId { get; set; }
+        public int? CourtId { get; set; }
         public Court? Court { get; set; }
     }
 

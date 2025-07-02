@@ -31,16 +31,16 @@ namespace turfbooking.Data
                 .HasOne(b => b.Slot)
                 .WithOne(s => s.Booking)
                 .HasForeignKey<Booking>(b => b.SlotId)
-                .OnDelete(DeleteBehavior.Restrict); // 👈 OR .NoAction
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Ground)
                 .WithMany(g => g.Bookings)
                 .HasForeignKey(b => b.GroundId)
-                .OnDelete(DeleteBehavior.Restrict); // 👈 OR .NoAction
+                .OnDelete(DeleteBehavior.Restrict);
 
 
-           
+
 
 
 
