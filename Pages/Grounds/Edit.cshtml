@@ -67,7 +67,7 @@
                             @for (int i = 0; i < Model.Courts.Count; i++)
                             {
                                 <div class="court-group border rounded-4 p-3 mb-3 @(i == 0 ? "" : "position-relative")">
-                                    <input type="hidden" asp-for="Courts[i].Id" />
+                                    <input type="hidden" asp-for="Courts[i].Id" class="court-id" />
                                     <h5 class="fw-semibold d-flex justify-content-between align-items-center">
                                         Court @(i + 1)
                                         @if (i > 0)
@@ -75,13 +75,12 @@
                                             <button type="button" class="btn-close" onclick="removeCourt(this)" aria-label="Remove"></button>
                                         }
                                     </h5>
+
                                     <div class="row g-2 align-items-end">
                                         <!-- Dropdown Sport -->
                                         <div class="col-md-3">
                                             <label class="form-label">Select Sport</label>
                                             <div class="position-relative">
-                                                <!-- This dummy field binds the value and allows Razor to select the correct option -->
-                                                <!-- Select with static options (UI only) -->
                                                 <select class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required data-initial="@Model.Courts[i].Name">
                                                     <option value="">-- Choose Sport --</option>
                                                     <option value="Football">Football</option>
@@ -100,11 +99,9 @@
                                                 <!-- Custom input -->
                                                 <input type="text" class="form-control mt-2 d-none court-custom-sport" placeholder="Enter custom sport" value="@Model.Courts[i].Name" />
 
-                                                <!-- The only real posted field -->
+                                                <!-- Posted hidden field -->
                                                 <input type="hidden" name="Courts[@i].Name" class="court-sport-hidden" value="@Model.Courts[i].Name" />
-
                                             </div>
-
                                         </div>
 
                                         <!-- Duration -->
@@ -113,13 +110,13 @@
                                             <div class="d-flex gap-2">
                                                 <!-- Hours -->
                                                 <div class="input-group" style="width: 100px;">
-                                                    <input asp-for="Courts[i].DurationHours" type="number" min="0" max="12" class="form-control text-center" placeholder="hrs" required />
+                                                    <input asp-for="Courts[i].DurationHours" type="number" min="0" max="12" class="form-control text-center duration-hours" placeholder="hrs" required />
                                                     <span class="input-group-text">h</span>
                                                 </div>
 
                                                 <!-- Minutes -->
                                                 <div class="input-group" style="width: 100px;">
-                                                    <input asp-for="Courts[i].DurationMinutes" type="number" min="0" max="59" class="form-control text-center" placeholder="mins" required />
+                                                    <input asp-for="Courts[i].DurationMinutes" type="number" min="0" max="59" class="form-control text-center duration-minutes" placeholder="mins" required />
                                                     <span class="input-group-text">m</span>
                                                 </div>
                                             </div>
@@ -128,13 +125,13 @@
                                         <!-- Start Time -->
                                         <div class="col-md-3">
                                             <label class="form-label">Start Time</label>
-                                            <input asp-for="Courts[i].StartTime" type="time" class="form-control" style="min-width: 140px;" required />
+                                            <input asp-for="Courts[i].StartTime" type="time" class="form-control start-time" style="min-width: 140px;" required />
                                         </div>
 
                                         <!-- End Time -->
                                         <div class="col-md-3">
                                             <label class="form-label">End Time</label>
-                                            <input asp-for="Courts[i].EndTime" type="time" class="form-control" style="min-width: 140px;" required />
+                                            <input asp-for="Courts[i].EndTime" type="time" class="form-control end-time" style="min-width: 140px;" required />
                                         </div>
                                     </div>
                                 </div>
@@ -150,6 +147,7 @@
                                 <i class="bi bi-check-circle me-1"></i> Update Ground
                             </button>
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -285,22 +283,27 @@
             reindexCourts();
         }
 
-        function reindexCourts() {
+                       function reindexCourts() {
             document.querySelectorAll('#courtsContainer .court-group').forEach((group, index) => {
                 group.querySelector('h5').innerText = `Court ${index + 1}`;
 
-                const inputs = group.querySelectorAll('input');
-                const select = group.querySelector('select');
+                // Rename each input explicitly and preserve value
+                const id = group.querySelector('.court-id');
+                const sportHidden = group.querySelector('.court-sport-hidden');
+                const durHours = group.querySelector('.duration-hours');
+                const durMins = group.querySelector('.duration-minutes');
+                const startTime = group.querySelector('.start-time');
+                const endTime = group.querySelector('.end-time');
 
-                if (inputs[0]) inputs[0].name = `Courts[${index}].Id`;                      // Hidden ID
-                if (select) select.name = `Courts[${index}].Name`;                          // Select (non-posted)
-                if (inputs[1]) inputs[1].name = `Courts[${index}].Name`;                    // Hidden actual name
-                if (inputs[2]) inputs[2].name = `Courts[${index}].DurationHours`;
-                if (inputs[3]) inputs[3].name = `Courts[${index}].DurationMinutes`;
-                if (inputs[4]) inputs[4].name = `Courts[${index}].StartTime`;
-                if (inputs[5]) inputs[5].name = `Courts[${index}].EndTime`;
+                if (id) id.name = `Courts[${index}].Id`;
+                if (sportHidden) sportHidden.name = `Courts[${index}].Name`;
+                if (durHours) durHours.name = `Courts[${index}].DurationHours`;
+                if (durMins) durMins.name = `Courts[${index}].DurationMinutes`;
+                if (startTime) startTime.name = `Courts[${index}].StartTime`;
+                if (endTime) endTime.name = `Courts[${index}].EndTime`;
             });
         }
+
 
         function handleSportSelectChange(selectEl) {
             const wrapper = selectEl.closest('.position-relative');

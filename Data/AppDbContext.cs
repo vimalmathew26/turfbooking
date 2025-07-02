@@ -20,77 +20,55 @@ namespace turfbooking.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Ground>()
-                 .HasMany(g => g.Reviews)
-                 .WithOne(r => r.Ground)
-                 .HasForeignKey(r => r.GroundId)
-                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Ground>()
-                 .HasMany(g => g.Bookings)
-                 .WithOne(b => b.Ground)
-                 .HasForeignKey(b => b.GroundId)
-                 .OnDelete(DeleteBehavior.Restrict);
-
-
+            // Configure decimal precision
             modelBuilder.Entity<Booking>()
-                 .HasOne(b => b.Slot)
-                 .WithOne(s => s.Booking)
-                 .HasForeignKey<Slot>(s => s.BookingId)
-                 .OnDelete(DeleteBehavior.SetNull);
+                .Property(b => b.TotalPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Ground>()
+                .Property(g => g.PricePerHour)
+                .HasPrecision(18, 2);
+
+            // Ground relationships
+            modelBuilder.Entity<Ground>()
+                .HasMany(g => g.Reviews)
+                .WithOne(r => r.Ground)
+                .HasForeignKey(r => r.GroundId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Ground>()
+                .HasMany(g => g.Bookings)
+                .WithOne(b => b.Ground)
+                .HasForeignKey(b => b.GroundId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Ground>()
+                .HasMany(g => g.Courts)
+                .WithOne(c => c.Ground)
+                .HasForeignKey(c => c.GroundId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // User relationships
             modelBuilder.Entity<User>()
-                 .HasMany(u => u.Bookings)
-                 .WithOne(b => b.User)
-                 .HasForeignKey(b => b.UserId)
-                 .OnDelete(DeleteBehavior.Cascade);
+                .HasMany(u => u.Bookings)
+                .WithOne(b => b.User)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Court → Booking: enable cascade delete
+            // Booking-Slot relationship (one-to-one)
             modelBuilder.Entity<Booking>()
-                 .HasOne(b => b.Court)
-                 .WithMany()
-                 .HasForeignKey(b => b.courtId)
-                 .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(b => b.Slot)
+                .WithOne(s => s.Booking)
+                .HasForeignKey<Slot>(s => s.BookingId)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            // Booking → Slot: disable cascade to prevent circular path
-            modelBuilder.Entity<Booking>()
-                 .HasOne(b => b.Slot)
-                 .WithOne(s => s.Booking)
-                 .HasForeignKey<Booking>(b => b.SlotId)
-                 .OnDelete(DeleteBehavior.NoAction);
-
-            // Slot → Booking: also disable
-            modelBuilder.Entity<Slot>()
-                 .HasOne(s => s.Booking)
-                 .WithOne(b => b.Slot)
-                 .HasForeignKey<Slot>(s => s.BookingId)
-                 .OnDelete(DeleteBehavior.NoAction);
-
-            // Slot → Court: disable cascade
-            modelBuilder.Entity<Slot>()
-                 .HasOne(s => s.Court)
-                 .WithMany()
-                 .HasForeignKey(s => s.courtId)
-                 .OnDelete(DeleteBehavior.NoAction);
-
-            // Booking → User and Ground: safe to keep cascade OFF
-            modelBuilder.Entity<Booking>()
-                 .HasOne(b => b.User)
-                 .WithMany()
-                 .HasForeignKey(b => b.UserId)
-                 .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<Booking>()
-                 .HasOne(b => b.Ground)
-                 .WithMany()
-                 .HasForeignKey(b => b.GroundId)
-                 .OnDelete(DeleteBehavior.NoAction);
-
-
-
-
-
+            // Court-Slot relationship
+            modelBuilder.Entity<Court>()
+                .HasMany<Slot>()
+                .WithOne(s => s.Court)
+                .HasForeignKey(s => s.courtId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

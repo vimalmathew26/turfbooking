@@ -35,7 +35,7 @@ namespace turfbooking.Models
 
         public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
         public ICollection<Review>? Reviews { get; set; } = new List<Review>();
-        public ICollection<Court> Courts { get; set; } = new List<Court>();
+        public ICollection<Court>? Courts { get; set; } = new List<Court>();
 
 
         public Ground()
