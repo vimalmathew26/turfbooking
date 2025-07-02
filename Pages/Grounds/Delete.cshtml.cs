@@ -48,18 +48,16 @@ namespace turfbooking.Pages.Grounds
                             .Where(s => s.Status == BookingStatus.Confirmed)                           
                             .ToListAsync();
 
-            if (HasBookings.Any())
-            {
-                TempData["ErrorMessage"] = "Cannot delete ground with existing bookings. Please cancel the bookings first.";
-                return RedirectToPage("/Grounds/Index");
-            }
-            else
-            {
+         
+                var courts = await _context.Courts
+                    .Where(s => s.GroundId == groundToDelete.Id)
+                    .ToListAsync();
+                _context.Courts.RemoveRange(courts);
+
                 var slots = await _context.Slots
                     .Where(s => s.GroundId == groundToDelete.Id)
                     .ToListAsync();
                 _context.Slots.RemoveRange(slots);
-
 
                 var bookings = await _context.Bookings
                     .Where(b => b.GroundId == groundToDelete.Id)
@@ -73,11 +71,12 @@ namespace turfbooking.Pages.Grounds
                 _context.Reviews.RemoveRange(reviews);
 
 
+
+
                 await _context.SaveChangesAsync();
 
                 _context.Grounds.Remove(groundToDelete);
                 await _context.SaveChangesAsync();
-            }
                 return RedirectToPage("/Grounds/Index");
         }
     }
