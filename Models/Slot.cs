@@ -27,14 +27,12 @@ namespace turfbooking.Models
         public SlotStatus Status { get; set; } = SlotStatus.Available;
 
         [ValidateNever]
-        public Ground Ground { get; set; }
-
-        public int? BookingId { get; set; }
+        public Ground? Ground { get; set; }
 
         [ValidateNever]
-        public Booking Booking { get; set; }
-        public int courtId { get; set; }
-        public Court Court { get; set; }
+        public Booking? Booking { get; set; }
+        public int CourtId { get; set; }
+        public Court? Court { get; set; }
 
       
         public enum SlotStatus

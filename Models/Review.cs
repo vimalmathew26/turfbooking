@@ -9,7 +9,7 @@ namespace turfbooking.Models
        
         public int UserId { get; set; }
       
-        public int GroundId { get; set; }
+       
     
         [Required]
         [Range(1, 5)]
@@ -20,9 +20,10 @@ namespace turfbooking.Models
         public string Comment { get; set; }
 
         public bool IsVisible { get; set; } = true;
+        public int GroundId { get; set; }
 
         [ValidateNever]
-        public Ground Ground { get; set; }
+        public Ground? Ground { get; set; }
     }
 
 }

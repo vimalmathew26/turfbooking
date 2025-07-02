@@ -37,10 +37,7 @@ namespace turfbooking.Models
         public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
         [ValidateNever]
         public ICollection<Review>? Reviews { get; set; } = new List<Review>();
-        [ValidateNever]
         public ICollection<Court>? Courts { get; set; } = new List<Court>();
-
-
         public Ground()
         {
             GroundName = string.Empty;

@@ -31,7 +31,7 @@ namespace turfbooking.Models
 
         public string SecurityAnswer { get; set; }
 
-        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
 
         public User()
         {

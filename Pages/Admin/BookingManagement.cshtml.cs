@@ -88,7 +88,7 @@ namespace turfbooking.Pages.Admin
             }           
             booking.Slot.Status = Slot.SlotStatus.Available;
             booking.Status = BookingStatus.Cancelled;
-            booking.Slot.BookingId = null;
+            booking.SlotId = null;
             await _context.SaveChangesAsync();
             return RedirectToPage("BookingManagement", new {GroundId, SearchUsername, SearchDate });
         }

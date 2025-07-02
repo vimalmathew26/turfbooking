@@ -26,8 +26,6 @@
                     <ul class="list-group list-group-flush">
                         @foreach (var date in Model.SlotDates)
                         {
-                            if (date >= DateTime.Now.Date)
-                            {
                                 var isActive = date.Date == Model.SelectedDate?.Date;
                                 <li class="list-group-item @(isActive ? "active text-white" : "")">
                                     <a asp-page="/Admin/SlotManagement"
@@ -37,8 +35,7 @@
                                        class="text-decoration-none @(isActive ? "text-white" : "text-dark") d-block">
                                         <i class="bi bi-calendar3 me-1"></i> @date.ToString("dddd, dd MMM yyyy")
                                     </a>
-                                </li>
-                            }
+                                </li> 
                         }
                     </ul>
                 </div>
@@ -112,7 +109,7 @@
                                                     <form method="post" asp-page-handler="Block"
                                                           asp-route-SlotId="@slot.Id"
                                                           asp-route-GroundId="@slot.GroundId"
-                                                          asp-route-CourtId="@slot.courtId"
+                                                          asp-route-CourtId="@slot.CourtId"
                                                           asp-route-SelectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")">
                                                           
                                                           
@@ -124,13 +121,13 @@
                                                     <form method="post" asp-page-handler="Enable"
                                                           asp-route-SlotId="@slot.Id"
                                                           asp-route-GroundId="@slot.GroundId"
-                                                          asp-route-CourtId="@slot.courtId"
+                                                          asp-route-CourtId="@slot.CourtId"
                                                           asp-route-SelectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")">            
                                                         <button type="submit" class="btn btn-success btn-sm shadow-sm">Unblock</button>
                                                     </form>
                                                 }
 
-                                                @if (slot.Status != Slot.SlotStatus.Booked)
+                                               @*  @if (slot.Status != Slot.SlotStatus.Booked)
                                                 {
                                                     <form method="post" asp-page-handler="Delete"
                                                           asp-route-SlotId="@slot.Id"
@@ -139,7 +136,7 @@
                                                           asp-route-SelectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")">
                                                         <button type="submit" class="btn btn-danger btn-sm shadow-sm">Delete</button>
                                                     </form>
-                                                }
+                                                } *@
                                             </div>
                                         </td>
                                     </tr>

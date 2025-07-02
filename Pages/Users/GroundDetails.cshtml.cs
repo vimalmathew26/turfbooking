@@ -17,43 +17,33 @@ namespace turfbooking.Pages.Users
         {
             _context = context;
         }
-
-        public List<Review> Reviews { get; set; } = new();
-
         [BindProperty(SupportsGet = true)]
-        public required Ground Ground { get; set; }
+        public int? GroundId { get; set; }
+        public List<Review> Reviews { get; set; } = new List<Review>();
+
+        public Ground Ground { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public double AverageRating { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public int id { get; set; }
-
-
-
-
         public async Task<IActionResult> OnGetAsync()
         {
             HttpContext.Session.SetString("PreviousPage", Url.Page("/Users/GroundList"));
-            Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == id && g.IsActive);
 
-            if (Ground == null)
+
+            if (GroundId == null)
             {
-                ModelState.AddModelError(string.Empty,"Ground Not Found");
+                ModelState.AddModelError(string.Empty, "Ground Not Found");
                 return Page();
             }
-                
 
+            Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == GroundId && g.IsActive);
+                       
             Reviews = await _context.Reviews
-             .Where(r => r.GroundId == id && r.IsVisible)
-             .ToListAsync();
+                     .Where(r => r.GroundId == GroundId && r.IsVisible)
+                     .ToListAsync();
 
             AverageRating = Reviews.Any() ? Reviews.Average(r => r.Rating) : 0;
-
-
             return Page();
-
-
         }
     }
 }

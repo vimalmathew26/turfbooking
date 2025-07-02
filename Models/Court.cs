@@ -20,7 +20,7 @@ namespace turfbooking.Models
         [Required]
         public TimeSpan Duration { get; set; } 
         public int GroundId { get; set; }
-        public Ground Ground { get; set; }
+        public Ground? Ground { get; set; }
 
 
     }
