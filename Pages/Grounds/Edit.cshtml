@@ -80,7 +80,9 @@
                                         <div class="col-md-3">
                                             <label class="form-label">Select Sport</label>
                                             <div class="position-relative">
-                                                <select asp-for="Courts[i].Name" class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
+                                                <!-- This dummy field binds the value and allows Razor to select the correct option -->
+                                                <!-- Select with static options (UI only) -->
+                                                <select class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required data-initial="@Model.Courts[i].Name">
                                                     <option value="">-- Choose Sport --</option>
                                                     <option value="Football">Football</option>
                                                     <option value="Cricket">Cricket</option>
@@ -94,8 +96,15 @@
                                                     <option value="Kho-Kho">Kho-Kho</option>
                                                     <option value="__other__">Other</option>
                                                 </select>
-                                                <input type="text" class="form-control mt-2 @(Model.IsCustomSport(Model.Courts[i].Name) ? "" : "d-none") court-custom-sport" placeholder="Enter custom sport" value="@(Model.IsCustomSport(Model.Courts[i].Name) ? Model.Courts[i].Name : "")" />
+
+                                                <!-- Custom input -->
+                                                <input type="text" class="form-control mt-2 d-none court-custom-sport" placeholder="Enter custom sport" value="@Model.Courts[i].Name" />
+
+                                                <!-- The only real posted field -->
+                                                <input type="hidden" name="Courts[@i].Name" class="court-sport-hidden" value="@Model.Courts[i].Name" />
+
                                             </div>
+
                                         </div>
 
                                         <!-- Duration -->
@@ -201,8 +210,7 @@
         function previewImage(event) {
             const reader = new FileReader();
             reader.onload = function () {
-                const output = document.getElementById('photoPreview');
-                output.src = reader.result;
+                document.getElementById('photoPreview').src = reader.result;
             };
             reader.readAsDataURL(event.target.files[0]);
         }
@@ -222,7 +230,7 @@
                     <div class="col-md-3">
                         <label class="form-label">Select Sport</label>
                         <div class="position-relative">
-                            <select name="Courts[${index}].Name" class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
+                            <select class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
                                 <option value="">-- Choose Sport --</option>
                                 <option value="Football">Football</option>
                                 <option value="Cricket">Cricket</option>
@@ -237,9 +245,9 @@
                                 <option value="__other__">Other</option>
                             </select>
                             <input type="text" class="form-control mt-2 d-none court-custom-sport" placeholder="Enter custom sport" />
+                            <input type="hidden" name="Courts[${index}].Name" class="court-sport-hidden" value="" />
                         </div>
                     </div>
-
                     <div class="col-md-3">
                         <label class="form-label">Duration</label>
                         <div class="d-flex gap-2">
@@ -253,14 +261,13 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="col-md-3">
                         <label class="form-label">Start Time</label>
-                        <input name="Courts[${index}].StartTime" type="time" class="form-control" style="min-width: 140px;" required />
+                        <input name="Courts[${index}].StartTime" type="time" class="form-control" required />
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">End Time</label>
-                        <input name="Courts[${index}].EndTime" type="time" class="form-control" style="min-width: 140px;" required />
+                        <input name="Courts[${index}].EndTime" type="time" class="form-control" required />
                     </div>
                 </div>
             `;
@@ -268,72 +275,90 @@
             container.appendChild(div);
         }
 
-        function reindexCourts() {
-            const courtGroups = document.querySelectorAll('#courtsContainer .court-group');
-            courtGroups.forEach((group, index) => {
-                group.querySelector('h5').innerText = `Court ${index + 1}`;
-
-                const hiddenId = group.querySelector('input[type="hidden"]');
-                const select = group.querySelector('select');
-                const inputs = group.querySelectorAll('input[type="number"], input[type="time"]');
-
-                if (hiddenId) hiddenId.name = `Courts[${index}].Id`;
-                if (select) select.name = `Courts[${index}].Name`;
-
-                if (inputs.length >= 4) {
-                    inputs[0].name = `Courts[${index}].DurationHours`;
-                    inputs[1].name = `Courts[${index}].DurationMinutes`;
-                    inputs[2].name = `Courts[${index}].StartTime`;
-                    inputs[3].name = `Courts[${index}].EndTime`;
-                }
-            });
-        }
-
         function removeCourt(button) {
-            const courtGroups = document.querySelectorAll('.court-group');
-            if (courtGroups.length <= 1) {
+            const courts = document.querySelectorAll('.court-group');
+            if (courts.length <= 1) {
                 alert("At least one court is required.");
                 return;
             }
-            const courtDiv = button.closest('.court-group');
-            courtDiv.remove();
+            button.closest('.court-group').remove();
             reindexCourts();
         }
 
+        function reindexCourts() {
+            document.querySelectorAll('#courtsContainer .court-group').forEach((group, index) => {
+                group.querySelector('h5').innerText = `Court ${index + 1}`;
+
+                const inputs = group.querySelectorAll('input');
+                const select = group.querySelector('select');
+
+                if (inputs[0]) inputs[0].name = `Courts[${index}].Id`;                      // Hidden ID
+                if (select) select.name = `Courts[${index}].Name`;                          // Select (non-posted)
+                if (inputs[1]) inputs[1].name = `Courts[${index}].Name`;                    // Hidden actual name
+                if (inputs[2]) inputs[2].name = `Courts[${index}].DurationHours`;
+                if (inputs[3]) inputs[3].name = `Courts[${index}].DurationMinutes`;
+                if (inputs[4]) inputs[4].name = `Courts[${index}].StartTime`;
+                if (inputs[5]) inputs[5].name = `Courts[${index}].EndTime`;
+            });
+        }
+
         function handleSportSelectChange(selectEl) {
-            const wrapper = selectEl.closest('.col-md-3');
+            const wrapper = selectEl.closest('.position-relative');
             const customInput = wrapper.querySelector('.court-custom-sport');
+            const hiddenInput = wrapper.querySelector('.court-sport-hidden');
 
             if (selectEl.value === "__other__") {
                 customInput.classList.remove('d-none');
-                customInput.setAttribute('required', 'required');
+                customInput.required = true;
 
-                customInput.addEventListener('input', function () {
-                    selectEl.value = this.value;
+                hiddenInput.value = customInput.value.trim();
+                customInput.addEventListener('input', () => {
+                    hiddenInput.value = customInput.value.trim();
                 });
             } else {
                 customInput.classList.add('d-none');
-                customInput.removeAttribute('required');
+                customInput.required = false;
                 customInput.value = "";
+                hiddenInput.value = selectEl.value;
             }
         }
 
-        // Initialize custom sport handling on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const sportSelects = document.querySelectorAll('.court-sport-select');
-            sportSelects.forEach(select => {
-                const wrapper = select.closest('.col-md-3');
-                const customInput = wrapper.querySelector('.court-custom-sport');
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize existing courts
+            document.querySelectorAll('.court-group').forEach(group => {
+                const select = group.querySelector('.court-sport-select');
+                const customInput = group.querySelector('.court-custom-sport');
+                const hiddenInput = group.querySelector('.court-sport-hidden');
+                const value = hiddenInput.value;
 
-                if (!customInput.classList.contains('d-none')) {
+                if (Array.from(select.options).some(opt => opt.value === value)) {
+                    select.value = value;
+                    customInput.classList.add('d-none');
+                } else {
                     select.value = "__other__";
-                    customInput.setAttribute('required', 'required');
-
-                    customInput.addEventListener('input', function () {
-                        select.value = this.value;
-                    });
+                    customInput.classList.remove('d-none');
+                    customInput.value = value;
+                    customInput.required = true;
                 }
+
+                customInput.addEventListener('input', () => {
+                    hiddenInput.value = customInput.value.trim();
+                });
+            });
+
+            // Final validation before submit
+            document.querySelector("form").addEventListener("submit", () => {
+                document.querySelectorAll(".court-group").forEach(group => {
+                    const select = group.querySelector(".court-sport-select");
+                    const customInput = group.querySelector(".court-custom-sport");
+                    const hiddenInput = group.querySelector(".court-sport-hidden");
+
+                    hiddenInput.value = (select.value === "__other__")
+                        ? customInput.value.trim()
+                        : select.value;
+                });
             });
         });
     </script>
+
 }

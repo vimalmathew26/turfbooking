@@ -53,44 +53,6 @@
                                 <input asp-for="Ground.PricePerHour" class="form-control rounded-3" placeholder="e.g. 500" />
                                 <span asp-validation-for="Ground.PricePerHour" class="text-danger small"></span>
                             </div>
-                           
-
-                            @* <div class="col-md-12">
-                                <label class="form-label fw-semibold">Supported Sports</label>
-
-                                <div id="sportsCheckboxes" class="mb-2">
-                                    @{
-                                        var defaultSports = new List<string> {
-                                                                        "Football", "Cricket", "Badminton", "Volleyball", "Tennis",
-                                                                        "Basketball", "Hockey", "Kabaddi", "Table Tennis", "Kho-Kho"
-                                                                        };
-                                    }
-                                    @foreach (var sport in defaultSports)
-                                    {
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="sport_@sport" value="@sport" onchange="updateSupportedSports()" />
-                                            <label class="form-check-label" for="sport_@sport">@sport</label>
-                                        </div>
-                                    }
-                                </div>
-
-                                <div class="input-group mb-2">
-                                    <input type="text" id="customSportInput" class="form-control w-50" placeholder="Add custom sport" />
-                                    <button type="button" class="btn btn-outline-secondary" onclick="addCustomSport()">Add</button>
-                                </div>
-
-                                <div class="position-relative mt-2">
-                                    <textarea id="sportsPreview" class="form-control" rows="2" readonly></textarea>
-                                    <button type="button" id="clearSportsBtn"
-                                            class="btn-close position-absolute top-0 end-0 mt-2 me-2 d-none"
-                                            onclick="clearAllSports()" aria-label="Clear"></button>
-                                </div>
-
-
-
-                                <input type="hidden" asp-for="Ground.SupportedSports" id="SupportedSports" />
-                                <span asp-validation-for="Ground.SupportedSports" class="text-danger small"></span>
-                            </div> *@
                         </div>
 
                         <div class="form-check form-switch mt-4">
@@ -108,7 +70,7 @@
                                     <div class="col-md-3">
                                         <label class="form-label">Select Sport</label>
                                         <div class="position-relative">
-                                            <select name="Courts[0].Name" class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
+                                            <select class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
                                                 <option value="">-- Choose Sport --</option>
                                                 <option value="Football">Football</option>
                                                 <option value="Cricket">Cricket</option>
@@ -123,6 +85,8 @@
                                                 <option value="__other__">Other</option>
                                             </select>
                                             <input type="text" class="form-control mt-2 d-none court-custom-sport" placeholder="Enter custom sport" />
+                                            <input type="hidden" name="Courts[0].Name" class="court-sport-hidden" />
+
                                         </div>
                                     </div>
 
@@ -261,7 +225,7 @@
         function clearAllSports() {
             const checkboxes = document.querySelectorAll('#sportsCheckboxes input[type="checkbox"]');
             checkboxes.forEach(cb => cb.checked = false);
-            updateSupportedSports(); // This will also hide the clear button now
+            updateSupportedSports(); 
         }
 
 
@@ -309,7 +273,7 @@
                     <div class="col-md-3">
                         <label class="form-label">Select Sport</label>
                         <div class="position-relative">
-                            <select name="Courts[${index}].Name" class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
+                            <select class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
                                 <option value="">-- Choose Sport --</option>
                                 <option value="Football">Football</option>
                                 <option value="Cricket">Cricket</option>
@@ -323,6 +287,7 @@
                                 <option value="Kho-Kho">Kho-Kho</option>
                                 <option value="__other__">Other</option>
                             </select>
+                                <input type="hidden" name="Courts[${index}].Name" class="court-sport-hidden" value="" />
                             <input type="text" class="form-control mt-2 d-none court-custom-sport" placeholder="Enter custom sport" />
                         </div>
                     </div>
@@ -356,22 +321,29 @@
         }
 
 
-                function reindexCourts() {
+                       function reindexCourts() {
             const courtGroups = document.querySelectorAll('#courtsContainer .court-group');
+
             courtGroups.forEach((group, index) => {
                 group.querySelector('h5').innerText = `Court ${index + 1}`;
 
-                       const select = group.querySelector('select');
-        const inputs = group.querySelectorAll('input');
-        if (select && inputs.length >= 4) {
-            select.name = `Courts[${index}].Name`;
-            inputs[0].name = `Courts[${index}].DurationHours`;
-            inputs[1].name = `Courts[${index}].DurationMinutes`;
-            inputs[2].name = `Courts[${index}].StartTime`;
-            inputs[3].name = `Courts[${index}].EndTime`;
-        }
+                // Reassign hidden input name
+                const hiddenInput = group.querySelector('.court-sport-hidden');
+                if (hiddenInput) hiddenInput.name = `Courts[${index}].Name`;
+
+                // Reassign duration and time input names
+                const hoursInput = group.querySelector('input[name$=".DurationHours"]');
+                const minutesInput = group.querySelector('input[name$=".DurationMinutes"]');
+                const startTimeInput = group.querySelector('input[name$=".StartTime"]');
+                const endTimeInput = group.querySelector('input[name$=".EndTime"]');
+
+                if (hoursInput) hoursInput.name = `Courts[${index}].DurationHours`;
+                if (minutesInput) minutesInput.name = `Courts[${index}].DurationMinutes`;
+                if (startTimeInput) startTimeInput.name = `Courts[${index}].StartTime`;
+                if (endTimeInput) endTimeInput.name = `Courts[${index}].EndTime`;
             });
         }
+
 
 
 
@@ -386,23 +358,42 @@
             reindexCourts();
         }
 
-                function handleSportSelectChange(selectEl) {
+                        function handleSportSelectChange(selectEl) {
             const wrapper = selectEl.closest('.col-md-3');
             const customInput = wrapper.querySelector('.court-custom-sport');
+            const hiddenInput = wrapper.querySelector('.court-sport-hidden');
 
             if (selectEl.value === "__other__") {
                 customInput.classList.remove('d-none');
                 customInput.setAttribute('required', 'required');
 
-                // When user types custom sport, update the hidden select's value before submit
-                customInput.addEventListener('input', function () {
-                    selectEl.value = this.value;
-                });
+                // Replace previous listener to avoid stacking
+                customInput.oninput = function () {
+                    hiddenInput.value = this.value.trim();
+                };
+
+                hiddenInput.value = customInput.value.trim(); // In case user types before input
             } else {
                 customInput.classList.add('d-none');
                 customInput.removeAttribute('required');
                 customInput.value = "";
+
+                hiddenInput.value = selectEl.value;
             }
         }
+                document.querySelector("form").addEventListener("submit", function () {
+            document.querySelectorAll(".court-group").forEach(group => {
+                const select = group.querySelector(".court-sport-select");
+                const customInput = group.querySelector(".court-custom-sport");
+                const hiddenInput = group.querySelector(".court-sport-hidden");
+
+                if (select.value === "__other__") {
+                    hiddenInput.value = customInput.value.trim();
+                } else {
+                    hiddenInput.value = select.value;
+                }
+            });
+        });
+
     </script>
 }

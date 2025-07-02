@@ -213,6 +213,7 @@ namespace turfbooking.Pages.Grounds
                         Duration = new TimeSpan(courtInput.DurationHours, courtInput.DurationMinutes, 0),
                         GroundId = existingGround.Id
                     };
+
                     _context.Courts.Add(newCourt);
                 }
             }
