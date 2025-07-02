@@ -99,6 +99,7 @@ namespace turfbooking.Pages.Booking
          
             var slot = await _context.Slots
                        .Include(s => s.Ground)
+                       .Include(c=>c.Court)
                        .FirstOrDefaultAsync(s => s.Id == slotId);
 
             var userIdClaim = User.FindFirst("UserId");
@@ -116,7 +117,7 @@ namespace turfbooking.Pages.Booking
                 BookingDate = slot.BookingDate,
                 StartTime = slot.StartTime,
                 EndTime = slot.EndTime,
-                TotalPrice = (decimal)(slot.EndTime - slot.StartTime).TotalHours * slot.Ground.PricePerHour,
+                TotalPrice = (decimal)(slot.EndTime - slot.StartTime).TotalHours * slot.Court.PricePerHour,
                 Status = BookingStatus.Confirmed,
                 SlotId = slotId
             };

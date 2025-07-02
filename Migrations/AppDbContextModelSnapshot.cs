@@ -52,7 +52,6 @@ namespace turfbooking.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("UserId")
@@ -140,7 +139,6 @@ namespace turfbooking.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PricePerHour")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<TimeSpan>("SlotDuration")
@@ -308,7 +306,7 @@ namespace turfbooking.Migrations
                     b.HasOne("turfbooking.Models.Ground", "Ground")
                         .WithMany("Courts")
                         .HasForeignKey("GroundId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ground");
