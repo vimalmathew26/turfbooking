@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace turfbooking.Models
 {
@@ -18,8 +19,8 @@ namespace turfbooking.Models
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "Price per hour is required.")]
-        [Range(50, 10000, ErrorMessage = "Price per hour must be between ₹50 and ₹10,000.")]
+        //[Required(ErrorMessage = "Price per hour is required.")]
+        //[Range(50, 10000, ErrorMessage = "Price per hour must be between ₹50 and ₹10,000.")]
         public decimal PricePerHour { get; set; }
 
         [StringLength(200, ErrorMessage = "Supported sports cannot exceed 200 characters.")]
@@ -32,9 +33,11 @@ namespace turfbooking.Models
         public DateTime StartTime { get; set; }
         
         public DateTime EndTime { get; set; }
-
+        [ValidateNever]
         public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
+        [ValidateNever]
         public ICollection<Review>? Reviews { get; set; } = new List<Review>();
+        [ValidateNever]
         public ICollection<Court>? Courts { get; set; } = new List<Court>();
 
 

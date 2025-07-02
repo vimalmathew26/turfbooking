@@ -9,6 +9,10 @@ namespace turfbooking.Models
 
         [Required]
         public string Name { get; set; }
+
+        [Required(ErrorMessage = "Price per hour is required.")]
+        public decimal PricePerHour { get; set; }
+
         [Required]
         public DateTime StartTime { get; set; }
         [Required]

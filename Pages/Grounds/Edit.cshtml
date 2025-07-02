@@ -50,13 +50,13 @@
                             <span asp-validation-for="Ground.Description" class="text-danger small"></span>
                         </div>
 
-                        <div class="row g-3 mt-1">
+                        @* <div class="row g-3 mt-1">
                             <div class="col-md-6">
                                 <label asp-for="Ground.PricePerHour" class="form-label fw-semibold"></label>
                                 <input asp-for="Ground.PricePerHour" class="form-control rounded-3" placeholder="e.g. 500" />
                                 <span asp-validation-for="Ground.PricePerHour" class="text-danger small"></span>
                             </div>
-                        </div>
+                        </div> *@
 
                         <div class="form-check form-switch mt-4">
                             <input asp-for="Ground.IsActive" class="form-check-input" type="checkbox" role="switch" />
@@ -123,15 +123,21 @@
                                         </div>
 
                                         <!-- Start Time -->
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label class="form-label">Start Time</label>
                                             <input asp-for="Courts[i].StartTime" type="time" class="form-control start-time" style="min-width: 140px;" required />
                                         </div>
 
                                         <!-- End Time -->
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label class="form-label">End Time</label>
                                             <input asp-for="Courts[i].EndTime" type="time" class="form-control end-time" style="min-width: 140px;" required />
+                                        </div>
+
+                                        <!-- Price Per Hour -->
+                                        <div class="col-md-2">
+                                            <label class="form-label price-per-hour">Price Per Hour (₹)</label>
+                                            <input asp-for="Courts[i].PricePerHour" type="number" class="form-control rounded-3" placeholder="e.g. 500" required />
                                         </div>
                                     </div>
                                 </div>
@@ -259,14 +265,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label">Start Time</label>
                         <input name="Courts[${index}].StartTime" type="time" class="form-control" required />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label">End Time</label>
                         <input name="Courts[${index}].EndTime" type="time" class="form-control" required />
                     </div>
+                     <div class="col-md-2">
+                    <label class="form-label">Price Per Hour (₹)</label>
+                    <input name="Courts[${index}].PricePerHour" type="number" class="form-control rounded-3" placeholder="e.g. 500" required />
+                </div>
                 </div>
             `;
 
@@ -290,6 +300,7 @@
                 // Rename each input explicitly and preserve value
                 const id = group.querySelector('.court-id');
                 const sportHidden = group.querySelector('.court-sport-hidden');
+                const price = group.querySelector('.price-per-hour')
                 const durHours = group.querySelector('.duration-hours');
                 const durMins = group.querySelector('.duration-minutes');
                 const startTime = group.querySelector('.start-time');
@@ -297,6 +308,7 @@
 
                 if (id) id.name = `Courts[${index}].Id`;
                 if (sportHidden) sportHidden.name = `Courts[${index}].Name`;
+                if (price) price.name = `Courts[${index}].PricePerHour`;
                 if (durHours) durHours.name = `Courts[${index}].DurationHours`;
                 if (durMins) durMins.name = `Courts[${index}].DurationMinutes`;
                 if (startTime) startTime.name = `Courts[${index}].StartTime`;

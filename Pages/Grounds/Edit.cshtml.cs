@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,7 +19,11 @@ namespace turfbooking.Pages.Grounds
         {
             public int Id { get; set; } = 0; // 0 for new courts, existing ID for existing courts
             [Required]
-            public string Name { get; set; } = string.Empty;
+            public string Name { get; set; }
+            
+            [Required(ErrorMessage = "Price per hour is required.")]
+            [Range(50, 10000, ErrorMessage = "Price per hour must be between ₹50 and ₹10,000.")]
+            public decimal PricePerHour { get; set; }  // Default price per hour
             [Required]
             public int DurationHours { get; set; } = 1;
             [Required]
@@ -45,10 +49,7 @@ namespace turfbooking.Pages.Grounds
             PricePerHour = 0,
             SupportedSports = string.Empty,
             IsActive = true,
-            PhotoPath = string.Empty,
-            SlotDuration = TimeSpan.FromMinutes(60),
-            StartTime = DateTime.Today.AddHours(6),
-            EndTime = DateTime.Today.AddHours(22)
+            PhotoPath = string.Empty
         };
 
         [BindProperty]
@@ -92,6 +93,7 @@ namespace turfbooking.Pages.Grounds
             {
                 Id = c.Id,
                 Name = c.Name,
+                PricePerHour = c.PricePerHour,
                 DurationHours = c.Duration.Hours,
                 DurationMinutes = c.Duration.Minutes,
                 StartTime = c.StartTime.ToString("HH:mm"),
@@ -166,7 +168,6 @@ namespace turfbooking.Pages.Grounds
             existingGround.GroundName = Ground.GroundName;
             existingGround.Location = Ground.Location;
             existingGround.Description = Ground.Description;
-            existingGround.PricePerHour = Ground.PricePerHour;
             existingGround.IsActive = Ground.IsActive;
 
             var uniqueSports = Courts
@@ -197,6 +198,7 @@ namespace turfbooking.Pages.Grounds
                     if (existingCourt != null)
                     {
                         existingCourt.Name = courtInput.Name;
+                        existingCourt.PricePerHour = courtInput.PricePerHour;
                         existingCourt.StartTime = DateTime.Today.Add(TimeSpan.Parse(courtInput.StartTime));
                         existingCourt.EndTime = DateTime.Today.Add(TimeSpan.Parse(courtInput.EndTime));
                         existingCourt.Duration = new TimeSpan(courtInput.DurationHours, courtInput.DurationMinutes, 0);
@@ -208,6 +210,7 @@ namespace turfbooking.Pages.Grounds
                     var newCourt = new Court
                     {
                         Name = courtInput.Name,
+                        PricePerHour = courtInput.PricePerHour,
                         StartTime = DateTime.Today.Add(TimeSpan.Parse(courtInput.StartTime)),
                         EndTime = DateTime.Today.Add(TimeSpan.Parse(courtInput.EndTime)),
                         Duration = new TimeSpan(courtInput.DurationHours, courtInput.DurationMinutes, 0),

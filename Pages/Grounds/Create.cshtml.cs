@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,6 +19,10 @@ namespace turfbooking.Pages.Grounds
         {
             [Required]
             public string Name { get; set; } = string.Empty;
+            
+            [Required(ErrorMessage = "Price per hour is required.")]
+            [Range(50, 10000, ErrorMessage = "Price per hour must be between ₹50 and ₹10,000.")]
+            public decimal PricePerHour { get; set; } = 500; // Default price per hour
             [Required]
             public int DurationHours { get; set; } = 1;
             [Required]
@@ -41,13 +45,9 @@ namespace turfbooking.Pages.Grounds
             GroundName = string.Empty,
             Location = string.Empty,
             Description = string.Empty,
-            PricePerHour = 0,
             SupportedSports = string.Empty,
             IsActive = true,
-            PhotoPath = string.Empty,
-            SlotDuration = TimeSpan.FromMinutes(60),
-            StartTime = DateTime.Today.AddHours(6),
-            EndTime = DateTime.Today.AddHours(22)
+            PhotoPath = string.Empty
         };
 
         [BindProperty]
@@ -109,6 +109,7 @@ namespace turfbooking.Pages.Grounds
                 var court = new Court
                 {
                     Name = courtInput.Name,
+                    PricePerHour = courtInput.PricePerHour,
                     StartTime = DateTime.Today.Add(TimeSpan.Parse(courtInput.StartTime)),
                     EndTime = DateTime.Today.Add(TimeSpan.Parse(courtInput.EndTime)),
                     Duration = new TimeSpan(courtInput.DurationHours, courtInput.DurationMinutes, 0),
@@ -120,11 +121,6 @@ namespace turfbooking.Pages.Grounds
                 await slotHelper.SetDefaultSlots(Ground.Id, court.Id);
 
             }
-            
-
-
-
-
             return RedirectToPage("/Grounds/Index");
         }
     }

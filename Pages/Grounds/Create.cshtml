@@ -47,13 +47,13 @@
                             <span asp-validation-for="Ground.Description" class="text-danger small"></span>
                         </div>
 
-                        <div class="row g-3 mt-1">
+                        @* <div class="row g-3 mt-1">
                             <div class="col-md-6">
                                 <label asp-for="Ground.PricePerHour" class="form-label fw-semibold"></label>
                                 <input asp-for="Ground.PricePerHour" class="form-control rounded-3" placeholder="e.g. 500" />
                                 <span asp-validation-for="Ground.PricePerHour" class="text-danger small"></span>
                             </div>
-                        </div>
+                        </div> *@
 
                         <div class="form-check form-switch mt-4">
                             <input asp-for="Ground.IsActive" class="form-check-input" type="checkbox" role="switch" />
@@ -66,7 +66,7 @@
                                     <!-- No remove button for the first court -->
                                 </h5>
                                 <div class="row g-2 align-items-end">
-                                    <!-- Dropdown Sport -->
+                                    <!-- Sport Dropdown -->
                                     <div class="col-md-3">
                                         <label class="form-label">Select Sport</label>
                                         <div class="position-relative">
@@ -86,46 +86,46 @@
                                             </select>
                                             <input type="text" class="form-control mt-2 d-none court-custom-sport" placeholder="Enter custom sport" />
                                             <input type="hidden" name="Courts[0].Name" class="court-sport-hidden" />
-
                                         </div>
                                     </div>
-
 
                                     <!-- Duration -->
                                     <div class="col-md-3">
                                         <label class="form-label">Duration</label>
                                         <div class="d-flex gap-2">
-                                            <!-- Hours -->
                                             <div class="input-group" style="width: 100px;">
-                                                <input name="Courts[0].DurationHours" type="number" min="0" max="12"
-                                                       class="form-control text-center" placeholder="hrs" value="1" required />
+                                                <input name="Courts[0].DurationHours" type="number" min="0" max="12" class="form-control text-center" placeholder="hrs" value="1" required />
                                                 <span class="input-group-text">h</span>
                                             </div>
-
-                                            <!-- Minutes -->
                                             <div class="input-group" style="width: 100px;">
-                                                <input name="Courts[0].DurationMinutes" type="number" min="0" max="59"
-                                                       class="form-control text-center" placeholder="mins" value="0" required />
+                                                <input name="Courts[0].DurationMinutes" type="number" min="0" max="59" class="form-control text-center" placeholder="mins" value="0" required />
                                                 <span class="input-group-text">m</span>
                                             </div>
                                         </div>
                                     </div>
 
-
                                     <!-- Start Time -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">Start Time</label>
-                                        <input name="Courts[0].StartTime" type="time" class="form-control" style="min-width: 140px;" required />
+                                        <input name="Courts[0].StartTime" type="time" class="form-control" required />
                                     </div>
 
                                     <!-- End Time -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">End Time</label>
-                                        <input name="Courts[0].EndTime" type="time" class="form-control" style="min-width: 140px;" required />
+                                        <input name="Courts[0].EndTime" type="time" class="form-control" required />
+                                    </div>
+
+                                    <!-- Price Per Hour -->
+                                    <div class="col-md-2">
+                                        <label class="form-label">Price Per Hour (₹)</label>
+                                        <input name="Courts[0].PricePerHour" type="number" class="form-control rounded-3" placeholder="e.g. 500" required />
                                     </div>
                                 </div>
+
                             </div>
                         </div>
+                           
                         <button type="button" class="btn btn-outline-primary mt-2" onclick="addCourt()">+ Add Court</button>
 
 
@@ -266,56 +266,67 @@
 
             const index = document.querySelectorAll('.court-group').length;
 
-            div.innerHTML = `
-                <h5 class="fw-semibold">Court ${index + 1}</h5>
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" onclick="removeCourt(this)" aria-label="Remove"></button>
-                <div class="row g-2 align-items-end">
-                    <div class="col-md-3">
-                        <label class="form-label">Select Sport</label>
-                        <div class="position-relative">
-                            <select class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
-                                <option value="">-- Choose Sport --</option>
-                                <option value="Football">Football</option>
-                                <option value="Cricket">Cricket</option>
-                                <option value="Badminton">Badminton</option>
-                                <option value="Volleyball">Volleyball</option>
-                                <option value="Tennis">Tennis</option>
-                                <option value="Basketball">Basketball</option>
-                                <option value="Hockey">Hockey</option>
-                                <option value="Kabaddi">Kabaddi</option>
-                                <option value="Table Tennis">Table Tennis</option>
-                                <option value="Kho-Kho">Kho-Kho</option>
-                                <option value="__other__">Other</option>
-                            </select>
-                                <input type="hidden" name="Courts[${index}].Name" class="court-sport-hidden" value="" />
-                            <input type="text" class="form-control mt-2 d-none court-custom-sport" placeholder="Enter custom sport" />
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">Duration</label>
-                        <div class="d-flex gap-2">
-                            <div class="input-group" style="width: 100px;">
-                                <input name="Courts[${index}].DurationHours" type="number" min="0" max="12" class="form-control text-center" placeholder="hrs" value="1" required />
-                                <span class="input-group-text">h</span>
-                            </div>
-                            <div class="input-group" style="width: 100px;">
-                                <input name="Courts[${index}].DurationMinutes" type="number" min="0" max="59" class="form-control text-center" placeholder="mins" value="0" required />
-                                <span class="input-group-text">m</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">Start Time</label>
-                        <input name="Courts[${index}].StartTime" type="time" class="form-control" style="min-width: 140px;" required />
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">End Time</label>
-                        <input name="Courts[${index}].EndTime" type="time" class="form-control" style="min-width: 140px;" required />
+                                 div.innerHTML = `
+            <h5 class="fw-semibold">Court ${index + 1}</h5>
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" onclick="removeCourt(this)" aria-label="Remove"></button>
+            <div class="row g-2 align-items-end">
+                <!-- Sport -->
+                <div class="col-md-3">
+                    <label class="form-label">Select Sport</label>
+                    <div class="position-relative">
+                        <select class="form-select court-sport-select" onchange="handleSportSelectChange(this)" required>
+                            <option value="">-- Choose Sport --</option>
+                            <option value="Football">Football</option>
+                            <option value="Cricket">Cricket</option>
+                            <option value="Badminton">Badminton</option>
+                            <option value="Volleyball">Volleyball</option>
+                            <option value="Tennis">Tennis</option>
+                            <option value="Basketball">Basketball</option>
+                            <option value="Hockey">Hockey</option>
+                            <option value="Kabaddi">Kabaddi</option>
+                            <option value="Table Tennis">Table Tennis</option>
+                            <option value="Kho-Kho">Kho-Kho</option>
+                            <option value="__other__">Other</option>
+                        </select>
+                        <input type="hidden" name="Courts[${index}].Name" class="court-sport-hidden" value="" />
+                        <input type="text" class="form-control mt-2 d-none court-custom-sport" placeholder="Enter custom sport" />
                     </div>
                 </div>
-            `;
+
+                <!-- Duration -->
+                <div class="col-md-3">
+                    <label class="form-label">Duration</label>
+                    <div class="d-flex gap-2">
+                        <div class="input-group" style="width: 100px;">
+                            <input name="Courts[${index}].DurationHours" type="number" min="0" max="12" class="form-control text-center" placeholder="hrs" value="1" required />
+                            <span class="input-group-text">h</span>
+                        </div>
+                        <div class="input-group" style="width: 100px;">
+                            <input name="Courts[${index}].DurationMinutes" type="number" min="0" max="59" class="form-control text-center" placeholder="mins" value="0" required />
+                            <span class="input-group-text">m</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Start Time -->
+                <div class="col-md-2">
+                    <label class="form-label">Start Time</label>
+                    <input name="Courts[${index}].StartTime" type="time" class="form-control" required />
+                </div>
+
+                <!-- End Time -->
+                <div class="col-md-2">
+                    <label class="form-label">End Time</label>
+                    <input name="Courts[${index}].EndTime" type="time" class="form-control" required />
+                </div>
+
+                <!-- Price Per Hour -->
+                <div class="col-md-2">
+                    <label class="form-label">Price Per Hour (₹)</label>
+                    <input name="Courts[${index}].PricePerHour" type="number" class="form-control rounded-3" placeholder="e.g. 500" required />
+                </div>
+            </div>
+        `;
 
             container.appendChild(div);
         }
@@ -337,10 +348,15 @@
                 const startTimeInput = group.querySelector('input[name$=".StartTime"]');
                 const endTimeInput = group.querySelector('input[name$=".EndTime"]');
 
+                // Reassign price of courts
+
+                const priceInput = group.querySelector('input[name$=".PricePerHour"]');
+
                 if (hoursInput) hoursInput.name = `Courts[${index}].DurationHours`;
                 if (minutesInput) minutesInput.name = `Courts[${index}].DurationMinutes`;
                 if (startTimeInput) startTimeInput.name = `Courts[${index}].StartTime`;
                 if (endTimeInput) endTimeInput.name = `Courts[${index}].EndTime`;
+                if (priceInput) priceInput.name = `Courts[${index}].PricePerHour`;
             });
         }
 
@@ -372,7 +388,7 @@
                     hiddenInput.value = this.value.trim();
                 };
 
-                hiddenInput.value = customInput.value.trim(); // In case user types before input
+                hiddenInput.value = customInput.value.trim();
             } else {
                 customInput.classList.add('d-none');
                 customInput.removeAttribute('required');
