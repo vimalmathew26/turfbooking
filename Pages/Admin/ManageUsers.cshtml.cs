@@ -56,7 +56,6 @@ namespace turfbooking.Pages.Admin
                     TempData["Message"] = "Deactivation successful. An email was sent.";
                 }
 
-                TempData["Message"] = $"{user.Username} has been deactivated.";
             }
             return RedirectToPage();
         }
@@ -85,7 +84,6 @@ namespace turfbooking.Pages.Admin
                 {
                     TempData["Message"] = "Activation successful. An email was sent.";
                 }
-                TempData["Message"] = $"{user.Username} has been activated.";
             }
             return RedirectToPage();
         }
