@@ -13,8 +13,24 @@
 
 @if (Model.AvailableSlots.Any())
 {
-    <h2>Book a Slot for @Model.Date.ToString("dd-MM-yyyy")</h2>
+    <h2>Book a Slot for @Model.Date.Value.ToString("dd-MM-yyyy")</h2>
 
+    <div class="mb-4">
+        <strong>Select Court:</strong>
+        <div class="btn-group mt-2" role="group">
+            @foreach (var court in Model.AvailableCourts)
+            {
+                <a asp-page="./SlotBooking"
+                   asp-route-GroundId="@Model.GroundId"
+                   asp-route-CourtId="@court.Id"
+                   asp-route-Date="@Model.Date?.ToString("yyyy-MM-dd")"
+                   class="btn btn-sm @(Model.CourtId == court.Id ? "btn-success" : "btn-outline-success")">
+                    @court.Name
+                </a>
+
+            }
+        </div>
+    </div>
 
     <div>
         <strong>Select Date:</strong>
@@ -25,7 +41,7 @@
                    asp-route-GroundId="@Model.GroundId"
                    asp-route-CourtId="@Model.CourtId"
                    asp-route-Date="@day.ToString("yyyy-MM-dd")"
-                   class="btn btn-sm @(Model.Date.Date == day.Date ? "btn-primary" : "btn-outline-primary")">
+                   class="btn btn-sm @(Model.Date.Value.Date == day.Date ? "btn-primary" : "btn-outline-primary")">
                     @day.ToString("ddd, MMM dd")
                 </a>
             }
@@ -38,7 +54,7 @@
             {
                 var date = slot.BookingDate.Date.ToString("dd-MM-yyyy");
                 var slotText = $"{slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}";
-                var isExpired = (Model.Date.Date == DateTime.Now.Date && slot.StartTime <= @Model.CurrentTime) || Model.Date.Date < DateTime.Now.Date;
+                var isExpired = (Model.Date.Value.Date == DateTime.Now.Date && slot.StartTime <= @Model.CurrentTime) || Model.Date.Value.Date < DateTime.Now.Date;
            
                 if (slot.Status == Slot.SlotStatus.Blocked)
                 {
@@ -63,7 +79,7 @@
                     }
                     else
                     {
-                        <form method="post" asp-page-handler="Book" asp-route-slotId="@slot.Id">
+                        <form method="post" asp-page-handler="Book" asp-route-slotId="@slot.Id" asp-route-GroundId="@Model.">
                    
                             <button type="submit" class="slot-card available">
                                 @slotText<br />Book
