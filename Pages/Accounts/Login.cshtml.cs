@@ -56,6 +56,7 @@ namespace turfbooking.Pages.Accounts
             if (!user.IsActive)
             {
                 ModelState.AddModelError("", "This account has been deactivated. Please contact support.");
+                TempData["Error"] = "This account has been deactivated. Please contact the support.";
                 return Page();
             }
 
