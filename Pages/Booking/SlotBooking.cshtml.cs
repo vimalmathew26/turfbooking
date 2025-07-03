@@ -13,12 +13,13 @@ namespace turfbooking.Pages.Booking
     {
         private readonly AppDbContext _context;
         private readonly DefaultSlots _defaultSlots;
+        private readonly SendMail _sendMail;
 
-        public SlotBookingModel(AppDbContext context,DefaultSlots defaultSlots)
+        public SlotBookingModel(AppDbContext context,DefaultSlots defaultSlots, SendMail sendMail)
         {
             _context = context;
             _defaultSlots = defaultSlots;
-
+            _sendMail = sendMail;
         }
         [BindProperty(SupportsGet =true)]
         public int CourtId {get;set;}
@@ -109,6 +110,8 @@ namespace turfbooking.Pages.Booking
                 return Page();
             }
 
+            decimal totalPrice = (decimal)(slot.EndTime - slot.StartTime).TotalHours * slot.Court.PricePerHour;
+
             var booking = new turfbooking.Models.Booking
             {
                 UserId = userId,
@@ -117,7 +120,7 @@ namespace turfbooking.Pages.Booking
                 BookingDate = slot.BookingDate,
                 StartTime = slot.StartTime,
                 EndTime = slot.EndTime,
-                TotalPrice = (decimal)(slot.EndTime - slot.StartTime).TotalHours * slot.Court.PricePerHour,
+                TotalPrice = totalPrice,
                 Status = BookingStatus.Confirmed,
                 SlotId = slotId
             };
@@ -128,6 +131,35 @@ namespace turfbooking.Pages.Booking
             
 
             await _context.SaveChangesAsync();
+
+            User CurrentUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var CurrentSlot = await _context.Slots
+                    .Include(s=>s.Ground)
+                    .Include(s => s.Court)
+                    .Where(s=>s.Id==slotId)
+                    .FirstAsync();
+            var fullDateTime = slot.BookingDate;
+            string formattedDate = fullDateTime.ToString("dd/MM/yyyy");
+            string subject = $"Booking Confirmed on {CurrentSlot.Ground.GroundName}";
+            string body = $"<p>Hello {CurrentUser.Username},</p>" +
+                          "<p>Your Booking have been Confirmed! Here are the details:</p>" +
+                          $"<p>Ground: {CurrentSlot.Ground.GroundName} </p>" +
+                          $"<p>Court: {CurrentSlot.Court.Name} </p>" +
+                          $"<p>Date: {formattedDate} </p>" +
+                          $"<p>Time: {slot.StartTime} - {slot.EndTime} </p>" +
+                          $"<p>Price: {totalPrice} </p>" ;
+            string recipient = CurrentUser.Email;
+
+            var emailSuccess = await _sendMail.SendAsync(recipient, subject, body);
+
+            if (!emailSuccess)
+            {
+                TempData["Message"] = "Booking successful, but email could not be sent.";
+            }
+            else
+            {
+                TempData["Message"] = "Booking successful. A confirmation email was sent.";
+            }
 
             return RedirectToPage("/Booking/BookingConfirmation", new { bookingId = booking.Id });
         }
