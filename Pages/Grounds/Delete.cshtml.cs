@@ -69,10 +69,6 @@ namespace turfbooking.Pages.Grounds
                     .Where(b => b.GroundId == groundToDelete.Id)
                     .ToListAsync();
                 _context.Reviews.RemoveRange(reviews);
-
-
-
-
                 await _context.SaveChangesAsync();
 
                 _context.Grounds.Remove(groundToDelete);

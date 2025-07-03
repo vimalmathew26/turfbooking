@@ -91,9 +91,9 @@
                         <div class="card-body">
                             <h5 class="card-title fw-bold">@ground.GroundName</h5>
                             <p class="card-text mb-2">
-                                <strong>📍 Location:</strong> @ground.Location<br />
-                                <strong>💰 Price/Hour:</strong> @ground.PricePerHour.ToString("C")<br />
-                                <strong>🏅 Sports:</strong> @ground.SupportedSports
+                                <strong> Location:</strong> @ground.Location<br />
+                                <strong> Description:</strong> @ground.Description<br />
+                                <strong> Sports:</strong> @ground.SupportedSports
                             </p>
                             <a asp-page="/Users/GroundDetails" asp-route-GroundId="@ground.Id" class="btn btn-outline-primary w-100">
                                 
