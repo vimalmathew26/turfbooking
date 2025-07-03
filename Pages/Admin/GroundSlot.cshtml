@@ -19,7 +19,7 @@
             @foreach (var ground in Model.Grounds)
             {
                 <div class="col">
-                    <a asp-page="/Admin/GroundCourts" asp-route-GroundId="@ground.Id" class="text-decoration-none text-dark">
+                    <a asp-page="/Admin/SlotManagement" asp-route-GroundId="@ground.Id" class="text-decoration-none text-dark">
                         <div class="card ground-card h-100 shadow-sm rounded-4 position-relative" style="cursor: pointer;">
                             @if (!string.IsNullOrEmpty(ground.PhotoPath))
                             {

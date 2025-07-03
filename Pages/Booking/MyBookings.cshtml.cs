@@ -37,6 +37,7 @@ namespace turfbooking.Pages.Booking
                 .Where(b => b.UserId == userId)
                 .Include(b => b.Ground)
                 .Include(b=>b.Slot)
+                .Include(b=>b.Court)
                 .OrderByDescending(b => b.BookingDate)
                 .ToListAsync();
 

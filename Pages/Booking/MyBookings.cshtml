@@ -36,6 +36,7 @@
                         <thead class="table-light">
                             <tr>
                                 <th>Ground</th>
+                                <th>Court</th>
                                 <th>Date</th>
                                 <th>Time</th>
                                 <th>Total Price</th>
@@ -56,6 +57,7 @@
 
                                 <tr>
                                     <td>@booking.Ground.GroundName</td>
+                                    <td>@booking.Court.Name</td>
                                     <td>@booking.BookingDate.ToString("dd-MM-yyyy")</td>
                                     <td>@booking.StartTime.ToString(@"hh\:mm") - @booking.EndTime.ToString(@"hh\:mm")</td>
                                     <td>₹@booking.TotalPrice</td>
@@ -74,7 +76,10 @@
                                         }
                                         else
                                         {
-                                            <span class="text-muted">–</span>
+                                                <button type="submit" class="btn btn-outline-danger btn-sm" disabled>
+                                                    <i class="bi bi-x-circle me-1"></i> Cancel
+                                                </button>
+
                                         }
                                     </td>
                                 </tr>

@@ -34,16 +34,32 @@ namespace turfbooking.Pages.Admin
         public Ground Ground { get; set; }
         public List<Slot> Slots { get; set; }
         public List<Court> Courts { get; set; }
-        public List<DateTime> SlotDates { get; set; }=new List<DateTime>();       
+        public List<DateTime> SlotDates { get; set; }=new List<DateTime>();
+        public List<Court> AvailableCourts { get; set; } = new List<Court>();
         public async Task<IActionResult> OnGetAsync()
         {
             var previousUrl = Url.Page(
-                "/Admin/GroundCourts",
+                "/Admin/GroundSlot",
                 pageHandler: null,
                 values: new { GroundId = GroundId },
                 protocol: Request.Scheme
             );
             HttpContext.Session.SetString("PreviousPage", previousUrl);
+
+
+            AvailableCourts = await _context.Courts
+                  .Where(c => c.GroundId == GroundId)
+                   .ToListAsync();
+
+            if (!AvailableCourts.Any())
+            {
+                ModelState.AddModelError(string.Empty, "No courts found for the selected ground.");
+                return Page();
+            }
+            if (CourtId == null)
+            {
+                CourtId = AvailableCourts.FirstOrDefault()?.Id;
+            }
 
             if (GroundId==null)
             {
@@ -78,7 +94,10 @@ namespace turfbooking.Pages.Admin
                        .ThenInclude(s => s.User)
                        .Where(s => s.BookingDate.Date == SelectedDate.Value.Date && s.GroundId == GroundId && s.CourtId==CourtId)
                        .ToListAsync();
-            }           
+            }
+
+
+            
             return Page();
         }
         public async Task<IActionResult> OnPostBlockAsync()
@@ -103,16 +122,6 @@ namespace turfbooking.Pages.Admin
             }
             return RedirectToPage("./SlotManagement", new { GroundId, SelectedDate, CourtId});
         }
-        //public async Task<IActionResult> OnPostDeleteAsync()
-        //{
-        //    var slot = await _context.Slots.FindAsync(SlotId);
-                         
-        //    if (slot != null)
-        //    {
-        //        _context.Slots.Remove(slot);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    return RedirectToPage("./SlotManagement", new { GroundId, SelectedDate ,CourtId});
-        //}
+        
     }
 }
