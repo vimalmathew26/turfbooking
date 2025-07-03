@@ -20,6 +20,12 @@ namespace turfbooking.Pages.Admin
         public int GroundId { get; set; }
 
         [BindProperty(SupportsGet = true)]
+        public int CourtId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int Id { get; set; }
+
+        [BindProperty(SupportsGet = true)]
         public string? SearchUsername { get; set; }
 
         [BindProperty(SupportsGet = true)]
@@ -31,7 +37,14 @@ namespace turfbooking.Pages.Admin
     
         public async Task<IActionResult> OnGetAsync()
         {
-            HttpContext.Session.SetString("PreviousPage", Url.Page("/Admin/GroundBookingManagement"));
+            var previousUrl = Url.Page(
+                "/Admin/GroundCourts",
+                pageHandler: null,
+                values: new { GroundId = GroundId, CourtId = CourtId },
+                protocol: Request.Scheme
+            );
+
+            HttpContext.Session.SetString("PreviousPage", previousUrl);
             Ground = await _context.Grounds
                     .FirstOrDefaultAsync(s=>s.Id==GroundId);
             if (Ground==null)
@@ -61,7 +74,7 @@ namespace turfbooking.Pages.Admin
             }
 
             
-                query = query.Where(b => b.GroundId == GroundId);
+             query = query.Where(b => b.GroundId == GroundId && b.CourtId==CourtId);
             
           
             Bookings = await query.ToListAsync();
@@ -75,7 +88,7 @@ namespace turfbooking.Pages.Admin
             return Page();
         }
 
-        public async Task<IActionResult> OnPostCancelBookingAsync(int bookingId,int GroundId)
+        public async Task<IActionResult> OnPostCancelBookingAsync(int bookingId,int GroundId,int CourtId)
         {
             var booking = await _context.Bookings
                 .Include(b => b.Slot)
@@ -90,7 +103,7 @@ namespace turfbooking.Pages.Admin
             booking.Status = BookingStatus.Cancelled;
             booking.SlotId = null;
             await _context.SaveChangesAsync();
-            return RedirectToPage("BookingManagement", new {GroundId, SearchUsername, SearchDate });
+            return RedirectToPage("BookingManagement", new {GroundId, SearchUsername, SearchDate ,CourtId});
         }
     }
 }

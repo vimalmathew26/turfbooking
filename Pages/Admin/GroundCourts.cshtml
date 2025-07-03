@@ -22,7 +22,7 @@
                             <li><strong>End:</strong> @court.EndTime.ToString("hh\\:mm tt")</li>
                             <li><strong>Duration:</strong> @court.Duration.ToString(@"hh\:mm")</li>
                         </ul>
-                        <a asp-page="/Admin/SlotManagement" asp-route-CourtId="@court.Id" asp-route-GroundId="@court.GroundId"
+                        <a asp-page="/Admin/BookingManagement"  asp-route-GroundId="@court.GroundId" asp-route-CourtId="@court.Id"
                            class="btn btn-book">Manage Slot</a>
                     </div>
                 </div>
