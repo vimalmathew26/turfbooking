@@ -1,19 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentEmail.Smtp;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using turfbooking.Data;
-using turfbooking.Models;
 using turfbooking.Helper;
+using turfbooking.Models;
 
 namespace turfbooking.Pages.Accounts
 {
     public class RegisterModel : PageModel
     {
         private readonly AppDbContext _context;
+        private readonly SendMail _sendMail;
 
-        public RegisterModel(AppDbContext context)
+        public RegisterModel(AppDbContext context, SendMail sendMail)
         {
             _context = context;
+            _sendMail = sendMail;
             NewUser = new Models.User();
             ConfirmPassword = string.Empty;
         }
@@ -48,7 +51,7 @@ namespace turfbooking.Pages.Accounts
 
         public void OnGet() { }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
                 return Page();
@@ -82,7 +85,24 @@ namespace turfbooking.Pages.Accounts
             _context.Users.Add(NewUser);
             _context.SaveChanges();
 
-            TempData["Message"] = "Registration successful. You can now log in.";
+            string subject = "Welcome to Turf Booking!";
+            string body = $"<p>Dear {NewUser.Username},</p>" +
+                          "<p>Thank you for registering with Turf Booking. We are excited to have you on board!</p>" +
+                          "<p>You can now log in and start booking your favorite grounds.</p>" +
+                          "<p>Best regards,<br/>Turf Booking Team</p>";
+            string recipient = NewUser.Email;
+
+            var emailSuccess = await _sendMail.SendAsync(recipient, subject, body);
+
+            if (!emailSuccess)
+            {
+                TempData["Message"] = "Registration successful, but email could not be sent.";
+            }
+            else
+            {
+                TempData["Message"] = "Registration successful. A confirmation email was sent.";
+            }
+
             return RedirectToPage("/Accounts/Login");
         }
     }
