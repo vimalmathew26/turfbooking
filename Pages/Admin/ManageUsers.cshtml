@@ -6,49 +6,95 @@
     ViewData["Title"] = "Manage Users";
 }
 
-<h2>Manage Users</h2>
+<div class="container py-4">
+    <h2 class="mb-4 fw-bold text-primary">Manage Users</h2>
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-info">@TempData["Message"]</div>
+    <!-- Search Bar (jQuery Filter) -->
+    <div class="mb-4" style="max-width:300px;">
+        <input type="text" id="userSearch" class="form-control" placeholder="Search by username..." />
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@error.ErrorMessage</div>
+            }
+        </div>
+    }
+
+
+    <div class="table-responsive shadow-sm rounded-4 border">
+        <table class="table table-hover align-middle mb-0" id="usersTable">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td class="username">@user.Username</td>
+                        <td>@user.Email</td>
+                        <td>@user.PhoneNumber</td>
+                        <td><span class="badge bg-secondary">@user.Role</span></td>
+                        <td>
+                            @if (user.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Deactivated</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            @if (user.IsActive)
+                            {
+                                <form method="post" asp-page-handler="Deactivate" asp-route-id="@user.Id" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-person-dash-fill me-1"></i>Deactivate
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="Activate" asp-route-id="@user.Id" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-success btn-sm">
+                                        <i class="bi bi-person-check-fill me-1"></i>Activate
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#userSearch').on('keyup', function () {
+            var value = $(this).val().toLowerCase();
+            $('#usersTable tbody tr').filter(function () {
+                $(this).toggle($(this).find('.username').text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    </script>
 }
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model.Users)
-        {
-            <tr>
-                <td>@user.Username</td>
-                <td>@user.Email</td>
-                <td>@user.PhoneNumber</td>
-                <td>@user.Role</td>
-                <td>@(user.IsActive ? "Active" : "Deactivated")</td>
-                <td>
-                    @if (user.IsActive)
-                    {
-                        <form method="post" asp-page-handler="Deactivate" asp-route-id="@user.Id" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm">Deactivate</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <form method="post" asp-page-handler="Activate" asp-route-id="@user.Id" style="display:inline;">
-                            <button type="submit" class="btn btn-success btn-sm">Activate</button>
-                        </form>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-

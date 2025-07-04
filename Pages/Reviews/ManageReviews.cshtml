@@ -1,78 +1,86 @@
 ﻿@page
 @model turfbooking.Pages.Admin.ManageReviewsModel
-@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles = "Admin")]
 @{
     ViewData["Title"] = "Manage Reviews";
 }
 
-<h2>Manage Reviews</h2>
+<div class="container py-4">
+    <h2 class="mb-4 fw-bold text-primary">Manage Reviews</h2>
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-info">@TempData["Message"]</div>
-}
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-<div class="mb-3">
-    <input type="text" id="groundSearch" class="form-control" placeholder="Search by ground name..." onkeyup="filterTable()" />
+    <!-- Search Field -->
+    <div class="mb-4">
+        <input type="text" id="groundSearch" style="max-width:300px;" class="form-control shadow-sm" placeholder="Search by ground name..." onkeyup="filterTable()" />
+    </div>
+
+    <!-- Reviews Table -->
+    <div class="table-responsive shadow-sm rounded-4 border">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>User</th>
+                    <th>Ground</th>
+                    <th>Rating</th>
+                    <th>Comment</th>
+                    <th>Status</th>
+                    <th class="text-center">Toggle</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var review in Model.Reviews)
+                {
+                    <tr>
+                        <td>@review.UserName</td>
+                        <td class="ground-name">@review.GroundName</td>
+                        <td>
+                            <span class="badge bg-warning text-dark">@review.Rating</span>
+                        </td>
+                        <td>@review.Comment</td>
+                        <td>
+                            @if (review.IsVisible)
+                            {
+                                <span class="badge bg-success">Visible</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Hidden</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <form method="post" asp-page-handler="ToggleVisibility" asp-route-id="@review.Id" class="d-inline">
+                                <button type="submit" class="btn btn-sm @(review.IsVisible ? "btn-outline-danger" : "btn-outline-success")">
+                                    @(review.IsVisible ? "Hide" : "Show")
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
+@section Scripts {
+    <script>
+        function filterTable() {
+            const input = document.getElementById("groundSearch");
+            const filter = input.value.toLowerCase();
+            const rows = document.querySelectorAll("table tbody tr");
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>User</th>
-            <th>Ground</th>
-            <th>Rating</th>
-            <th>Comment</th>
-            <th>Status</th>
-            <th>Toggle</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var review in Model.Reviews)
-        {
-            <tr>
-                <td>@review.UserName</td>
-                <td>@review.GroundName</td>
-                <td>@review.Rating</td>
-                <td>@review.Comment</td>
-                <td>
-                    @if (review.IsVisible)
-                    {
-                        <span class="text-success">Visible</span>
-                    }
-                    else
-                    {
-                        <span class="text-danger">Hidden</span>
-                    }
-                </td>
-                <td>
-                    <form method="post" asp-page-handler="ToggleVisibility" asp-route-id="@review.Id">
-                        <button type="submit" class="btn btn-sm btn-warning">
-                            @(review.IsVisible ? "Hide" : "Show")
-                        </button>
-                    </form>
-                </td>
-            </tr>
+            rows.forEach(row => {
+                const groundCell = row.querySelector(".ground-name");
+                const text = groundCell?.textContent?.toLowerCase() || "";
+                row.style.display = text.includes(filter) ? "" : "none";
+            });
         }
-    </tbody>
-</table>
-
-<script>
-    function filterTable() {
-        const input = document.getElementById("groundSearch");
-        const filter = input.value.toLowerCase();
-        const table = document.querySelector("table");
-        const rows = table.querySelectorAll("tbody tr");
-
-        rows.forEach(row => {
-            const groundCell = row.cells[1]; 
-            if (groundCell) {
-                const groundText = groundCell.textContent.toLowerCase();
-                row.style.display = groundText.includes(filter) ? "" : "none";
-            }
-        });
-    }
-</script>
-
+    </script>
+}

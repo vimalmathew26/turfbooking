@@ -32,6 +32,14 @@ namespace turfbooking.Pages.Admin
 
         public async Task<IActionResult> OnPostDeactivateAsync(int id)
         {
+            //check if the current user is trying to deactivate own account and prevent it.
+            int userId = int.Parse(User.FindFirst("UserId").Value);
+            if (id == userId)
+            {
+                ModelState.AddModelError(string.Empty, "You cannot deactivate your own account.");
+                OnGet();
+                return Page();
+            }
             var user = await _context.Users.FindAsync(id);
             if (user != null)
             {
