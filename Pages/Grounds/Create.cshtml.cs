@@ -56,7 +56,10 @@ namespace turfbooking.Pages.Grounds
         public required IFormFile Photo { get; set; }
 
         [BindProperty]
-        public List<CourtInputModel> Courts { get; set; } = new();
+        public List<CourtInputModel> Courts { get; set; } = new List<CourtInputModel>
+        {
+            new CourtInputModel() // to render the first input on page load
+        };
         public IActionResult OnGet()
         {
             HttpContext.Session.SetString("PreviousPage", Url.Page("/Grounds/Index"));
