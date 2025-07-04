@@ -146,17 +146,13 @@
                                                         <button type="submit" class="btn btn-success btn-sm shadow-sm">Unblock</button>
                                                     </form>
                                                 }
-
-                                               @*  @if (slot.Status != Slot.SlotStatus.Booked)
+                                                else
                                                 {
-                                                    <form method="post" asp-page-handler="Delete"
-                                                          asp-route-SlotId="@slot.Id"
-                                                          asp-route-GroundId="@slot.GroundId"
-                                                          asp-route-CourtId="@slot.courtId"
-                                                          asp-route-SelectedDate="@Model.SelectedDate?.ToString("yyyy-MM-dd")">
-                                                        <button type="submit" class="btn btn-danger btn-sm shadow-sm">Delete</button>
-                                                    </form>
-                                                } *@
+                                                    <button type="submit" class="btn btn-warning btn-sm shadow-sm" disabled>Block</button>
+
+                                                }
+
+                                              
                                             </div>
                                         </td>
                                     </tr>

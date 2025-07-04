@@ -25,7 +25,6 @@ namespace turfbooking.Pages.Admin
         public async Task OnGetAsync()
         {
             HttpContext.Session.SetString("PreviousPage", Url.Page("/Admin/AdminDashboard"));
-
             Grounds = await _context.Grounds.ToListAsync();
         }
     }

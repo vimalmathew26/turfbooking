@@ -53,7 +53,6 @@ namespace turfbooking.Helper
 
                 }
 
-
             }
         }
         public async Task UpdateDefaultSlots(int groundId, int courtId)

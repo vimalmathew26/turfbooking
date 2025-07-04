@@ -36,18 +36,17 @@ namespace turfbooking.Pages.Reviews
             );
             HttpContext.Session.SetString("PreviousPage", previousUrl);
 
-            if (GroundId == null)
+            if (!GroundId.HasValue)
             {
                 TempData["GroundAlert"] = "Ground not found!";
                 return Page();
-            }
-           
+            }       
             Ground = await _context.Grounds.FirstOrDefaultAsync(g => g.Id == GroundId);           
             return Page();
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            if (GroundId == null)
+            if (!GroundId.HasValue)
             {
                 TempData["GroundAlert"] = "Ground not found!";
                 return Page();
@@ -59,7 +58,7 @@ namespace turfbooking.Pages.Reviews
             {
                 ModelState.AddModelError(string.Empty, "User authentication required.");
                 return Page();               
-            }
+            }   
             
             if (!ModelState.IsValid)
             {

@@ -49,8 +49,6 @@ namespace turfbooking.Pages.Booking
 
             return Page();
         }
-
-
         public async Task<IActionResult> OnPostCancelAsync(int bookingId)
         {
             var booking = await _context.Bookings
