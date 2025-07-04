@@ -1,0 +1,49 @@
+﻿@model turfbooking.Pages.Grounds.CreateModel.CourtInputModel
+
+<div class="court-group border rounded-4 p-3 mb-3 bg-light shadow-sm">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-6">
+            <label for="Courts___index___Name" class="form-label fw-semibold">Court Name</label>
+            <input name="Courts[__index__].Name" class="form-control" placeholder="e.g. Court A" />
+            <span data-valmsg-for="Courts[__index__].Name" class="text-danger small"></span>
+        </div>
+
+        <div class="col-md-3">
+            <label for="Courts___index___PricePerHour" class="form-label fw-semibold">Price (₹/hr)</label>
+            <input name="Courts[__index__].PricePerHour" class="form-control" />
+            <span data-valmsg-for="Courts[__index__].PricePerHour" class="text-danger small"></span>
+        </div>
+
+        <div class="col-md-3 text-end">
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeCourt(this)">
+                <i class="bi bi-trash"></i> Remove
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-2 mt-2">
+        <div class="col-md-3">
+            <label for="Courts___index___DurationHours" class="form-label fw-semibold">Hours</label>
+            <input name="Courts[__index__].DurationHours" class="form-control hours-box" />
+            <span data-valmsg-for="Courts[__index__].DurationHours" class="text-danger small"></span>
+        </div>
+
+        <div class="col-md-3">
+            <label for="Courts___index___DurationMinutes" class="form-label fw-semibold">Minutes</label>
+            <input name="Courts[__index__].DurationMinutes" class="form-control minutes-box" />
+            <span data-valmsg-for="Courts[__index__].DurationMinutes" class="text-danger small"></span>
+        </div>
+
+        <div class="col-md-3">
+            <label for="Courts___index___StartTime" class="form-label fw-semibold">Start Time</label>
+            <input name="Courts[__index__].StartTime" type="time" class="form-control" />
+            <span data-valmsg-for="Courts[__index__].StartTime" class="text-danger small"></span>
+        </div>
+
+        <div class="col-md-3">
+            <label for="Courts___index___EndTime" class="form-label fw-semibold">End Time</label>
+            <input name="Courts[__index__].EndTime" type="time" class="form-control" />
+            <span data-valmsg-for="Courts[__index__].EndTime" class="text-danger small"></span>
+        </div>
+    </div>
+</div>
