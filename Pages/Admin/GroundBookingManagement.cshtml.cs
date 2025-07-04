@@ -11,7 +11,6 @@ namespace turfbooking.Pages.Admin
     public class GroundBookingManagementModel : PageModel
     {     
          private readonly AppDbContext _context;
-
          public GroundBookingManagementModel(AppDbContext context)
          {
             _context = context;

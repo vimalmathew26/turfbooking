@@ -38,10 +38,17 @@ namespace turfbooking.Pages.Admin
         public List<Court> AvailableCourts { get; set; } = new List<Court>();
         public async Task<IActionResult> OnGetAsync()
         {
+
+            if (!GroundId.HasValue)
+            {
+                ModelState.AddModelError(string.Empty, "The Ground Not Found");
+                return Page();
+            }
+
             var previousUrl = Url.Page(
                 "/Admin/GroundSlot",
                 pageHandler: null,
-                values: new { GroundId = GroundId },
+                values: new { GroundId = GroundId.Value },
                 protocol: Request.Scheme
             );
             HttpContext.Session.SetString("PreviousPage", previousUrl);
@@ -56,20 +63,9 @@ namespace turfbooking.Pages.Admin
                 ModelState.AddModelError(string.Empty, "No courts found for the selected ground.");
                 return Page();
             }
-            if (CourtId == null)
+            if (CourtId == null && AvailableCourts.Any())
             {
                 CourtId = AvailableCourts.FirstOrDefault()?.Id;
-            }
-
-            if (GroundId==null)
-            {
-                ModelState.AddModelError(string.Empty, "Ground Not Found.");
-                return Page();
-            }
-            if (CourtId==null)
-            {
-                ModelState.AddModelError(string.Empty, "Court Not Found.");
-                return Page();
             }
             await _defaultSlots.SetDefaultSlots(GroundId.Value,CourtId.Value);
 
@@ -95,9 +91,7 @@ namespace turfbooking.Pages.Admin
                        .Where(s => s.BookingDate.Date == SelectedDate.Value.Date && s.GroundId == GroundId && s.CourtId==CourtId)
                        .ToListAsync();
             }
-
-
-            
+    
             return Page();
         }
         public async Task<IActionResult> OnPostBlockAsync()

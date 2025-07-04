@@ -18,7 +18,6 @@ namespace turfbooking.Helper
                 .Subject(subject)
                 .Body(body, isHtml)
                 .SendAsync();
-
             return response.Successful;
         }
     }

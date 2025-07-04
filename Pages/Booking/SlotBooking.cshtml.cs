@@ -27,29 +27,27 @@ namespace turfbooking.Pages.Booking
         [BindProperty(SupportsGet =true)]
         public DateTime? SelectedDate { get; set; }
 
-
         [BindProperty(SupportsGet = true)]
         public int? GroundId { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public DateTime? Date { get; set; }
-        public List<DateTime> Next7Days { get; set; }
-        public TimeSpan CurrentTime { get; set; }
-        public List<Slot> AvailableSlots { get; set; } = new List<Slot>();
 
         [BindProperty(SupportsGet = true)]
         public int? slotId { get; set; }
 
+        public List<DateTime> Next7Days { get; set; }
+        public TimeSpan CurrentTime { get; set; }
+        public List<Slot>? AvailableSlots { get; set; } = new List<Slot>();
         public Ground Ground { get; set; }
 
         public Court Court { get; set; }    
 
         public List<Court> AvailableCourts { get; set; } = new List<Court>();
 
-
         public async Task<IActionResult> OnGetAsync()
         {
-            if (GroundId == null)
+            if (!GroundId.HasValue)
             {
                 ModelState.AddModelError(string.Empty, "Ground Not Found");
                 return Page();
@@ -67,10 +65,11 @@ namespace turfbooking.Pages.Booking
                 ModelState.AddModelError(string.Empty, "No courts found for the selected ground.");
                 return Page();
             }
-            if (CourtId==null)
+            if (CourtId==null && AvailableCourts.Any())
             {
                 CourtId = AvailableCourts.FirstOrDefault()?.Id;
             }
+
             await _defaultSlots.SetDefaultSlots(GroundId.Value,CourtId.Value);
             
             CurrentTime = DateTime.Now.TimeOfDay;
@@ -88,13 +87,12 @@ namespace turfbooking.Pages.Booking
             {
                 ModelState.AddModelError(string.Empty, "No Slots Available for the Selected Date");
                 return Page();
-           }
-
+            }
 
             var previousUrl = Url.Page(
                  "/Users/GroundDetails",
                  pageHandler: null,
-                 values: new { GroundId = GroundId,},
+                 values: new { GroundId = GroundId.Value,},
                  protocol: Request.Scheme
             );
 
@@ -104,12 +102,11 @@ namespace turfbooking.Pages.Booking
         }
         public async Task<IActionResult> OnPostBookAsync()
         {
-            if (slotId == null)
+            if (!slotId.HasValue)
             {
                 ModelState.AddModelError(string.Empty, "Slot Not Found");
                 return Page();
             }
-
             var slot = await _context.Slots
                        .Include(s => s.Ground)
                        .Include(c=>c.Court)
@@ -139,9 +136,7 @@ namespace turfbooking.Pages.Booking
             _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
 
-            slot.Status = Slot.SlotStatus.Booked;
-            
-
+            slot.Status = Slot.SlotStatus.Booked;          
             await _context.SaveChangesAsync();
 
             User CurrentUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);

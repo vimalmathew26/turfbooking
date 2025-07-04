@@ -18,14 +18,19 @@ namespace turfbooking.Pages.Admin
             _context = context;
         }
         [BindProperty(SupportsGet = true)]
-        public int GroundId { get; set; }      
+        public int? GroundId { get; set; }      
         public List<Court> courts { get; set; } = new List<Court>();
         public async Task<IActionResult> OnGetAsync()
-        {
+        {           
             HttpContext.Session.SetString("PreviousPage", "/Admin/AdminDashboard");
+            if (!GroundId.HasValue)
+            {
+                ModelState.AddModelError(string.Empty, "The Ground Not Found");
+                return Page();
+            }
             courts =await _context.Courts
-                .Where(c => c.GroundId==GroundId)
-                .ToListAsync();
+                    .Where(c => c.GroundId==GroundId.Value)
+                    .ToListAsync();
 
             if (!courts.Any())
             {

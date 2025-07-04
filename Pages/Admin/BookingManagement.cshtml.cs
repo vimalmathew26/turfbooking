@@ -20,46 +20,45 @@ namespace turfbooking.Pages.Admin
         }
 
         [BindProperty(SupportsGet =true)]
-        public int GroundId { get; set; }
+        public int? GroundId { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public int CourtId { get; set; }
+        public int? CourtId { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public int Id { get; set; }
+        public int? bookingId { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public string? SearchUsername { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public DateTime? SearchDate { get; set; }
-        public string GroundName { get; set; }
         public List<Models.Booking> Bookings { get; set; }
-
         public Ground Ground { get; set; }
     
         public async Task<IActionResult> OnGetAsync()
         {
-            var previousUrl = Url.Page(
-                "/Admin/GroundCourts",
-                pageHandler: null,
-                values: new { GroundId = GroundId, CourtId = CourtId },
-                protocol: Request.Scheme
-            );
-
-            HttpContext.Session.SetString("PreviousPage", previousUrl);
-            Ground = await _context.Grounds
-                    .FirstOrDefaultAsync(s=>s.Id==GroundId);
-            if (Ground==null)
+            if (!GroundId.HasValue )
             {
-                ModelState.AddModelError(string.Empty,"The Ground Not Found");
+                ModelState.AddModelError(string.Empty, "The Ground Not Found");
+                return Page();
+            }
+            if (!CourtId.HasValue)
+            {
+                ModelState.AddModelError(string.Empty, "The Court Not Found");
                 return Page();
             }
 
-            GroundName = await _context.Grounds
-                        .Where(s => s.Id == GroundId)
-                        .Select(s=>s.GroundName)
-                        .FirstAsync();
+            var previousUrl = Url.Page(
+                "/Admin/GroundCourts",
+                pageHandler: null,
+                values: new { GroundId = GroundId.Value, CourtId = CourtId.Value },
+                protocol: Request.Scheme
+            );
+            HttpContext.Session.SetString("PreviousPage", previousUrl);
+
+            Ground = await _context.Grounds
+                    .FirstOrDefaultAsync(s=>s.Id==GroundId.Value);
 
             var query = _context.Bookings
                         .Include(b => b.User)
@@ -75,36 +74,26 @@ namespace turfbooking.Pages.Admin
             {
                 query = query.Where(b => b.BookingDate.Date == SearchDate.Value.Date);
             }
-
             
              query = query.Where(b => b.GroundId == GroundId && b.CourtId==CourtId);
-            
-          
+                      
             Bookings = await query.ToListAsync();
-            /* Bookings = await _context.Bookings
-
-                 .Include(b => b.User)
-                 .Include(b => b.Ground)
-                 .Where(b => b.GroundId == GroundId)
-                 .ToListAsync();
-             return Page();*/
             return Page();
         }
 
-        public async Task<IActionResult> OnPostCancelBookingAsync(int bookingId,int GroundId,int CourtId)
+        public async Task<IActionResult> OnPostCancelBookingAsync()
         {
+            if (!bookingId.HasValue)
+            {
+                ModelState.AddModelError(string.Empty, "Booking ID is required.");
+                return Page();
+            }
             var booking = await _context.Bookings
                 .Include(b => b.Slot)
                 .Include(b => b.Ground)
                 .Include(b => b.Court)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
-            if (booking == null)
-            {
-                ModelState.AddModelError(string.Empty, "Booking not found.");
-                return Page();
-                    
-            }
-            
+           
             User BookedUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == booking.UserId);
             var fullDateTime = booking.Slot.BookingDate;
             string formattedDate = fullDateTime.ToString("dd/MM/yyyy");

@@ -22,10 +22,10 @@ namespace turfbooking.Pages.Admin
             _defaultSlots = defaultSlots;
         }
         [BindProperty(SupportsGet = true)]
-        public int CourtId { get; set; }  
+        public int? CourtId { get; set; }  
 
         [BindProperty(SupportsGet = true)]
-        public int GroundId { get; set; }
+        public int? GroundId { get; set; }
 
         [BindProperty]
         public Slot Slot { get; set; }
@@ -36,34 +36,39 @@ namespace turfbooking.Pages.Admin
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var previousUrl = Url.Page(
-                "/Admin/SlotManagement",
-                pageHandler: null,
-                values: new { GroundId = GroundId,CourtId=CourtId },
-                protocol: Request.Scheme
-            );
-
-            HttpContext.Session.SetString("PreviousPage", previousUrl);
-            Ground = await _context.Grounds.FindAsync(GroundId);
-            if (Ground == null)
+            if (!GroundId.HasValue)
             {
                 ModelState.AddModelError(string.Empty, "The Ground Not Found");
                 return Page();
             }
+            var previousUrl = Url.Page(
+                "/Admin/SlotManagement",
+                pageHandler: null,
+                values: new { GroundId = GroundId.Value,CourtId=CourtId.Value },
+                protocol: Request.Scheme
+            );
+            HttpContext.Session.SetString("PreviousPage", previousUrl);
+
+            Ground = await _context.Grounds.FindAsync(GroundId.Value);
+            
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            Court = await _context.Courts.FirstOrDefaultAsync(c => c.Id == CourtId);
-
-            Ground = await _context.Grounds.FindAsync(GroundId);
-
-            if (Ground == null)
+            if (!GroundId.HasValue)
             {
                 ModelState.AddModelError(string.Empty, "The Ground Not Found");
                 return Page();
             }
+            if (!CourtId.HasValue)
+            {
+                ModelState.AddModelError(string.Empty, "The Court Not Found");
+                return Page();
+            }
+            Court = await _context.Courts.FirstOrDefaultAsync(c => c.Id == CourtId.Value);
+
+            Ground = await _context.Grounds.FindAsync(GroundId.Value);
 
             if (Slot.BookingDate < DateTime.Today)
             {
@@ -77,14 +82,15 @@ namespace turfbooking.Pages.Admin
             {
                 return Page();
             }           
-            if ((Slot.StartTime <= Court.StartTime.TimeOfDay || Slot.StartTime >= Court.EndTime.TimeOfDay) && (Slot.EndTime<=Court.StartTime.TimeOfDay || Slot.EndTime >=Court.EndTime.TimeOfDay)) {
+            if ((Slot.StartTime <= Court.StartTime.TimeOfDay || Slot.EndTime <= Court.StartTime.TimeOfDay) && (Slot.StartTime >= Court.EndTime.TimeOfDay || Slot.EndTime >=Court.EndTime.TimeOfDay)) {
                 if ((Slot.EndTime-Slot.StartTime).TotalHours>=1) 
                 {
                     Slot.Status = Slot.SlotStatus.Available;
-                    Slot.GroundId = GroundId;
+                    Slot.GroundId = GroundId.Value;
+                    Slot.CourtId = CourtId.Value;
                     _context.Slots.Add(Slot);
                     await _context.SaveChangesAsync();
-                
+              
                 }
                 else
                 {

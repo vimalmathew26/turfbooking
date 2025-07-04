@@ -19,8 +19,7 @@ namespace turfbooking.Models
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
         public string Description { get; set; }
 
-        //[Required(ErrorMessage = "Price per hour is required.")]
-        //[Range(50, 10000, ErrorMessage = "Price per hour must be between ₹50 and ₹10,000.")]
+      
         public decimal PricePerHour { get; set; }
 
         [StringLength(200, ErrorMessage = "Supported sports cannot exceed 200 characters.")]
