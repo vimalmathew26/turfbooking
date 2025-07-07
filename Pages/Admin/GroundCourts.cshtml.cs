@@ -22,7 +22,7 @@ namespace turfbooking.Pages.Admin
         public List<Court> courts { get; set; } = new List<Court>();
         public async Task<IActionResult> OnGetAsync()
         {           
-            HttpContext.Session.SetString("PreviousPage", "/Admin/AdminDashboard");
+            HttpContext.Session.SetString("PreviousPage", "/Admin/GroundBookingManagement");
             if (!GroundId.HasValue)
             {
                 ModelState.AddModelError(string.Empty, "The Ground Not Found");
