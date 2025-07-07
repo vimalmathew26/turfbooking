@@ -21,12 +21,10 @@ namespace turfbooking.Helper
                 .ToList();
 
             
-            if (!slotPrice.Any())
-            {
-                slotPrice = _context.SlotPrices
+            var defaultslotPrice = _context.SlotPrices
                     .Where(sp => sp.CourtId == courtId && sp.Date == null)
                     .ToList();
-            }
+            
 
             
             foreach (var sp in slotPrice)
@@ -37,7 +35,16 @@ namespace turfbooking.Helper
                 }
             }
 
-            
+
+            foreach (var sp in defaultslotPrice)
+            {
+                if (startTime >= sp.StartTime && endTime <= sp.EndTime)
+                {
+                    return sp.Price;
+                }
+            }
+
+
             var court = _context.Courts.FirstOrDefault(c => c.Id == courtId);
             return court.PricePerHour; 
         }

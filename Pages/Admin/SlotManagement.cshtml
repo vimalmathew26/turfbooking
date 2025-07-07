@@ -16,11 +16,12 @@
         <div class="d-flex gap-2">
             <a asp-page="/Admin/SlotPriceConfiguration"
                asp-route-CourtId="@Model.CourtId"
+               asp-route-GroundId="@Model.GroundId"
                class="btn btn-warning btn-sm shadow-sm">
                 <i class="bi bi-pencil-square me-1"></i> Slot Price
             </a>
 
-            <a asp-page="/Admin/SlotPriceConfiguration"
+            <a asp-page="/Admin/AddSlot"
                asp-route-GroundId="@Model.GroundId"
                asp-route-CourtId="@Model.CourtId"
                class="btn btn-success btn-sm shadow-sm">
