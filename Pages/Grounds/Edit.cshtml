@@ -361,18 +361,35 @@
                 });
             });
 
-            // Final validation before submit
-            document.querySelector("form").addEventListener("submit", () => {
-                document.querySelectorAll(".court-group").forEach(group => {
-                    const select = group.querySelector(".court-sport-select");
-                    const customInput = group.querySelector(".court-custom-sport");
-                    const hiddenInput = group.querySelector(".court-sport-hidden");
+                    document.querySelector("form").addEventListener("submit", function (event) {
+            event.preventDefault();
 
-                    hiddenInput.value = (select.value === "__other__")
-                        ? customInput.value.trim()
-                        : select.value;
-                });
+            const invalidFields = this.querySelectorAll(":invalid");
+
+            if (invalidFields.length > 0) {
+                const firstInvalid = invalidFields[0];
+
+                setTimeout(() => {
+                    firstInvalid.focus();
+                    firstInvalid.reportValidity();
+                }, 0);
+
+                return;
+            }
+
+            document.querySelectorAll(".court-group").forEach(group => {
+                const select = group.querySelector(".court-sport-select");
+                const customInput = group.querySelector(".court-custom-sport");
+                const hiddenInput = group.querySelector(".court-sport-hidden");
+
+                hiddenInput.value = (select.value === "__other__")
+                    ? customInput.value.trim()
+                    : select.value;
             });
+
+            this.submit();
+        });
+
         });
     </script>
 

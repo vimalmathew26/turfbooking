@@ -358,7 +358,7 @@
 
 
 
-
+       
                 function removeCourt(button) {
             const courtGroups = document.querySelectorAll('.court-group');
             if (courtGroups.length <= 1) {
@@ -395,6 +395,22 @@
         }
 
                 document.querySelector("form").addEventListener("submit", function () {
+
+        event.preventDefault();
+
+        const invalidFields = this.querySelectorAll(":invalid");
+
+        if (invalidFields.length > 0) {
+            const firstInvalid = invalidFields[0];
+
+            setTimeout(() => {
+                firstInvalid.focus();         
+                firstInvalid.reportValidity(); 
+            }, 0);
+
+            return;
+        }
+
             document.querySelectorAll(".court-group").forEach(group => {
                 const select = group.querySelector(".court-sport-select");
                 const customInput = group.querySelector(".court-custom-sport");
@@ -406,6 +422,7 @@
                     hiddenInput.value = select.value;
                 }
             });
+            this.submit();
         });
 
     </script>
