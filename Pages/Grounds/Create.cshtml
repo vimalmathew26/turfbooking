@@ -21,7 +21,7 @@
                         <div class="mb-4 text-center">
                             <label class="form-label d-block fw-semibold">Upload Ground Photo</label>
                             <div class="border rounded-4 p-3 bg-light shadow-sm" style="max-width: 300px; margin: auto;">
-                                <img id="photoPreview" src="/images/placeholder.png" class="img-fluid rounded mb-2" style="height: 200px; object-fit: cover;" />
+                                <img id="photoPreview" src="/images/placeholder1.png" class="img-fluid rounded mb-2" style="height: 200px; object-fit: cover;" />
                                 <input asp-for="Photo" type="file" class="form-control" accept="image/*" onchange="previewImage(event)" />
                                 <span asp-validation-for="Photo" class="text-danger small d-block mt-1"></span>
                             </div>
@@ -46,14 +46,6 @@
                             <textarea asp-for="Ground.Description" class="form-control rounded-3" rows="3" placeholder="Write a short description..."></textarea>
                             <span asp-validation-for="Ground.Description" class="text-danger small"></span>
                         </div>
-
-                        @* <div class="row g-3 mt-1">
-                            <div class="col-md-6">
-                                <label asp-for="Ground.PricePerHour" class="form-label fw-semibold"></label>
-                                <input asp-for="Ground.PricePerHour" class="form-control rounded-3" placeholder="e.g. 500" />
-                                <span asp-validation-for="Ground.PricePerHour" class="text-danger small"></span>
-                            </div>
-                        </div> *@
 
                         <div class="form-check form-switch mt-4">
                             <input asp-for="Ground.IsActive" class="form-check-input" type="checkbox" role="switch" />
