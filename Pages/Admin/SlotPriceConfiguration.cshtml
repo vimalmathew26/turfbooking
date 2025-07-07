@@ -1,0 +1,24 @@
+﻿@page
+@model turfbooking.Pages.Admin.SlotPriceConfigurationModel
+@{
+    ViewData["Title"] = "Slot Price Configuration";
+}
+<form method="post" asp-page-handler="Save">
+    <div class="mb-2">
+        <label>Date</label>
+        <input asp-for="SlotPrice.Date" type="date" class="form-control" required />
+    </div>
+    <div class="mb-2">
+        <label>From Time</label>
+        <input asp-for="SlotPrice.StartTime" type="time" class="form-control" required />
+    </div>
+    <div class="mb-2">
+        <label>To Time</label>
+        <input asp-for="SlotPrice.EndTime" type="time" class="form-control" required />
+    </div>
+    <div class="mb-2">
+        <label>Price</label>
+        <input asp-for="SlotPrice.Price" type="number" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

@@ -215,6 +215,9 @@ namespace turfbooking.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("price")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourtId");
@@ -222,6 +225,36 @@ namespace turfbooking.Migrations
                     b.HasIndex("GroundId");
 
                     b.ToTable("Slots");
+                });
+
+            modelBuilder.Entity("turfbooking.Models.SlotPrice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CourtId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourtId");
+
+                    b.ToTable("SlotPrices");
                 });
 
             modelBuilder.Entity("turfbooking.Models.User", b =>
@@ -340,6 +373,17 @@ namespace turfbooking.Migrations
                     b.Navigation("Court");
 
                     b.Navigation("Ground");
+                });
+
+            modelBuilder.Entity("turfbooking.Models.SlotPrice", b =>
+                {
+                    b.HasOne("turfbooking.Models.Court", "Court")
+                        .WithMany()
+                        .HasForeignKey("CourtId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Court");
                 });
 
             modelBuilder.Entity("turfbooking.Models.Ground", b =>

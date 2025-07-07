@@ -16,6 +16,7 @@ namespace turfbooking.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Court> Courts { get; set; }
+        public DbSet<SlotPrice> SlotPrices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

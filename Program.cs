@@ -32,6 +32,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<DefaultSlots>();
 
+builder.Services.AddScoped<GetSlotPrice>();
+
 
 
 builder.Services.AddAuthentication("UserAuth")
