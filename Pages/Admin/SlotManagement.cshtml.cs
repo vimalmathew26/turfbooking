@@ -90,8 +90,7 @@ namespace turfbooking.Pages.Admin
                        .ThenInclude(s => s.User)
                        .Where(s => s.BookingDate.Date == SelectedDate.Value.Date && s.GroundId == GroundId && s.CourtId==CourtId)
                        .ToListAsync();
-            }
-    
+            }    
             return Page();
         }
         public async Task<IActionResult> OnPostBlockAsync()
