@@ -65,7 +65,7 @@ namespace turfbooking.Pages.Grounds
        
         public async Task<IActionResult> OnPostAsync()
         {
-            var slotHelper = new DefaultSlots(_context);
+            
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Please correct the errors in the form.");
@@ -118,7 +118,7 @@ namespace turfbooking.Pages.Grounds
                 
                 _context.Courts.Add(court);
                 await _context.SaveChangesAsync();
-                await slotHelper.SetDefaultSlots(Ground.Id, court.Id);
+                
 
             }
             return RedirectToPage("/Grounds/Index");

@@ -33,6 +33,7 @@ namespace turfbooking.Models
         public Booking? Booking { get; set; }
         public int CourtId { get; set; }
         public Court? Court { get; set; }
+        public decimal price { get; set; }
 
       
         public enum SlotStatus

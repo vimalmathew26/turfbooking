@@ -190,6 +190,7 @@
 }
 
 @section Scripts {
+
     <partial name="_ValidationScriptsPartial" />
     <script>
         function previewImage(event) {
@@ -228,6 +229,8 @@
             updateSupportedSports(); 
         }
 
+           
+
 
         function addCustomSport() {
             const input = document.getElementById("customSportInput");
@@ -255,6 +258,7 @@
             input.value = "";
             updateSupportedSports();
         }
+
 
         let courtIndex = 1;
 
@@ -397,6 +401,7 @@
                 hiddenInput.value = selectEl.value;
             }
         }
+
                 document.querySelector("form").addEventListener("submit", function () {
             document.querySelectorAll(".court-group").forEach(group => {
                 const select = group.querySelector(".court-sport-select");
