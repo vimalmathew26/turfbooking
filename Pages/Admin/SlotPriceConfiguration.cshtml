@@ -3,57 +3,181 @@
 @{
     ViewData["Title"] = "Slot Price Configuration";
 }
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class=" alert alert-danger">@TempData["ErrorMessage"]</div>
-}
-<form method="post" asp-page-handler="Save" class="p-4 shadow-sm border rounded bg-light" style="max-width: 600px; margin: auto;">
-    <h4 class="mb-4 text-primary fw-bold">Slot Price Configuration</h4>
+<div class="container my-4">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
 
-    <input asp-for="GroundId" value="@Model.GroundId" type="hidden">
-    <input asp-for="CourtId" value="@Model.CourtId" type="hidden"/>
+    <h2 class="text-primary">@Model.court.Name</h2>
+    <p class="text-muted">
+        Available: @Model.court.StartTime.ToString("t") – @Model.court.EndTime.ToString("t") |
+        Duration: @Model.court.Duration hour(s)
+    </p>
 
-    <div asp-validation-summary="All"></div>
-   
-    <!-- Apply to All Dates Toggle -->
-    <div class="mb-3">
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="toggleDate" onchange="toggleDateInput()" />
-            <label class="form-check-label fw-semibold" for="toggleDate">Apply to all dates</label>
-        </div>
-    </div>
-
-    <!-- Date Input Field -->
-    <div class="mb-3" id="dateFieldGroup">
-        <label class="form-label fw-semibold">Select Date</label>
-        <input asp-for="SlotPrice.Date" type="date" class="form-control" id="dateInput" />
-        <span asp-validation-for="SlotPrice.Date" class="text-danger small"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label fw-semibold">From Time</label>
-        <input asp-for="SlotPrice.StartTime" type="time" class="form-control" required />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label fw-semibold">To Time</label>
-        <input asp-for="SlotPrice.EndTime" type="time" class="form-control" required />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label fw-semibold">Price (₹)</label>
-        <input asp-for="SlotPrice.Price" type="number" class="form-control" placeholder="e.g. 500" required />
-    </div>
-
-    <div class="text-end">
-        <button type="submit" class="btn btn-success px-4">
-            <i class="bi bi-save me-1"></i> Save
+    <div class="text-end my-3">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#slotPriceModal" onclick="resetModal()">
+            <i class="bi bi-plus-circle me-1"></i> Add Slot Price
         </button>
     </div>
-</form>
+
+    <!-- Default Slot Prices -->
+    <h5 class="text-success mt-4">Default Slot Prices</h5>
+    @if (Model.SlotPrices.Any(s => s.Date == null))
+    {
+        <table class="table table-bordered table-sm table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Price (₹)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model.SlotPrices.Where(s => s.Date == null))
+                {
+                    <tr>
+                        <td>@s.StartTime.ToString(@"hh\:mm")</td>
+                        <td>@s.EndTime.ToString(@"hh\:mm")</td>
+                        <td>@($"₹{s.Price}")</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"
+                                onclick='populateEdit(@Html.Raw(Json.Serialize(new {
+                                    id = s.Id,
+                                    date = s.Date?.ToString("yyyy-MM-dd"),
+                                    startTime = s.StartTime.ToString(@"hh\:mm"),
+                                    endTime = s.EndTime.ToString(@"hh\:mm"),
+                                    price = s.Price
+                                })))'>
+                                Edit
+                            </button>
+
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@s.Id" asp-route-GroundId="@Model.GroundId" asp-route-CourtId="@Model.CourtId"style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this slot price?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-muted">No default slot prices configured.</p>
+    }
+
+    <!-- Date-Specific Slot Prices -->
+    <h5 class="text-info mt-4">Date-Specific Slot Prices</h5>
+    @if (Model.SlotPrices.Any(s => s.Date != null))
+    {
+        <table class="table table-bordered table-sm table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Price (₹)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model.SlotPrices.Where(s => s.Date != null).OrderBy(s => s.Date))
+                {
+                    <tr>
+                        <td>@s.Date?.ToString("dd-MM-yyyy")</td>
+                        <td>@s.StartTime.ToString(@"hh\:mm")</td>
+                        <td>@s.EndTime.ToString(@"hh\:mm")</td>
+                        <td>@($"₹{s.Price}")</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"
+                                onclick='populateEdit(@Html.Raw(Json.Serialize(new {
+                                    id = s.Id,
+                                    date = s.Date?.ToString("yyyy-MM-dd"),
+                                    startTime = s.StartTime.ToString(@"hh\:mm"),
+                                    endTime = s.EndTime.ToString(@"hh\:mm"),
+                                    price = s.Price
+                                })))'>
+                                Edit
+                            </button>
+
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@s.Id" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this slot price?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-muted">No date-specific slot prices configured.</p>
+    }
+
+    <!-- Modal for Add/Edit Slot -->
+    <div class="modal fade" id="slotPriceModal" tabindex="-1" aria-labelledby="slotPriceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="slotPriceForm" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="slotPriceModalLabel">Add/Edit Slot Price</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <input asp-for="GroundId" type="hidden" />
+                        <input asp-for="CourtId" type="hidden" />
+                        <input type="hidden" name="SlotPrice.Id" id="SlotId" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
+
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="toggleDate" onchange="toggleDateInput()" />
+                            <label class="form-check-label fw-semibold" for="toggleDate">Apply to all dates (Default)</label>
+                        </div>
+
+                        <div class="mb-3" id="dateFieldGroup">
+                            <label class="form-label fw-semibold">Select Date</label>
+                            <input asp-for="SlotPrice.Date" type="date" class="form-control" id="dateInput" />
+                            <span asp-validation-for="SlotPrice.Date" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">From Time</label>
+                            <input asp-for="SlotPrice.StartTime" type="time" class="form-control" id="startTimeInput" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">To Time</label>
+                            <input asp-for="SlotPrice.EndTime" type="time" class="form-control" id="endTimeInput" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Price (₹)</label>
+                            <input asp-for="SlotPrice.Price" type="number" class="form-control" id="priceInput" required />
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="submitBtn" class="btn btn-success">
+                            <i class="bi bi-save me-1"></i> Save
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+  
     <script>
         function toggleDateInput() {
             const checkbox = document.getElementById("toggleDate");
@@ -62,13 +186,60 @@
 
             if (checkbox.checked) {
                 dateGroup.style.display = "none";
-                dateInput.value = "";
+                dateInput.value = ""; // Clear the date value when hiding
+                dateInput.removeAttribute("required");
             } else {
                 dateGroup.style.display = "block";
+                dateInput.setAttribute("required", "required");
             }
-        }       
-        document.addEventListener("DOMContentLoaded", function () {
+        }
+
+        function resetModal() {
+            const form = document.getElementById("slotPriceForm");
+            // *** FIX 2: Set the form's actual 'action' attribute to target the correct handler ***
+            form.action = "?handler=Save"; 
+            
+            document.getElementById("slotPriceModalLabel").innerText = "Add Slot Price";
+            form.reset(); // A simpler way to clear the form
+            document.getElementById("SlotId").value = "0"; // Set to 0 for new item
+            
+            document.getElementById("toggleDate").checked = true; // Default to 'all dates'
             toggleDateInput();
+        }
+
+        function populateEdit(slot) {
+            const form = document.getElementById("slotPriceForm");
+             // *** FIX 2: Set the form's 'action' to target the Edit handler ***
+            form.action = "?handler=Edit";
+
+            document.getElementById("slotPriceModalLabel").innerText = "Edit Slot Price";
+            document.getElementById("SlotId").value = slot.id;
+            // Format time correctly for input[type=time]
+            document.getElementById("startTimeInput").value = slot.startTime.substring(0, 5);
+            document.getElementById("endTimeInput").value = slot.endTime.substring(0, 5);
+            document.getElementById("priceInput").value = slot.price;
+
+            if (slot.date) {
+                document.getElementById("toggleDate").checked = false;
+                // Format date correctly for input[type=date]
+                document.getElementById("dateInput").value = new Date(slot.date).toISOString().split('T')[0];
+            } else {
+                 document.getElementById("toggleDate").checked = true;
+                 document.getElementById("dateInput").value = "";
+            }
+            toggleDateInput();
+
+            var modal = new bootstrap.Modal(document.getElementById("slotPriceModal"));
+            modal.show();
+        }
+
+        // Initialize the date toggle on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            // Check if toggleDate exists before trying to use it
+            if (document.getElementById("toggleDate")) {
+                toggleDateInput();
+            }
         });
     </script>
+
 }
